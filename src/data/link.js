@@ -8,6 +8,11 @@ export const landingLink = [
     label: 'Beranda',
     key: '/',
     element: Landing.Home
+  },
+  {
+    label: 'Pemetaan',
+    key: '/pemetaan',
+    element: Landing.Map
   }
 ];
 
