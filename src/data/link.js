@@ -2,7 +2,7 @@ import { Role } from '@/constants';
 import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
-import { DashboardOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import { DashboardOutlined, EnvironmentOutlined, IdcardOutlined } from '@ant-design/icons';
 
 export const landingLink = [
   {
@@ -38,6 +38,12 @@ export const dashboardLink = [
     icon: DashboardOutlined,
     path: '/dashboard',
     element: Dashboard.Dashboard
+  },
+  {
+    label: 'Unor',
+    icon: IdcardOutlined,
+    path: '/unors',
+    element: Dashboard.Unors
   },
   {
     label: 'Pemetaan',

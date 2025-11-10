@@ -1,5 +1,6 @@
 enum Modul {
-  CATEGORY = 'Kategori'
+  CATEGORY = 'Kategori',
+  UNOR = 'Unor'
 }
 
 export default Modul;
