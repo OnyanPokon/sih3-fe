@@ -5,16 +5,10 @@ import Permission from './Permission';
 export interface IncomingApiData {
   id: number;
   email: string;
-  name: string;
-  role: {
-    id: number;
-    name: string;
-    permissions: string[];
-  };
+  username: string;
+  role: string;
   permissions: string[];
 }
-
-export interface untranslatedIncoming {}
 
 interface OutgoingApiData {
   email: IncomingApiData['email'];
@@ -27,7 +21,6 @@ export default class User extends Model {
     public name: string,
     public token: string,
     public role: Role,
-    public roleId: number,
     public permissions: Permission[] = []
   ) {
     super();
@@ -45,6 +38,10 @@ export default class User extends Model {
     return !this.can(action, model);
   }
 
+  eitherIs(...roles: Role[]) {
+    return roles.some((role) => this.is(role));
+  }
+
   eitherCan(...permissions: [Action, ModelChildren][]) {
     return permissions.some(([action, model]) => this.can(action, model));
   }
@@ -55,12 +52,15 @@ export default class User extends Model {
 
   static fromApiData(apiData: IncomingApiData, token: string): User {
     const roles = {
-      admin: Role.ADMIN,
-      opd_provinsi: Role.PEGAWAI
+      admin: Role.ADMIN
     };
-    const role = roles[apiData.role.name as keyof typeof roles] || null;
-    const permissions = Permission.fromApiData([...apiData.role.permissions, ...apiData.permissions]);
-    return new User(apiData.id, apiData.email, apiData.name, token, role, apiData.role.id, permissions);
+    const role = roles[apiData.role as keyof typeof roles];
+
+    const validPermissions = apiData.permissions.filter((p) => p !== 'dashboard');
+
+    const permissions = Permission.fromApiData(validPermissions);
+
+    return new User(apiData.id, apiData.email, apiData.username, token, role, permissions);
   }
 
   static toApiData(user: User): OutgoingApiData {
@@ -69,5 +69,3 @@ export default class User extends Model {
     };
   }
 }
-
-Model.children.pengguna = User;

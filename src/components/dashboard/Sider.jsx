@@ -13,52 +13,47 @@ const DashboardSider = ({ collapsed, onCloseMenu }) => {
 
   const isDesktop = breakpoints.lg || breakpoints.xl || breakpoints.xxl;
 
+  const canAccess = (roles = [], permissions = []) => {
+    const hasRole = roles.length === 0 || user?.eitherIs(...roles);
+    const hasPermission = permissions.length === 0 || user?.eitherCan(...permissions);
+    return hasRole && hasPermission;
+  };
+
   const menuItems = dashboardLink
-    .filter(({ permissions, roles }) => {
-      if (!user) return false;
-
-      const hasPermission = permissions && permissions.length > 0;
-      const hasRole = roles && roles.length > 0;
-
-      const isPublicPage = !hasPermission && !hasRole;
-      if (isPublicPage) return true;
-
-      const roleSpecific = hasRole && !hasPermission;
-      if (roleSpecific) return user.eitherIs(...roles);
-
-      const permissionSpecific = hasPermission && !hasRole;
-      if (permissionSpecific) return user.eitherCan(...permissions);
-
-      return user.eitherCan(...permissions) || user.eitherIs(...roles);
-    })
-    .map(({ label, children, icon: Icon }) => ({
-      key: label,
-      label: (
-        <Tooltip title={label} placement="right" color="blue">
-          <span>{label}</span>
-        </Tooltip>
-      ),
-      icon: (
-        <Tooltip title={label} placement="right" color="blue">
-          <Icon />
-        </Tooltip>
-      ),
-      children: children
-        .filter(({ permissions, roles }) => {
-          const hasPermission = !permissions || user?.eitherCan(...permissions);
-          const hasRole = !roles || user?.eitherIs(...roles);
-          return hasPermission && hasRole;
-        })
-        .map(({ path, label }) => ({
-          key: path,
+    .map(({ label, children, icon: Icon, roles = [], permissions = [], path }) => {
+      const visibleChildren = children
+        ?.filter((child) => canAccess(child.roles, child.permissions))
+        .map((child) => ({
+          key: child.path,
           label: (
-            <Tooltip title={label} placement="right" color="blue">
-              <span>{label}</span>
+            <Tooltip title={child.label} placement="right" color="blue">
+              <span>{child.label}</span>
             </Tooltip>
           ),
-          onClick: () => navigate(path)
-        }))
-    }));
+          onClick: () => navigate(child.path)
+        }));
+
+      const isVisible = canAccess(roles, permissions) || (visibleChildren && visibleChildren.length > 0);
+
+      if (!isVisible) return null;
+
+      return {
+        key: label,
+        label: (
+          <Tooltip title={label} placement="right" color="blue">
+            <span>{label}</span>
+          </Tooltip>
+        ),
+        icon: (
+          <Tooltip title={label} placement="right" color="blue">
+            <Icon />
+          </Tooltip>
+        ),
+        onClick: path ? () => navigate(path) : undefined,
+        children: visibleChildren
+      };
+    })
+    .filter(Boolean);
 
   return isDesktop ? (
     <Sider theme="light" className="p-4" width={230} collapsed={collapsed}>

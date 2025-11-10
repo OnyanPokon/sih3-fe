@@ -1,7 +1,8 @@
+import { Role } from '@/constants';
 import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
-import { DashboardOutlined } from '@ant-design/icons';
+import { DashboardOutlined, EnvironmentOutlined } from '@ant-design/icons';
 
 export const landingLink = [
   {
@@ -33,15 +34,21 @@ export const landingLink = [
  */
 export const dashboardLink = [
   {
-    label: 'Overview',
+    label: 'Dashboard',
     icon: DashboardOutlined,
-    children: [{ path: '/dashboard', label: 'Dashboard', element: Dashboard.Dashboard }]
+    path: '/dashboard',
+    element: Dashboard.Dashboard
+  },
+  {
+    label: 'Pemetaan',
+    icon: EnvironmentOutlined,
+    roles: [Role.ADMIN],
+    children: [
+      { path: '/dashboard/maps', label: 'Peta', element: Dashboard.Dashboard, roles: [Role.ADMIN] },
+      { path: '/dashboard/categories', label: 'Kategori', element: Dashboard.Categories, roles: [Role.ADMIN] }
+    ]
   }
-].map((item) => ({
-  ...item,
-  permissions: item.children.flatMap((child) => child.permissions).filter((permission) => permission),
-  roles: item.children.flatMap((child) => child.roles).filter((role) => role)
-}));
+];
 
 export const authLink = [
   {

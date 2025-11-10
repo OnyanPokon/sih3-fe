@@ -116,7 +116,7 @@ const commands = {
 
         try {
           console.log(`Generating service ${name} at src/services/${name}.js`);
-          fs.writeFileSync(`src/services/${name}.js`, template('service', { name, model, endpoint }));
+          fs.writeFileSync(`src/services/${name}.js`, template('service', { name, model, endpoint, nameCamelCase }));
           console.log(`Service ${name} generated`);
 
           const indexFile = fs.readFileSync('src/services/index.js', 'utf8');
