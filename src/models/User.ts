@@ -8,6 +8,10 @@ export interface IncomingApiData {
   username: string;
   role: string;
   permissions: string[];
+  unor?: {
+    nama: string;
+    wilayah: string;
+  };
 }
 
 interface OutgoingApiData {
@@ -51,12 +55,15 @@ export default class User extends Model {
   }
 
   static fromApiData(apiData: IncomingApiData, token: string): User {
-    const roles = {
+    const roles: Record<string, Role> = {
       admin: Role.ADMIN
     };
-    const role = roles[apiData.role as keyof typeof roles];
 
-    const validPermissions = apiData.permissions.filter((p) => p !== 'dashboard');
+    const role = roles[apiData.role];
+
+    const validPermissions = apiData.permissions.filter((p) => {
+      return p.includes('_');
+    });
 
     const permissions = Permission.fromApiData(validPermissions);
 

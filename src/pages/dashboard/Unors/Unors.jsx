@@ -201,7 +201,7 @@ const Unors = () => {
       <Skeleton loading={getAllUnors.isLoading}>
         <DataTableHeader model={UnorModel} modul={Modul.UNOR} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
         <div className="w-full max-w-full overflow-x-auto">
-          <DataTable data={unors} columns={column} loading={getAllUnors.isLoading} map={(mode) => ({ key: mode.id, ...mode })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} pagination={pagination} />
+          <DataTable data={unors} columns={column} loading={getAllUnors.isLoading} map={(unors) => ({ key: unors.id, ...unors })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} pagination={pagination} />
         </div>
       </Skeleton>
     </Card>

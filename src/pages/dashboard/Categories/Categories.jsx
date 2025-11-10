@@ -148,7 +148,7 @@ const Categories = () => {
       <Skeleton loading={getAllCategories.isLoading}>
         <DataTableHeader model={CategoryModel} modul={Modul.CATEGORY} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
         <div className="w-full max-w-full overflow-x-auto">
-          <DataTable data={categories} columns={column} loading={getAllCategories.isLoading} map={(mode) => ({ key: mode.id, ...mode })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} pagination={pagination} />
+          <DataTable data={categories} columns={column} loading={getAllCategories.isLoading} map={(category) => ({ key: category.id, ...category })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} pagination={pagination} />
         </div>
       </Skeleton>
     </Card>
