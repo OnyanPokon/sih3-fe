@@ -4,3 +4,4 @@ export { default as Model } from './Model';
 export { default as Categories } from './Categories';
 export { default as Unors } from './Unors';
 export { default as Personils } from './Personils';
+export { default as Thumbnails } from './Thumbnails';
