@@ -69,10 +69,10 @@ export const dashboardLink = [
   {
     label: 'Personil',
     icon: UserOutlined,
-    roles: [Role.ADMIN],
+    roles: [Role.ADMIN, Role.SUPERADMIN],
     children: [
-      { path: '/dashboard/roles', label: 'Role', element: Dashboard.Roles },
-      { path: '/dashboard/permissions', label: 'Permission', element: Dashboard.Permissions },
+      { path: '/dashboard/roles', label: 'Role', element: Dashboard.Roles, roles: [Role.SUPERADMIN] },
+      { path: '/dashboard/permissions', label: 'Permission', element: Dashboard.Permissions, roles: [Role.SUPERADMIN] },
       { path: '/dashboard/unors', label: 'Unor', element: Dashboard.Unors, roles: [Role.ADMIN] },
       { path: '/dashboard/personils', label: 'Personil', element: Dashboard.Personils, roles: [Role.ADMIN], permissions: [[Action.READ, Model.Personils]] }
     ]
@@ -80,7 +80,7 @@ export const dashboardLink = [
   {
     label: 'Pemetaan',
     icon: EnvironmentOutlined,
-    roles: [Role.ADMIN],
+    roles: [Role.ADMIN, Role.SUPERADMIN],
     children: [
       { path: '/dashboard/maps', label: 'Peta', element: Dashboard.Map, roles: [Role.ADMIN] },
       { path: '/dashboard/categories', label: 'Kategori', element: Dashboard.Categories, roles: [Role.ADMIN], permissions: [[Action.READ, Model.Categories]] }

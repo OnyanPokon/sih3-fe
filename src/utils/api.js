@@ -19,37 +19,69 @@ const controllers = {};
  *  data: any;
  * }>}
  */
-async function customFetch(endpoint, method, body, token, file, abortController) {
+async function customFetch(endpoint, method, body = {}, token, file = {}, abortController) {
+  const hasFile = file && Object.keys(file).length > 0;
   const formData = new FormData();
+
+  // 1️⃣ Tambahkan semua field body
   for (const key in body) {
-    if (file && key in file) continue;
-    formData.append(key, body[key]);
+    if (hasFile && key in file) continue;
+    const value = body[key];
+    if (value !== undefined && value !== null) formData.append(key, value);
   }
 
-  for (const key in file) {
-    if (!file[key]) continue;
-    formData.append(key, file[key], file[key].name);
+  // 2️⃣ Tangani semua kemungkinan file
+  if (hasFile) {
+    for (const key in file) {
+      const value = file[key];
+      if (!value) continue;
+
+      // 🟢 AntD Upload: { fileList: [...] }
+      if (value.fileList && Array.isArray(value.fileList)) {
+        value.fileList.forEach((item) => {
+          const f = item.originFileObj || item;
+          if (f instanceof File) formData.append(`${key}[]`, f, f.name);
+        });
+      }
+
+      // 🟢 Array of File
+      else if (Array.isArray(value)) {
+        value.forEach((f) => {
+          const realFile = f.originFileObj || f;
+          if (realFile instanceof File) formData.append(`${key}[]`, realFile, realFile.name);
+        });
+      }
+
+      // 🟢 Object AntD Upload single
+      else if (value.file instanceof File) {
+        formData.append(key, value.file, value.file.name);
+      }
+
+      // 🟢 Single File langsung
+      else if (value instanceof File) {
+        formData.append(key, value, value.name);
+      }
+    }
   }
 
+  // 3️⃣ Opsi fetch
   const options = {
     method,
-    headers: {
-      Authorization: token ? `Bearer ${token}` : ''
-    }
+    headers: { Authorization: token ? `Bearer ${token}` : '' }
   };
 
-  if (file) {
+  if (hasFile) {
     options.body = formData;
-  } else if (body) {
+  } else if (body && Object.keys(body).length > 0) {
     options.headers['Content-Type'] = 'application/json';
     options.body = JSON.stringify(body);
   }
 
+  // 4️⃣ Abort controller
   if (abortController) options.signal = abortController.signal;
   else if (controllers[endpoint]) options.signal = controllers[endpoint].signal;
 
   const response = await fetch(BASE_URL + endpoint, options);
-
   return await response.json();
 }
 
@@ -73,25 +105,21 @@ function createCustomFetch(method) {
       controllers[cleanEndpoint] = new AbortController();
     }
 
+    // 🔍 Tambahkan query params jika ada
     const searchParams = {};
     if (params) for (const key in params) searchParams[key] = params[key];
-
     if (page) {
       searchParams.page = page;
       if (perPage === PAGINATION_ALL) searchParams.per_page = 'all';
       else searchParams.per_page = perPage;
     }
 
-    const searchParamsString = Object.entries(searchParams)
+    const query = Object.entries(searchParams)
       .map(([key, value]) => `${key}=${value}`)
       .join('&');
-    const hasSearchParams = endpoint.includes('?');
     let concatenatedEndpoint = endpoint;
-    if (searchParamsString !== '') {
-      if (hasSearchParams) concatenatedEndpoint += '&';
-      else concatenatedEndpoint += '?';
-      concatenatedEndpoint += searchParamsString;
-    }
+    if (query) concatenatedEndpoint += endpoint.includes('?') ? '&' + query : '?' + query;
+
     return customFetch(concatenatedEndpoint, method, body, token, file, abortController);
   };
 }

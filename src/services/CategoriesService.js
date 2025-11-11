@@ -42,6 +42,8 @@ export default class CategoriesService {
    * }}
    */
   static async store(data, token, file) {
+    console.log('service', file);
+
     return await api.post('/kategori', { body: Categories.toApiData(data), token, file: { logo: file } });
   }
 

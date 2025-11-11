@@ -9,3 +9,4 @@ export { default as News } from './News';
 export { default as Maps } from './Maps';
 export { default as Roles } from './Roles';
 export { default as ManagePermissions } from './ManagePermissions';
+export { default as Articles } from './Articles';

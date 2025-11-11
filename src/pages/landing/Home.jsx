@@ -87,7 +87,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <section className="bg-white">
+      <section className="bg-gray-100">
         <div className="mx-auto flex w-full max-w-screen-xl items-start justify-center gap-x-40 px-6 py-16">
           <div className="flex w-full flex-col gap-y-4">
             <Typography.Title level={3} style={{ margin: 0 }}>
@@ -97,7 +97,7 @@ const Home = () => {
               Website SIH³ (Sistem Informasi Hidrologi, Hidrogeologi, dan Hidrometeorologi) merupakan platform digital yang dikembangkan untuk menyediakan data dan informasi terkait kondisi sumber daya air, curah hujan, dan potensi bencana di
               Provinsi Gorontalo.
             </p>
-            <div className="relative rounded-xl bg-gray-100 p-6 text-sm">
+            <div className="relative rounded-xl bg-white p-6 text-sm">
               <div className="absolute -right-4 -top-4 h-14 w-14 rounded-full bg-blue-500 p-3">
                 <img src="/image_asset/logo/prov_gto_logo.png" />
               </div>
@@ -105,7 +105,7 @@ const Home = () => {
               di Gorontalo.
             </div>
           </div>
-          <div className="flex w-full flex-col gap-y-4 rounded-xl bg-gray-100 p-8">
+          <div className="flex w-full flex-col gap-y-4 rounded-xl bg-white p-8">
             <div className="inline-flex items-start gap-x-2">
               <CheckCircleFilled className="mt-1.5 text-green-500" />
               <span>Pusat data hidrologi, hidrogeologi, dan hidrometeorologi Gorontalo.</span>

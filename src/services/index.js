@@ -7,3 +7,4 @@ export { default as NewsService } from './NewsService';
 export { default as MapsService } from './MapsService';
 export { default as RolesService } from './RolesService';
 export { default as ManagePermissionsService } from './ManagePermissionsService';
+export { default as ArticlesService } from './ArticlesService';

@@ -56,7 +56,8 @@ export default class User extends Model {
 
   static fromApiData(apiData: IncomingApiData, token: string): User {
     const roles: Record<string, Role> = {
-      admin: Role.ADMIN
+      admin: Role.ADMIN,
+      superadmin: Role.SUPERADMIN
     };
 
     const role = roles[apiData.role];

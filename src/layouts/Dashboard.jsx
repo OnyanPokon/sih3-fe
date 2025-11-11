@@ -17,6 +17,8 @@ const Dashboard = () => {
     navigate(`/auth/login?redirect=${pathname}`);
   }, [navigate, token, pathname]);
 
+  console.log(user);
+
   // const breadcrumbItems = generateBreadcrumb(dashboardLink, pathname);
 
   const items = useMemo(
