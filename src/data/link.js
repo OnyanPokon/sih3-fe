@@ -3,7 +3,7 @@ import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
 import * as Model from '@/models';
-import { DashboardOutlined, EnvironmentOutlined, UserOutlined } from '@ant-design/icons';
+import { DashboardOutlined, EnvironmentOutlined, FileOutlined, UserOutlined } from '@ant-design/icons';
 
 export const landingLink = [
   {
@@ -15,6 +15,26 @@ export const landingLink = [
     label: 'Pemetaan',
     key: '/pemetaan',
     element: Landing.Map
+  },
+  {
+    label: 'Berita',
+    children: [
+      {
+        label: 'Hidrologi',
+        key: '/news/hidrologi',
+        element: Landing.Map
+      },
+      {
+        label: 'Hidrometerologi',
+        key: '/news/hidrometerologi',
+        element: Landing.Map
+      },
+      {
+        label: 'Hidrogeologi',
+        key: '/news/hidrogeologi',
+        element: Landing.Map
+      }
+    ]
   }
 ];
 
@@ -39,6 +59,12 @@ export const dashboardLink = [
     icon: DashboardOutlined,
     path: '/dashboard',
     element: Dashboard.Dashboard
+  },
+  {
+    label: 'Berita',
+    icon: FileOutlined,
+    path: '/dashboard/news',
+    element: Dashboard.News
   },
   {
     label: 'Personil',

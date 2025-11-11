@@ -64,7 +64,9 @@ const Navbar = () => {
                 items={landingLink}
                 activeKey=""
                 onClick={handleMenuClick}
-                className={`transition-colors duration-300 ${isScrolled ? '[&_.ant-menu-item]:!text-black' : '[&_.ant-menu-item]:!text-white'} [&_.ant-menu-item-selected]:!text-blue-500 [&_.ant-menu-item]:!bg-transparent`}
+                className={`transition-colors duration-300 ${
+                  isScrolled ? '[&_.ant-menu-item]:!text-black [&_.ant-menu-submenu-title]:!text-black' : '[&_.ant-menu-item]:!text-white [&_.ant-menu-submenu-title]:!text-white'
+                } [&_.ant-menu-item-selected]:!text-blue-500 [&_.ant-menu-item]:!bg-transparent [&_.ant-menu-submenu-title]:!bg-transparent`}
               />
             </>
           ) : (

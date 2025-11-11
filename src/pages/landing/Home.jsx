@@ -1,9 +1,24 @@
+import { useAuth } from '@/hooks';
+import useAbortableService from '@/hooks/useAbortableService';
+import { NewsService } from '@/services';
 import { CheckCircleFilled, CloudFilled, CompassFilled, EnvironmentFilled } from '@ant-design/icons';
-import { Button, Card, Typography } from 'antd';
+import { Button, Card, Skeleton, Typography } from 'antd';
+import React from 'react';
+import parse from 'html-react-parser';
 import { useNavigate } from 'react-router-dom';
+import dateFormatterID from '@/utils/dateFormatterId';
 
 const Home = () => {
   const navigte = useNavigate();
+  const { onUnauthorized } = useAuth();
+  const { execute: fetchNews, ...getAllNews } = useAbortableService(NewsService.getAllInLanding, { onUnauthorized });
+
+  React.useEffect(() => {
+    fetchNews({ page: 1, per_page: 4 });
+  }, [fetchNews]);
+
+  const news = getAllNews.data ?? [];
+
   return (
     <>
       <section
@@ -31,14 +46,21 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <section className="-translate-y-9 rounded-t-3xl bg-white">
+      <section
+        style={{
+          backgroundImage: "url('/image_asset/background/h3_section_bg.png')",
+          backgroundPosition: 'center',
+          backgroundSize: 'cover'
+        }}
+        className="-translate-y-9 rounded-t-3xl bg-white"
+      >
         <div className="mx-auto flex w-full max-w-screen-xl items-start justify-center gap-x-28 px-6 py-28">
           <div className="flex max-w-xs flex-col items-center justify-center gap-y-4 text-center">
             <div className="flex h-24 w-24 items-center justify-center rounded-2xl bg-green-100 p-4 text-green-500">
               <CloudFilled className="text-4xl" />
             </div>
             <Typography.Title level={5} style={{ margin: 0 }} className="font-bold">
-              Hidrogeologi
+              Hidrologi
             </Typography.Title>
             <small className="text-gray-500">Kajian aliran dan ketersediaan air di permukaan, interaksi dengan air hujan serta air tanah, untuk mendukung perencanaan sumber daya air yang berkelanjutan.</small>
           </div>
@@ -108,8 +130,14 @@ const Home = () => {
           </div>
         </div>
       </section>
-
-      <section className="bg-white">
+      <section
+        style={{
+          backgroundImage: "url('/image_asset/background/hidrologi_bg.png')",
+          backgroundPosition: 'center',
+          backgroundSize: 'cover'
+        }}
+        className="bg-gray-50"
+      >
         <div className="mx-auto max-w-screen-xl items-center gap-16 px-4 py-8 lg:grid lg:grid-cols-2 lg:px-6 lg:py-16">
           <div className="font-light">
             <Typography.Title level={3}>Portal Berita</Typography.Title>
@@ -117,55 +145,51 @@ const Home = () => {
               Portal Berita SIH³ merupakan pusat informasi seputar hidrologi, hidrogeologi, dan hidrometeorologi di Provinsi Gorontalo. Melalui portal ini, masyarakat dan instansi dapat memantau kondisi sumber daya air, iklim, serta potensi bencana
               yang berkaitan dengan air secara akurat dan terupdate.
             </p>
-            <p className="text-gray-500">
+            <p className="mb-4 text-gray-500">
               Kami berupaya menghadirkan berita dan data yang relevan untuk mendukung pengelolaan lingkungan, perencanaan pembangunan, serta peningkatan kesadaran masyarakat terhadap pentingnya keseimbangan ekosistem air.
             </p>
+            <div className="flex items-center gap-x-4">
+              <div className="flex h-16 w-16 flex-col items-center justify-center rounded-2xl bg-green-100 p-4 text-green-500">
+                <CloudFilled className="text-4xl" />
+              </div>
+              <div className="flex h-16 w-16 flex-col items-center justify-center rounded-2xl bg-yellow-100 p-4 text-yellow-500">
+                <CompassFilled className="text-4xl" />
+              </div>
+              <div className="flex h-16 w-16 flex-col items-center justify-center rounded-2xl bg-blue-100 p-4 text-blue-500">
+                <EnvironmentFilled className="text-4xl" />
+              </div>
+            </div>
           </div>
           <div className="mt-8 grid grid-cols-2 gap-4">
-            <img className="w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/office-long-2.png" alt="office content 1" />
-            <img className="mt-4 w-full rounded-lg lg:mt-10" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/office-long-1.png" alt="office content 2" />
+            <img className="h-full w-full rounded-lg object-cover" src="/image_asset/background/lombongo.jpg" alt="office content 1" />
+            <img className="mt-4 h-full w-full rounded-lg object-cover lg:mt-10" src="/image_asset/background/sherly.jpeg" alt="office content 2" />
           </div>
         </div>
       </section>
-      <section className="bg-white">
+      <section className="bg-gray-50">
         <div className="mx-auto w-full max-w-screen-xl px-6 pb-32">
           <hr />
-          <div className="flex flex-wrap items-start justify-center gap-4 pt-12">
-            <Card hoverable className="w-full max-w-[280px]" cover={<img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/office-long-2.png" className="max-h-52 object-cover" />}>
-              <div className="text-gray-500">
-                <Typography.Title level={5}>Berita Terkini</Typography.Title>
-                <p className="news-text mb-4">
-                  Kami berupaya menghadirkan berita dan data yang relevan untuk mendukung pengelolaan lingkungan, perencanaan pembangunan, serta peningkatan kesadaran masyarakat terhadap pentingnya keseimbangan ekosistem air.
-                </p>
-                <p className="text-xs">Aug 15, 2021 · 16 min read</p>
-              </div>
-            </Card>
-            <Card hoverable className="w-full max-w-[280px]" cover={<img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/office-long-2.png" className="max-h-52 object-cover" />}>
-              <div className="text-gray-500">
-                <Typography.Title level={5}>Berita Terkini</Typography.Title>
-                <p className="news-text mb-4">
-                  Kami berupaya menghadirkan berita dan data yang relevan untuk mendukung pengelolaan lingkungan, perencanaan pembangunan, serta peningkatan kesadaran masyarakat terhadap pentingnya keseimbangan ekosistem air.
-                </p>
-                <p className="text-xs">Aug 15, 2021 · 16 min read</p>
-              </div>
-            </Card>
-            <Card hoverable className="w-full max-w-[280px]" cover={<img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/office-long-2.png" className="max-h-52 object-cover" />}>
-              <div className="text-gray-500">
-                <Typography.Title level={5}>Berita Terkini</Typography.Title>
-                <p className="news-text mb-4">
-                  Kami berupaya menghadirkan berita dan data yang relevan untuk mendukung pengelolaan lingkungan, perencanaan pembangunan, serta peningkatan kesadaran masyarakat terhadap pentingnya keseimbangan ekosistem air.
-                </p>
-                <p className="text-xs">Aug 15, 2021 · 16 min read</p>
-              </div>
-            </Card>
-
-            {/* Tambahkan card lainnya di sini */}
+          <div className="mt-12 flex w-full items-center justify-center">
+            <Typography.Title level={4}>Berita Terkini</Typography.Title>
           </div>
-
-          <div className="mt-8 flex w-full items-center justify-center">
-            <Button variant="solid" color="primary" size="large">
-              Berita Lainnya
-            </Button>
+          <div className="flex flex-wrap items-start justify-center gap-4 pt-12">
+            {getAllNews.isLoading
+              ? Array.from({ length: 4 }, (_, i) => i).map((index) => (
+                  <Card className="w-full max-w-[280px]" key={index}>
+                    <Skeleton active />
+                  </Card>
+                ))
+              : news?.map((item) => (
+                  <Card onClick={() => navigte(window.location.pathname + 'news/' + item.slug)} key={item.id} hoverable className="w-full max-w-[280px]" cover={<img src={item.thumbnail} className="h-52 object-cover" />}>
+                    <div className="text-gray-500">
+                      <Typography.Title level={5}>
+                        <span className="news-text">{item.title}</span>
+                      </Typography.Title>
+                      <p className="news-text mb-4">{parse(item.content)}</p>
+                      <p className="text-xs">{dateFormatterID(item.created_at)}</p>
+                    </div>
+                  </Card>
+                ))}
           </div>
         </div>
       </section>

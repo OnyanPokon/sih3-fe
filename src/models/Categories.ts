@@ -12,14 +12,14 @@ export interface IncomingApiData {
 }
 
 export interface OutgoingApiData {
-  _method?: 'PATCH';
+  _method?: 'PUT';
   nama_kategori: string;
   deskripsi: string;
   logo: string;
 }
 
 interface FormValue {
-  _method?: 'PATCH';
+  _method?: 'PUT';
   category_name: string;
   desc: string;
   logo: string;

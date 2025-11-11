@@ -3,3 +3,4 @@ export { default as CategoriesService } from './CategoriesService';
 export { default as UnorsService } from './UnorsService';
 export { default as PersonilsService } from './PersonilsService';
 export { default as ThumbnailsService } from './ThumbnailsService';
+export { default as NewsService } from './NewsService';

@@ -29,6 +29,7 @@ export interface IncomingApiData {
 }
 
 export interface OutgoingApiData {
+  _method?: 'PATCH';
   email: string;
   nama: string;
   nip: string;
@@ -37,6 +38,7 @@ export interface OutgoingApiData {
 }
 
 interface FormValue {
+  _method?: 'PATCH';
   email: string;
   name: string;
   nip: string;
@@ -109,6 +111,8 @@ export default class Personils extends Model {
   public static toApiData<T extends FormValue | FormValue[]>(personils: T): ReturnType<T, FormValue, OutgoingApiData> {
     if (Array.isArray(personils)) return personils.map((object) => this.toApiData(object)) as ReturnType<T, FormValue, OutgoingApiData>;
     const apiData: OutgoingApiData = {
+      ...(personils._method ? { _method: personils._method } : {}),
+
       email: personils.email,
       nama: personils.name,
       nip: personils.nip,

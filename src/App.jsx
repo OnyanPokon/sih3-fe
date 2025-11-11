@@ -7,6 +7,8 @@ import { RouterProvider } from 'react-router';
 import './index.css';
 import { flattenLandingLinks } from './utils/landingLink';
 import { Notfound } from './pages/result';
+import { CreateNews, EditNews } from './pages/dashboard';
+import { News, ReadNews } from './pages/landing';
 
 function App() {
   const { user } = useAuth();
@@ -18,11 +20,15 @@ function App() {
         {
           element: <LandingLayout />,
           children: [
+            { path: '/news/:prefix', element: <News /> },
             // Tambahkan route dari landingLink
-            ...flatLandingLinks.map(({ path, element: Element }) => ({
-              path,
-              element: <Element />
-            })),
+            ...flatLandingLinks
+              .filter((route) => !route.path.startsWith('/news/'))
+              .map(({ path, element: Element }) => ({
+                path,
+                element: <Element />
+              })),
+            { path: '/news/:prefix/:slug', element: <ReadNews /> },
             { path: '*', element: <Notfound /> }
           ]
         },
@@ -65,9 +71,10 @@ function App() {
 
                 return [{ path, element: <Element /> }];
               }
-
               return [];
-            })
+            }),
+            { path: '/dashboard/news/create', element: <CreateNews /> },
+            { path: '/dashboard/news/edit/:slug', element: <EditNews /> }
           ]
         },
         {

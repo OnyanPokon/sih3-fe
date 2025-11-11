@@ -57,7 +57,7 @@ export default class PersonilsService {
    * }>}
    */
   static async update(id, data, token) {
-    return await api.patch(`/personil/${id}`, { body: Personils.toApiData(data), token });
+    return await api.put(`/personil/${id}`, { body: Personils.toApiData(data), token });
   }
 
   /**

@@ -1,7 +1,8 @@
 enum Modul {
   CATEGORY = 'Kategori',
   UNOR = 'Unor',
-  PERSONIL = 'Personil'
+  PERSONIL = 'Personil',
+  NEWS = 'Berita'
 }
 
 export default Modul;
