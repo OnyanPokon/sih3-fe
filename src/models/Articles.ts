@@ -1,3 +1,4 @@
+import asset from '@/utils/asset';
 import Model from './Model';
 
 export interface IncomingApiData {
@@ -29,29 +30,41 @@ export interface IncomingApiData {
     username: string;
     email: string;
   };
-  thumbnails: [
-    {
-      id: number;
-      artikel_id: number;
-      thumbnail: string;
-    }
-  ];
+  thumbnails: {
+    id: number;
+    artikel_id: number;
+    thumbnail: string;
+  }[];
+  dokumen: {
+    id: number;
+    artikel_id: number;
+    dokumen: string;
+  }[];
+  total_kunjungan: number;
+  total_unduh: number;
+  kuesioner_tambahan: boolean;
   created_at: string;
   updated_at: string;
 }
 
 export interface OutgoingApiData {
+  _method?: 'PUT';
   kategori_id: number;
   judul: string;
   konten: string;
   thumbnails: string[];
+  kuesioner_tambahan: boolean;
+  dokumen: string[] | null;
 }
 
 interface FormValue {
+  _method?: 'PUT';
   category_id: number;
   title: string;
   content: string;
   thumbnails: string[];
+  additional_quiz: boolean;
+  doc: string[] | null;
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -91,6 +104,14 @@ export default class Articles extends Model {
       article_id: number;
       thumbnail: string;
     }[],
+    public doc: {
+      id: number;
+      article_id: number;
+      doc: string;
+    }[],
+    public total_visits: number,
+    public total_downloads: number,
+    public additional_quiz: boolean,
     public created_at: string,
     public updated_at: string
   ) {
@@ -105,7 +126,7 @@ export default class Articles extends Model {
         id: apiData.kategori_id.id,
         category_name: apiData.kategori_id.nama_kategori,
         slug: apiData.kategori_id.slug,
-        logo: apiData.kategori_id.logo,
+        logo: asset(apiData.kategori_id.logo),
         desc: apiData.kategori_id.deskripsi
       },
       apiData.judul,
@@ -131,8 +152,16 @@ export default class Articles extends Model {
       apiData.thumbnails.map((item) => ({
         id: item.id,
         article_id: item.artikel_id,
-        thumbnail: item.thumbnail
+        thumbnail: asset(item.thumbnail)
       })),
+      apiData.dokumen.map((item) => ({
+        id: item.id,
+        article_id: item.artikel_id,
+        doc: asset(item.dokumen)
+      })),
+      apiData.total_kunjungan,
+      apiData.total_unduh,
+      apiData.kuesioner_tambahan,
       apiData.created_at,
       apiData.updated_at
     ) as ReturnType<T, IncomingApiData, Articles>;
@@ -141,10 +170,13 @@ export default class Articles extends Model {
   public static toApiData<T extends FormValue | FormValue[]>(articles: T): ReturnType<T, FormValue, OutgoingApiData> {
     if (Array.isArray(articles)) return articles.map((object) => this.toApiData(object)) as ReturnType<T, FormValue, OutgoingApiData>;
     const apiData: OutgoingApiData = {
+      ...(articles._method ? { _method: articles._method } : {}),
       kategori_id: articles.category_id,
       judul: articles.title,
       konten: articles.content,
-      thumbnails: articles.thumbnails
+      thumbnails: articles.thumbnails,
+      kuesioner_tambahan: articles.additional_quiz,
+      dokumen: articles.doc
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;

@@ -2,12 +2,12 @@ import { Delete, Edit } from '@/components/dashboard/button';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import useAbortableService from '@/hooks/useAbortableService';
-import { Button, Card, Skeleton, Space, Tooltip } from 'antd';
-import { Categories as CategoryModel } from '@/models';
+import { Card, Skeleton, Space } from 'antd';
+import { Articles as ArticleModel } from '@/models';
 import React from 'react';
 import { Action } from '@/constants';
 import { DataTable, DataTableHeader } from '@/components';
-import { DatabaseOutlined } from '@ant-design/icons';
+import { UserAddOutlined, UserDeleteOutlined } from '@ant-design/icons';
 import { ArticlesService } from '@/services';
 import { useNavigate } from 'react-router-dom';
 
@@ -50,31 +50,31 @@ const Articles = () => {
       searchable: true
     },
     {
-      title: 'Deskripsi',
-      dataIndex: 'desc',
-      sorter: (a, b) => a.desc.length - b.desc.length,
+      title: 'Dengan Kuisioner',
+      dataIndex: 'additional_quiz',
+      sorter: (a, b) => a.additional_quiz.length - b.additional_quiz.length,
       searchable: true
     }
   ];
 
-  if (user && user.eitherCan([UPDATE, CategoryModel], [DELETE, CategoryModel], [READ, CategoryModel])) {
+  if (user && user.eitherCan([UPDATE, ArticleModel], [DELETE, ArticleModel], [READ, ArticleModel])) {
     column.push({
       title: 'Aksi',
       render: (_, record) => (
         <Space size="small">
           <Edit
-            title={`Edit ${Modul.CATEGORY}`}
-            model={CategoryModel}
+            title={`Edit ${Modul.ARTICLE}`}
+            model={ArticleModel}
             onClick={() => {
-              console.log('haha');
+              navigate(window.location.pathname + '/edit/' + record.slug);
             }}
           />
           <Delete
-            title={`Delete ${Modul.CATEGORY}`}
-            model={CategoryModel}
+            title={`Delete ${Modul.ARTICLE}`}
+            model={ArticleModel}
             onClick={() => {
               modal.delete.default({
-                title: `Delete ${Modul.CATEGORY}`,
+                title: `Delete ${Modul.ARTICLE}`,
                 data: record,
                 onSubmit: async () => {
                   const { isSuccess, message } = await deleteCategory.execute(record.id, token);
@@ -89,22 +89,58 @@ const Articles = () => {
               });
             }}
           />
-          <Tooltip title="Dataset">
-            <Button icon={<DatabaseOutlined />} variant="outlined" color="primary" />
-          </Tooltip>
         </Space>
       )
     });
   }
 
+  const onNavigate = (data) => {
+    navigate(window.location.pathname + '/create', { state: { withQuiz: data } });
+  };
+
   const onCreate = () => {
-    navigate(window.location.pathname);
+    modal.show.paragraph({
+      data: {
+        content: (
+          <div className="mt-4 flex h-full items-center justify-center gap-x-6">
+            <Card
+              className="h-full w-full"
+              hoverable
+              onClick={() => {
+                onNavigate(true);
+                modal.close();
+              }}
+            >
+              <div className="flex h-full flex-col items-center justify-center gap-y-2">
+                <UserAddOutlined className="mb-2 text-3xl" />
+                <span className="text-center text-sm font-semibold">Dengan Kuisioner</span>
+                <small className="text-center text-gray-500">Akses dokumen artikel dengan mengisi kuisioner tambahan.</small>
+              </div>
+            </Card>
+            <Card
+              className="h-full w-full"
+              hoverable
+              onClick={() => {
+                onNavigate(false);
+                modal.close();
+              }}
+            >
+              <div className="flex h-full flex-col items-center justify-center gap-y-2">
+                <UserDeleteOutlined className="mb-2 text-3xl" />
+                <span className="text-center text-sm font-semibold">Tanpa Kuisioner</span>
+                <small className="text-center text-gray-500">Akses dokumen artikel bebas tanpa batasan .</small>
+              </div>
+            </Card>
+          </div>
+        )
+      }
+    });
   };
 
   return (
     <Card>
       <Skeleton loading={getAllArticles.isLoading}>
-        <DataTableHeader model={CategoryModel} modul={Modul.CATEGORY} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
+        <DataTableHeader model={ArticleModel} modul={Modul.ARTICLE} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
         <div className="w-full max-w-full overflow-x-auto">
           <DataTable data={articles} columns={column} loading={getAllArticles.isLoading} map={(category) => ({ key: category.id, ...category })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} pagination={pagination} />
         </div>

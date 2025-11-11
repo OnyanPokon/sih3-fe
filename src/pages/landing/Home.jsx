@@ -135,7 +135,7 @@ const Home = () => {
       </section>
       <section
         style={{
-          backgroundImage: "url('/image_asset/background/hidrologi_bg.png')",
+          backgroundImage: "url('/image_asset/background/news_section_bg.png')",
           backgroundPosition: 'center',
           backgroundSize: 'cover'
         }}

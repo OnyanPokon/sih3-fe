@@ -3,6 +3,7 @@ enum Modul {
   UNOR = 'Unor',
   PERSONIL = 'Personil',
   NEWS = 'Berita',
+  ARTICLE = 'Article',
   MAPS = 'Pemetaan',
   ROLE = 'Role',
   PERMISSION = 'Permission'

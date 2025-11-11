@@ -16,7 +16,7 @@ const Create = () => {
   const [form] = Form.useForm();
   const { success, error } = useNotification();
   const { execute: fetchCategories, ...getAllCategories } = useAbortableService(CategoriesService.getAll, { onUnauthorized });
-  const storeArticle = useService(NewsService.store);
+  const storeNews = useService(NewsService.store);
 
   useEffect(() => {
     fetchCategories({ token: token });
@@ -43,7 +43,7 @@ const Create = () => {
         form={form}
         className="grid w-full grid-cols-6 gap-2"
         onFinish={async (values) => {
-          const { message, isSuccess } = await storeArticle.execute(values, token, values.thumbnail.file);
+          const { message, isSuccess } = await storeNews.execute(values, token, values.thumbnail.file);
           if (isSuccess) {
             success('Berhasil', message);
             navigate(-1);
@@ -172,7 +172,7 @@ const Create = () => {
               <Button type="default" htmlType="reset" size="large">
                 Reset
               </Button>
-              <Button size="large" type="primary" htmlType="submit" loading={storeArticle.isLoading}>
+              <Button size="large" type="primary" htmlType="submit" loading={storeNews.isLoading}>
                 Kirim
               </Button>
             </div>

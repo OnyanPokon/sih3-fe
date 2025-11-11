@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useService } from '@/hooks';
 import { MapsService } from '@/services';
 import asset from '@/utils/asset';
@@ -25,8 +26,6 @@ const Map = () => {
   const handleToggleLayer = async (pemetaan) => {
     const id = pemetaan.id;
 
-    console.log(pemetaan);
-
     if (selectedLayers[id]) {
       const updated = { ...selectedLayers };
       delete updated[id];
@@ -51,13 +50,33 @@ const Map = () => {
     }
   };
 
+  const getFeatureStyle = (feature) => {
+    const props = feature.properties;
+    if (!props.fill) {
+      return {
+        color: '#0000ff',
+        weight: 3,
+        fillOpacity: 0.3,
+        fillColor: '#ffffff'
+      };
+    }
+
+    return {
+      color: props.stroke,
+      weight: props['stroke-width'],
+      opacity: props['stroke-opacity'],
+      fillColor: props.fill,
+      fillOpacity: props['fill-opacity']
+    };
+  };
+
   return (
     <section className="flex h-screen w-full">
       <div className="h-full w-full flex-[3]">
         <MapContainer center={[0.5412, 123.0595]} zoom={9} className="h-screen w-full">
           <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           {Object.values(selectedLayers).map((layer) => (
-            <GeoJSON key={layer.id} data={layer.data} />
+            <GeoJSON key={layer.id} data={layer.data} style={getFeatureStyle} />
           ))}
         </MapContainer>
       </div>

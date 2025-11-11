@@ -67,6 +67,12 @@ export const dashboardLink = [
     element: Dashboard.News
   },
   {
+    label: 'Artikel',
+    icon: FileOutlined,
+    path: '/dashboard/articles',
+    element: Dashboard.Articles
+  },
+  {
     label: 'Personil',
     icon: UserOutlined,
     roles: [Role.ADMIN, Role.SUPERADMIN],

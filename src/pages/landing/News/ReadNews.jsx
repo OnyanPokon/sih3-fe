@@ -1,14 +1,15 @@
 import { useService } from '@/hooks';
 import { NewsService } from '@/services';
 import dateFormatterID from '@/utils/dateFormatterId';
-import { UserOutlined } from '@ant-design/icons';
-import { Avatar, Card, Divider, Skeleton, Typography } from 'antd';
+import { ArrowLeftOutlined, FacebookOutlined, ShareAltOutlined, UserOutlined, WhatsAppOutlined } from '@ant-design/icons';
+import { Avatar, Button, Card, Divider, Skeleton, Typography } from 'antd';
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-const Read = () => {
+const ReadNews = () => {
   const { slug } = useParams();
   const { execute: fetchNews, ...getAllNews } = useService(NewsService.getBySlug);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     fetchNews({ slug });
@@ -36,6 +37,15 @@ const Read = () => {
   return (
     <section className="bg-white pb-16 pt-8 antialiased lg:pb-24 lg:pt-28">
       <div className="mx-auto flex max-w-screen-xl justify-center gap-x-16 px-4">
+        <div className="flex flex-col items-center gap-y-4">
+          <div className="mt-1 flex flex-col items-center gap-y-1">
+            <Button shape="circle" size="large" color="danger" variant="outlined" icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)} />
+            <span className="text-xs text-red-500">Kembali</span>
+          </div>
+          <Button className="mt-6" size="middle" icon={<ShareAltOutlined />} shape="circle" color="primary" variant="outlined" />
+          <Button size="middle" icon={<FacebookOutlined />} shape="circle" color="primary" variant="outlined" />
+          <Button size="middle" icon={<WhatsAppOutlined />} shape="circle" color="green" variant="outlined" />
+        </div>
         <article className="format format-sm sm:format-base lg:format-lg format-blue dark:format-invert w-full max-w-2xl">
           <div className="not-format mb-4 lg:mb-6">
             <address className="mb-6 flex items-center not-italic">
@@ -94,4 +104,4 @@ const Read = () => {
   );
 };
 
-export default Read;
+export default ReadNews;

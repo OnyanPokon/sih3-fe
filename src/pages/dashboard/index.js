@@ -9,3 +9,5 @@ export { default as Map } from './Maps/Maps';
 export { default as Roles } from './Roles/Roles';
 export { default as Permissions } from './Permissions/Permissions';
 export { default as Articles } from './Articles/Articles';
+export { default as CreateArticles } from './Articles/Create';
+export { default as EditArticles } from './Articles/Edit';

@@ -7,8 +7,8 @@ import { RouterProvider } from 'react-router';
 import './index.css';
 import { flattenLandingLinks } from './utils/landingLink';
 import { Notfound } from './pages/result';
-import { CreateNews, EditNews } from './pages/dashboard';
-import { News, ReadNews } from './pages/landing';
+import { CreateArticles, CreateNews, EditArticles, EditNews } from './pages/dashboard';
+import { News, ReadArticle, ReadNews } from './pages/landing';
 
 function App() {
   const { user } = useAuth();
@@ -29,6 +29,7 @@ function App() {
                 element: <Element />
               })),
             { path: '/news/:prefix/:slug', element: <ReadNews /> },
+            { path: '/article/:prefix/:slug', element: <ReadArticle /> },
             { path: '*', element: <Notfound /> }
           ]
         },
@@ -74,7 +75,9 @@ function App() {
               return [];
             }),
             { path: '/dashboard/news/create', element: <CreateNews /> },
-            { path: '/dashboard/news/edit/:slug', element: <EditNews /> }
+            { path: '/dashboard/articles/create', element: <CreateArticles /> },
+            { path: '/dashboard/news/edit/:slug', element: <EditNews /> },
+            { path: '/dashboard/articles/edit/:slug', element: <EditArticles /> }
           ]
         },
         {

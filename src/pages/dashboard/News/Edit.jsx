@@ -19,7 +19,7 @@ const Edit = () => {
   const { success, error } = useNotification();
   const { execute: fetchNews, ...getAllNews } = useService(NewsService.getBySlug);
   const { execute: fetchCategories, ...getAllCategories } = useAbortableService(CategoriesService.getAll, { onUnauthorized });
-  const updateArticle = useService(NewsService.update);
+  const updateNews = useService(NewsService.update);
 
   useEffect(() => {
     fetchNews({ slug, token });
@@ -88,7 +88,7 @@ const Edit = () => {
             className="grid w-full grid-cols-6 gap-2"
             onFinish={async (values) => {
               const file = values.thumbnail?.[0]?.originFileObj || null;
-              const { message, isSuccess } = await updateArticle.execute({ id: initialData.id, data: { ...values, _method: 'PUT' }, token, file });
+              const { message, isSuccess } = await updateNews.execute({ id: initialData.id, data: { ...values, _method: 'PUT' }, token, file });
               if (isSuccess) {
                 success('Berhasil', message);
                 navigate(-1);
@@ -220,7 +220,7 @@ const Edit = () => {
                   <Button type="default" htmlType="reset" size="large">
                     Reset
                   </Button>
-                  <Button size="large" type="primary" htmlType="submit" loading={updateArticle.isLoading}>
+                  <Button size="large" type="primary" htmlType="submit" loading={updateNews.isLoading}>
                     Kirim
                   </Button>
                 </div>
