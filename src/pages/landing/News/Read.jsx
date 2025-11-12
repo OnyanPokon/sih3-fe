@@ -16,6 +16,13 @@ const Read = () => {
 
   const { data: news, loading } = getAllNews;
 
+  React.useEffect(() => {
+    window.scrollTo({
+      top: 10,
+      behavior: 'smooth' // agar animasinya halus
+    });
+  }, []);
+
   // Skeleton UI
   if (loading || !news) {
     return (

@@ -80,7 +80,7 @@ export const dashboardLink = [
     icon: EnvironmentOutlined,
     roles: [Role.ADMIN],
     children: [
-      { path: '/dashboard/maps', label: 'Peta', element: Dashboard.Dashboard, roles: [Role.ADMIN] },
+      { path: '/dashboard/maps', label: 'Peta', element: Dashboard.Map, roles: [Role.ADMIN] },
       { path: '/dashboard/categories', label: 'Kategori', element: Dashboard.Categories, roles: [Role.ADMIN], permissions: [[Action.READ, Model.Categories]] }
     ]
   }

@@ -6,3 +6,4 @@ export { default as Unors } from './Unors';
 export { default as Personils } from './Personils';
 export { default as Thumbnails } from './Thumbnails';
 export { default as News } from './News';
+export { default as Maps } from './Maps';

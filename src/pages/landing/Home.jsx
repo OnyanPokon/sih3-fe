@@ -2,7 +2,7 @@ import { useAuth } from '@/hooks';
 import useAbortableService from '@/hooks/useAbortableService';
 import { NewsService } from '@/services';
 import { CheckCircleFilled, CloudFilled, CompassFilled, EnvironmentFilled } from '@ant-design/icons';
-import { Button, Card, Skeleton, Typography } from 'antd';
+import { Card, Skeleton, Typography } from 'antd';
 import React from 'react';
 import parse from 'html-react-parser';
 import { useNavigate } from 'react-router-dom';
@@ -35,13 +35,16 @@ const Home = () => {
           <div className="flex max-w-2xl flex-col items-center gap-y-4 text-center">
             <Typography.Title style={{ margin: 0, color: '#fff' }}>Sistem Informasi Hidrologi, Hidrometerologi, dan Hidrogeologi Provinsi Gorontalo</Typography.Title>
             <p className="mb-6 max-w-lg text-sm text-white">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,</p>
-            <div className="flex w-full items-center justify-center gap-x-2">
-              <Button size="large" variant="solid" color="primary" shape="round">
-                Berita
-              </Button>
-              <Button size="large" variant="solid" shape="round" onClick={() => navigte('/pemetaan')}>
-                Pemetaan
-              </Button>
+            <div className="flex items-center justify-center gap-x-8">
+              <Card className="[&_.ant-card-body]:!p-2">
+                <img src="/image_asset/logo/prov_gto_logo.png" className="h-12 w-12 object-cover" loading="lazy" />
+              </Card>
+              <Card className="[&_.ant-card-body]:!p-2">
+                <img src="/image_asset/logo/pupr_logo.png" className="h-12 w-12 object-cover" loading="lazy" />
+              </Card>
+              <Card className="[&_.ant-card-body]:!p-2">
+                <img src="/image_asset/logo/bmkg_logo.png" className="h-12 w-12 object-cover" loading="lazy" />
+              </Card>
             </div>
           </div>
         </div>
