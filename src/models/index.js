@@ -7,3 +7,5 @@ export { default as Personils } from './Personils';
 export { default as Thumbnails } from './Thumbnails';
 export { default as News } from './News';
 export { default as Maps } from './Maps';
+export { default as Roles } from './Roles';
+export { default as ManagePermissions } from './ManagePermissions';

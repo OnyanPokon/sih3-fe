@@ -3,7 +3,9 @@ enum Modul {
   UNOR = 'Unor',
   PERSONIL = 'Personil',
   NEWS = 'Berita',
-  MAPS = 'Pemetaan'
+  MAPS = 'Pemetaan',
+  ROLE = 'Role',
+  PERMISSION = 'Permission'
 }
 
 export default Modul;

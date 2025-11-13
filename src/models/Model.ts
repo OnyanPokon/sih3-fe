@@ -1,4 +1,4 @@
-type ModelKeys = 'kategori' | 'personil' | 'profil' | 'unor' | 'artikel' | 'pemetaan' | 'thumbnail' | 'berita';
+type ModelKeys = 'kategori' | 'personil' | 'profil' | 'unor' | 'artikel' | 'pemetaan' | 'thumbnail' | 'berita' | 'role' | 'permissions';
 
 export default abstract class Model {
   static children: { [key in ModelKeys]?: ModelChildren | ModelChildren[] } = {
@@ -9,7 +9,9 @@ export default abstract class Model {
     artikel: undefined,
     pemetaan: undefined,
     thumbnail: undefined,
-    berita: undefined
+    berita: undefined,
+    role: undefined,
+    permissions: undefined
   };
 }
 

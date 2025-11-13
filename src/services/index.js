@@ -5,3 +5,5 @@ export { default as PersonilsService } from './PersonilsService';
 export { default as ThumbnailsService } from './ThumbnailsService';
 export { default as NewsService } from './NewsService';
 export { default as MapsService } from './MapsService';
+export { default as RolesService } from './RolesService';
+export { default as ManagePermissionsService } from './ManagePermissionsService';

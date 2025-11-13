@@ -6,7 +6,7 @@ const Landing = () => {
   const isMapPage = location.pathname === '/pemetaan'; // cek path aktif
   return (
     <div className="flex h-dvh flex-col font-sans">
-      {!isMapPage && <Navbar />}
+      <header className="fixed left-0 right-0 top-0 z-[999] border border-slate-300 bg-white">{!isMapPage && <Navbar />}</header>
 
       <main className="flex-auto bg-white">
         <Outlet />

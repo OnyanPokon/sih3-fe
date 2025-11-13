@@ -71,6 +71,8 @@ export const dashboardLink = [
     icon: UserOutlined,
     roles: [Role.ADMIN],
     children: [
+      { path: '/dashboard/roles', label: 'Role', element: Dashboard.Roles },
+      { path: '/dashboard/permissions', label: 'Permission', element: Dashboard.Permissions },
       { path: '/dashboard/unors', label: 'Unor', element: Dashboard.Unors, roles: [Role.ADMIN] },
       { path: '/dashboard/personils', label: 'Personil', element: Dashboard.Personils, roles: [Role.ADMIN], permissions: [[Action.READ, Model.Personils]] }
     ]

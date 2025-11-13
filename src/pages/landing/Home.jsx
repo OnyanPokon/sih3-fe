@@ -183,7 +183,7 @@ const Home = () => {
                   </Card>
                 ))
               : news?.map((item) => (
-                  <Card onClick={() => navigte(window.location.pathname + 'news/' + item.slug)} key={item.id} hoverable className="w-full max-w-[280px]" cover={<img src={item.thumbnail} className="h-52 object-cover" />}>
+                  <Card onClick={() => navigte(window.location.pathname + 'news/' + item.category_id.slug + '/' + item.slug)} key={item.id} hoverable className="w-full max-w-[280px]" cover={<img src={item.thumbnail} className="h-52 object-cover" />}>
                     <div className="text-gray-500">
                       <Typography.Title level={5}>
                         <span className="news-text">{item.title}</span>
