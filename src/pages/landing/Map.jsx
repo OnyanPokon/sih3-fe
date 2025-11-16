@@ -1,19 +1,68 @@
+import { useService } from '@/hooks';
+import { MapsService } from '@/services';
+import asset from '@/utils/asset';
 import { AimOutlined, MenuOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Collapse, Divider, Typography } from 'antd';
-import { MapContainer, TileLayer } from 'react-leaflet';
+import { Button, Checkbox, Collapse, Skeleton, Typography } from 'antd';
+import React from 'react';
+import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
 
 const Map = () => {
   const navigate = useNavigate();
+  const { execute, ...getAllMaps } = useService(MapsService.getByKategori);
+  const [selectedLayers, setSelectedLayers] = React.useState({});
+
+  const fetchMaps = React.useCallback(() => {
+    execute();
+  }, [execute]);
+
+  React.useEffect(() => {
+    fetchMaps();
+  }, [fetchMaps]);
+
+  const maps = React.useMemo(() => getAllMaps.data ?? [], [getAllMaps.data]);
+
+  const handleToggleLayer = async (pemetaan) => {
+    const id = pemetaan.id;
+
+    console.log(pemetaan);
+
+    if (selectedLayers[id]) {
+      const updated = { ...selectedLayers };
+      delete updated[id];
+      setSelectedLayers(updated);
+      return;
+    }
+
+    try {
+      const fileUrl = asset(pemetaan.file);
+      const res = await fetch(fileUrl);
+      const json = await res.json();
+
+      setSelectedLayers((prev) => ({
+        ...prev,
+        [id]: {
+          id,
+          data: json
+        }
+      }));
+    } catch (e) {
+      console.error('Gagal mengambil GeoJSON:', e);
+    }
+  };
+
   return (
     <section className="flex h-screen w-full">
       <div className="h-full w-full flex-[3]">
         <MapContainer center={[0.5412, 123.0595]} zoom={9} className="h-screen w-full">
           <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          {Object.values(selectedLayers).map((layer) => (
+            <GeoJSON key={layer.id} data={layer.data} />
+          ))}
         </MapContainer>
       </div>
       <div className="flex h-full w-full flex-[1] flex-col gap-y-4 overflow-y-auto bg-white p-8">
-        <div className="mb-8 inline-flex items-center justify-between">
+        <div className="inline-flex items-center justify-between">
           <div className="flex flex-col">
             <Typography.Title level={5} style={{ margin: 0 }}>
               Geospasial
@@ -24,58 +73,76 @@ const Map = () => {
             Ke Beranda
           </Button>
         </div>
-        <div className="flex flex-col gap-y-8">
-          <div className="flex flex-col gap-y-2">
-            <Typography.Title level={5} style={{ margin: 0 }} className="mb-2">
-              Hidrologi
-            </Typography.Title>
-            <Divider dashed style={{ margin: 0 }} />
-            <div className="mt-4 flex flex-col gap-y-4">
-              <Collapse ghost expandIcon={() => ''}>
-                <Collapse.Panel
-                  header={
-                    <div className="inline-flex w-full items-center justify-between">
-                      <div className="inline-flex w-full items-center gap-x-4">
-                        <div className="flex items-center justify-center rounded-md bg-blue-100 p-3">
-                          <AimOutlined className="text-blue-500" />
+        {getAllMaps.isLoading ? (
+          <div className="flex flex-col gap-y-8">
+            <div className="flex flex-col gap-y-2">
+              <div className="mt-4 flex flex-col gap-y-4">
+                <Collapse ghost expandIcon={() => ''}>
+                  <Collapse.Panel
+                    header={
+                      <div className="inline-flex w-full items-center justify-between">
+                        <div className="inline-flex w-full items-center gap-x-4">
+                          <div className="flex items-center justify-center rounded-md bg-blue-100 p-3">
+                            <AimOutlined className="text-blue-500" />
+                          </div>
+                          <Skeleton.Input size="small" active />
                         </div>
-                        Peta Titik
+                        <MenuOutlined />
                       </div>
-                      <MenuOutlined />
+                    }
+                  >
+                    <div className="flex flex-col gap-y-2 px-4">
+                      <Checkbox>
+                        <Skeleton.Input size="small" active />
+                      </Checkbox>
+                      <Checkbox>
+                        <Skeleton.Input size="small" active />
+                      </Checkbox>
+                      <Checkbox>
+                        <Skeleton.Input size="small" active />
+                      </Checkbox>
+                      <Checkbox>
+                        <Skeleton.Input size="small" active />
+                      </Checkbox>
                     </div>
-                  }
-                >
-                  <div className="flex flex-col gap-y-2 px-4">
-                    <Checkbox>Peta Sebaran Wilayah </Checkbox>
-                    <Checkbox>Peta Pemberian Sedekah</Checkbox>
-                    <Checkbox>Peta Pemberian Sedekah</Checkbox>
-                    <Checkbox>Peta Pemberian Sedekah</Checkbox>
-                  </div>
-                </Collapse.Panel>
-                <Collapse.Panel
-                  header={
-                    <div className="inline-flex w-full items-center justify-between">
-                      <div className="inline-flex w-full items-center gap-x-4">
-                        <div className="flex items-center justify-center rounded-md bg-blue-100 p-3">
-                          <AimOutlined className="text-blue-500" />
-                        </div>
-                        Peta Titik
-                      </div>
-                      <MenuOutlined />
-                    </div>
-                  }
-                >
-                  <div className="flex flex-col gap-y-2 px-4">
-                    <Checkbox>Peta Pemberian Sedekah</Checkbox>
-                    <Checkbox>Peta Pemberian Sedekah</Checkbox>
-                    <Checkbox>Peta Pemberian Sedekah</Checkbox>
-                    <Checkbox>Peta Pemberian Sedekah</Checkbox>
-                  </div>
-                </Collapse.Panel>
-              </Collapse>
+                  </Collapse.Panel>
+                </Collapse>
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex flex-col gap-y-8">
+            {maps.map((item) => (
+              <div key={item.id} className="flex flex-col gap-y-2">
+                <div className="mt-4 flex flex-col gap-y-4">
+                  <Collapse ghost expandIcon={() => ''}>
+                    <Collapse.Panel
+                      header={
+                        <div className="inline-flex w-full items-center justify-between">
+                          <div className="inline-flex w-full items-center gap-x-4">
+                            <div className="flex items-center justify-center rounded-md bg-blue-100 p-3">
+                              <AimOutlined className="text-blue-500" />
+                            </div>
+                            {item.nama_kategori}
+                          </div>
+                          <MenuOutlined />
+                        </div>
+                      }
+                    >
+                      <div className="flex flex-col gap-y-2 px-4">
+                        {item.pemetaan.map((pemetaan) => (
+                          <Checkbox key={pemetaan.id} onChange={() => handleToggleLayer(pemetaan)}>
+                            {pemetaan.nama_pemetaan}
+                          </Checkbox>
+                        ))}
+                      </div>
+                    </Collapse.Panel>
+                  </Collapse>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

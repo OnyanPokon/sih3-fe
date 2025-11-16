@@ -121,7 +121,7 @@ export default class News extends Model {
         id: apiData.kategori_id.id,
         category_name: apiData.kategori_id.nama_kategori,
         slug: apiData.kategori_id.slug,
-        logo: apiData.kategori_id.logo,
+        logo: asset(apiData.kategori_id.logo),
         desc: apiData.kategori_id.deskripsi
       },
       apiData.created_at,

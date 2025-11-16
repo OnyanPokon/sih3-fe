@@ -42,19 +42,19 @@ export interface OutgoingApiData {
   tipe: 'upload' | 'manual';
   jenis: 'point' | 'polygon' | 'polyline';
   file: string | null;
-  koordinat: string[] | null;
+  koordinat?: string[];
   status: 'publikasi' | 'privasi';
 }
 
 interface FormValue {
   _method?: 'PATCH';
   category_id: number;
-  name: string;
+  map_name: string;
   description: string;
   type: 'upload' | 'manual';
   geometry: 'point' | 'polygon' | 'polyline';
   file: string | null;
-  coordinates: string[] | null;
+  coordinates?: string[];
   status: 'publikasi' | 'privasi';
 }
 
@@ -139,12 +139,12 @@ export default class Maps extends Model {
     const apiData: OutgoingApiData = {
       ...(maps._method ? { _method: maps._method } : {}),
       kategori_id: maps.category_id,
-      nama_pemetaan: maps.name,
+      nama_pemetaan: maps.map_name,
       deskripsi: maps.description,
       tipe: maps.type,
       jenis: maps.geometry,
       file: maps.file,
-      koordinat: maps.coordinates,
+      ...(maps.coordinates ? { koordinat: maps.coordinates } : {}),
       status: maps.status
     };
 

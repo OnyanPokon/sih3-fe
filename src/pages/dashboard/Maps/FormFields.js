@@ -4,7 +4,7 @@ import Modul from '@/constants/Modul';
 export const formFields = ({ options }) => [
   {
     label: `Nama ${Modul.MAPS}`,
-    name: 'name',
+    name: 'map_name',
     type: InputType.TEXT,
     rules: [
       {
@@ -15,7 +15,7 @@ export const formFields = ({ options }) => [
   },
   {
     label: `Deskripsi ${Modul.MAPS}`,
-    name: 'desc',
+    name: 'description',
     type: InputType.LONGTEXT,
     rules: [
       {
@@ -60,5 +60,23 @@ export const formFields = ({ options }) => [
         value: 'privasi'
       }
     ]
+  },
+  {
+    label: `File ${Modul.MAPS}`,
+    name: 'file',
+    type: InputType.UPLOAD,
+    max: 1,
+    beforeUpload: () => {
+      return false;
+    },
+    getFileList: (data) => {
+      return [
+        {
+          url: data?.file,
+          name: data?.map_name
+        }
+      ];
+    },
+    accept: ['.geojson', '.zip']
   }
 ];

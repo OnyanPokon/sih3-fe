@@ -31,6 +31,12 @@ export default class MapsService {
     };
   }
 
+  static async getByKategori(page = 1, per_page = 999999) {
+    const response = await api.get(`/landing/pemetaan/by-kategori`, { page: page, perPage: per_page });
+    if (!response.data) return response;
+    return { ...response, data: response.data };
+  }
+
   /**
    * @param {Maps} data
    * @param {string} token
@@ -66,8 +72,8 @@ export default class MapsService {
    *  errors?: { [key: string]: string[] };
    * }>}
    */
-  static async update(id, data, token) {
-    return await api.patch(`/pemetaan/${id}`, { body: Maps.toApiData(data), token });
+  static async update(id, data, token, file) {
+    return await api.post(`/pemetaan/${id}`, { body: Maps.toApiData(data), token, file: { file: file } });
   }
 
   /**
