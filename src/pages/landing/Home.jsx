@@ -164,7 +164,7 @@ const Home = () => {
             </div>
           </div>
           <div className="mt-8 grid grid-cols-2 gap-4">
-            <img className="h-full w-full rounded-lg object-cover" src="/image_asset/background/lombongo.jpg" alt="office content 1" />
+            <img className="h-full w-full rounded-lg object-cover hover:scale-110" src="/image_asset/background/lombongo.jpg" alt="office content 1" />
             <img className="mt-4 h-full w-full rounded-lg object-cover lg:mt-10" src="/image_asset/background/sherly.jpeg" alt="office content 2" />
           </div>
         </div>

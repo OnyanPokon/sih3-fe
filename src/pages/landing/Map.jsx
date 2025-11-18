@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useService } from '@/hooks';
 import { MapsService } from '@/services';
-import asset from '@/utils/asset';
+import { BASE_URL } from '@/utils/api';
 import { AimOutlined, MenuOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Collapse, Skeleton, Typography } from 'antd';
 import React from 'react';
@@ -34,8 +34,7 @@ const Map = () => {
     }
 
     try {
-      const fileUrl = asset(pemetaan.file);
-      const res = await fetch(fileUrl);
+      const res = await fetch(BASE_URL + `/landing/pemetaan/${pemetaan.id}/geojson`);
       const json = await res.json();
 
       setSelectedLayers((prev) => ({

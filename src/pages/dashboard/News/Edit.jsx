@@ -70,7 +70,7 @@ const Edit = () => {
 
   return (
     <div>
-      {getAllNews.data === 0 ? (
+      {!getAllNews.data ? (
         <DataLoader type="datatable" />
       ) : (
         <>

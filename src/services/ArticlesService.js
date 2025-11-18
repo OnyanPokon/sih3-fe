@@ -104,41 +104,8 @@ export default class ArticlesService {
     };
   }
 
-  static async update({ id, data, token }) {
-    const apiData = Articles.toApiData(data);
-    const formData = new FormData();
-
-    formData.append('_method', 'PUT');
-    formData.append('kategori_id', String(apiData.kategori_id));
-    formData.append('judul', apiData.judul);
-    formData.append('konten', apiData.konten);
-    formData.append('kuesioner_tambahan', String(apiData.kuesioner_tambahan));
-
-    // === FILES LAMA + BARU ===
-    apiData.thumbnails.forEach((file) => {
-      formData.append('thumbnails[]', file.thumbnail);
-    });
-
-    apiData.dokumen?.forEach((file) => {
-      formData.append('dokumen[]', file.doc);
-    });
-
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/artikel/${id}`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      body: formData
-    });
-
-    const json = await res.json();
-
-    return {
-      code: json.code ?? res.status,
-      status: json.status ?? res.ok,
-      message: json.message ?? 'Unknown error',
-      data: json.data ?? null
-    };
+  static async update(id, data, token) {
+    return await api.post(`/artikel/${id}`, { body: Articles.toApiData(data), token });
   }
 
   /**
@@ -165,5 +132,33 @@ export default class ArticlesService {
    */
   static async deleteBatch(ids, token) {
     return await api.delete(`/artikel/multi-delete/?id=${ids.join(',')}`, { token });
+  }
+
+  static async getAllThumbnails(token, artikel_id) {
+    const response = await api.get(`/thumbnail-artikel`, { token, artikel_id: artikel_id });
+    if (!response.data) return response;
+    return { ...response, data: response.data };
+  }
+
+  static async storeThumbnails(data, token, file) {
+    return await api.post('/thumbnail-artikel', { body: data, token, file: { thumbnail: file } });
+  }
+
+  static async deleteThumbnails(token, id) {
+    return await api.delete(`/thumbnail-artikel/${id}`, { token });
+  }
+
+  static async getAllDocs(token, artikel_id) {
+    const response = await api.get(`/dokumen-artikel`, { token, artikel_id: artikel_id });
+    if (!response.data) return response;
+    return { ...response, data: response.data };
+  }
+
+  static async storeDoc(data, token, file) {
+    return await api.post('/dokumen-artikel', { body: data, token, file: { dokumen: file } });
+  }
+
+  static async deleteDocs(token, id) {
+    return await api.delete(`/dokumen-artikel/${id}`, { token });
   }
 }
