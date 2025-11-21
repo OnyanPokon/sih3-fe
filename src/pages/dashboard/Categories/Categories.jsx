@@ -2,14 +2,13 @@ import { Delete, Edit } from '@/components/dashboard/button';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import useAbortableService from '@/hooks/useAbortableService';
-import { Button, Card, Skeleton, Space, Tooltip } from 'antd';
+import { Card, Skeleton, Space } from 'antd';
 import { Categories as CategoryModel } from '@/models';
 import React from 'react';
 import { Action } from '@/constants';
 import { DataTable, DataTableHeader } from '@/components';
 import { formFields } from './FormFields.js';
 import CategoriesService from '@/services/CategoriesService.js';
-import { DatabaseOutlined } from '@ant-design/icons';
 
 const { DELETE, UPDATE, READ } = Action;
 
@@ -118,9 +117,6 @@ const Categories = () => {
               });
             }}
           />
-          <Tooltip title="Dataset">
-            <Button icon={<DatabaseOutlined />} variant="outlined" color="primary" />
-          </Tooltip>
         </Space>
       )
     });

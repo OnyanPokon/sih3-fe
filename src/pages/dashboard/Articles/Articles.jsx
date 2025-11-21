@@ -2,12 +2,12 @@ import { Delete, Edit } from '@/components/dashboard/button';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import useAbortableService from '@/hooks/useAbortableService';
-import { Card, Skeleton, Space } from 'antd';
+import { Button, Card, Skeleton, Space, Tooltip } from 'antd';
 import { Articles as ArticleModel } from '@/models';
 import React from 'react';
 import { Action } from '@/constants';
 import { DataTable, DataTableHeader } from '@/components';
-import { UserAddOutlined, UserDeleteOutlined } from '@ant-design/icons';
+import { CheckSquareOutlined, UserAddOutlined, UserDeleteOutlined } from '@ant-design/icons';
 import { ArticlesService } from '@/services';
 import { useNavigate } from 'react-router-dom';
 
@@ -53,7 +53,8 @@ const Articles = () => {
       title: 'Dengan Kuisioner',
       dataIndex: 'additional_quiz',
       sorter: (a, b) => a.additional_quiz.length - b.additional_quiz.length,
-      searchable: true
+      searchable: true,
+      render: (record) => (record ? 'Dengan Kuis' : 'Tanpa Kuis')
     }
   ];
 
@@ -89,6 +90,11 @@ const Articles = () => {
               });
             }}
           />
+          {record.additional_quiz === 1 && (
+            <Tooltip title="Kuesioner Artikel">
+              <Button icon={<CheckSquareOutlined />} variant="outlined" color="primary" onClick={() => navigate(window.location.pathname + '/kuesioners/' + record.id)} />
+            </Tooltip>
+          )}
         </Space>
       )
     });

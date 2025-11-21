@@ -15,7 +15,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 /**
  * @type {React.Context<{
- *  login: (email: string, password: string) => Promise<Response>;
+ *  login: (username: string, password: string) => Promise<Response>;
  *  logout: () => void;
  *  forgot: (email: string) => Promise<Response>;
  *  reset: (token: string, password: string) => Promise<Response>;
@@ -46,21 +46,15 @@ export default function AuthProvider({ children }) {
       return;
     }
 
-    const fetchUser = async () => {
-      try {
-        const { code, data } = await getUser(token);
-        if (code === HttpStatusCode.UNAUTHORIZED) {
-          setToken('');
-          return;
-        }
-        setUser(data);
-      } catch (error) {
-        console.error('Error fetching user:', error);
+    (async () => {
+      const { code, data } = await getUser(token);
+      if (code === HttpStatusCode.UNAUTHORIZED) {
         setToken('');
+        return;
       }
-    };
 
-    fetchUser();
+      setUser(data);
+    })();
   }, [getUser, setToken, token]);
 
   const login = useCallback(

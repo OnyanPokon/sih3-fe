@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
-import { useService } from '@/hooks';
+import { useCrudModal, useService } from '@/hooks';
 import { MapsService } from '@/services';
 import { BASE_URL } from '@/utils/api';
-import { AimOutlined, MenuOutlined } from '@ant-design/icons';
+import { AimOutlined, InfoCircleOutlined, MenuOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Collapse, Skeleton, Typography } from 'antd';
 import React from 'react';
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
@@ -10,8 +10,10 @@ import { useNavigate } from 'react-router-dom';
 
 const Map = () => {
   const navigate = useNavigate();
+  const modal = useCrudModal();
   const { execute, ...getAllMaps } = useService(MapsService.getByKategori);
   const [selectedLayers, setSelectedLayers] = React.useState({});
+  const [loadingLayers, setLoadingLayers] = React.useState({});
 
   const fetchMaps = React.useCallback(() => {
     execute();
@@ -26,6 +28,7 @@ const Map = () => {
   const handleToggleLayer = async (pemetaan) => {
     const id = pemetaan.id;
 
+    // Jika layer sudah aktif → hapus
     if (selectedLayers[id]) {
       const updated = { ...selectedLayers };
       delete updated[id];
@@ -33,19 +36,20 @@ const Map = () => {
       return;
     }
 
+    setLoadingLayers((prev) => ({ ...prev, [id]: true }));
+
     try {
-      const res = await fetch(BASE_URL + `/landing/pemetaan/${pemetaan.id}/geojson`);
+      const res = await fetch(BASE_URL + `/landing/pemetaan/${id}/geojson`);
       const json = await res.json();
 
       setSelectedLayers((prev) => ({
         ...prev,
-        [id]: {
-          id,
-          data: json
-        }
+        [id]: { id, data: json }
       }));
     } catch (e) {
       console.error('Gagal mengambil GeoJSON:', e);
+    } finally {
+      setLoadingLayers((prev) => ({ ...prev, [id]: false }));
     }
   };
 
@@ -150,7 +154,37 @@ const Map = () => {
                       <div className="flex flex-col gap-y-2 px-4">
                         {item.pemetaan.map((pemetaan) => (
                           <Checkbox key={pemetaan.id} onChange={() => handleToggleLayer(pemetaan)}>
-                            {pemetaan.nama_pemetaan}
+                            <span className="inline-flex items-center gap-x-2">
+                              {pemetaan.nama_pemetaan}
+
+                              {loadingLayers[pemetaan.id] && <span className="h-3 w-3 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></span>}
+                              <Button
+                                icon={<InfoCircleOutlined />}
+                                type="link"
+                                onClick={() => {
+                                  modal.show.description({
+                                    title: pemetaan.nama_pemetaan,
+                                    data: [
+                                      {
+                                        key: 'name',
+                                        label: `Nama Pemetaan`,
+                                        children: pemetaan.nama_pemetaan
+                                      },
+                                      {
+                                        key: 'name',
+                                        label: `Deskripsi`,
+                                        children: pemetaan.deskripsi
+                                      },
+                                      {
+                                        key: 'jenis',
+                                        label: `Jenis`,
+                                        children: pemetaan.jenis
+                                      }
+                                    ]
+                                  });
+                                }}
+                              />
+                            </span>
                           </Checkbox>
                         ))}
                       </div>

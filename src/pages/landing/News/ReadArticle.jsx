@@ -1,5 +1,6 @@
-import { useService } from '@/hooks';
-import { ArticlesService } from '@/services';
+import { InputType } from '@/constants';
+import { useCrudModal, useNotification, useService } from '@/hooks';
+import { ArticlesService, KuesionersService } from '@/services';
 import dateFormatterID from '@/utils/dateFormatterId';
 import { ArrowLeftOutlined, DownloadOutlined, FacebookOutlined, FileOutlined, ShareAltOutlined, UserOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Carousel, Divider, List, Skeleton, Typography } from 'antd';
@@ -9,7 +10,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 const ReadArticle = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const modal = useCrudModal();
+  const { error } = useNotification();
   const { execute: fetchArticles, ...getAllArticles } = useService(ArticlesService.getBySlug);
+
+  const storeKuesioner = useService(KuesionersService.store);
 
   React.useEffect(() => {
     fetchArticles({ slug });
@@ -33,6 +38,78 @@ const ReadArticle = () => {
       </section>
     );
   }
+
+  const onAdditionalQuizTrue = (doc_url) => {
+    modal.create({
+      title: `Kuisioner Kepuasan`,
+      formFields: [
+        {
+          label: `Nama Lengkap`,
+          name: 'name',
+          type: InputType.TEXT,
+          rules: [
+            {
+              required: true,
+              message: `Nama Lengkap harus diisi`
+            }
+          ]
+        },
+        {
+          label: `Instansi`,
+          name: 'agency',
+          type: InputType.TEXT,
+          rules: [
+            {
+              required: true,
+              message: `Instansi harus diisi`
+            }
+          ]
+        },
+        {
+          label: `Asal`,
+          name: 'provenance',
+          type: InputType.TEXT,
+          rules: [
+            {
+              required: true,
+              message: `Asal harus diisi`
+            }
+          ]
+        },
+        {
+          label: `Deskripsi penilaian`,
+          name: 'desc',
+          type: InputType.LONGTEXT,
+          rules: [
+            {
+              required: true,
+              message: `Deskripsi penilaian harus diisi`
+            }
+          ]
+        },
+        {
+          label: `Nilai/Rating`,
+          name: 'rating',
+          type: InputType.RATING,
+          rules: [
+            {
+              required: true,
+              message: `Nilai/Rating harus diisi`
+            }
+          ]
+        }
+      ],
+      onSubmit: async (values) => {
+        const { message, isSuccess } = await storeKuesioner.execute({ ...values, id_article: articles.id });
+        if (isSuccess) {
+          window.open(doc_url, '_blank');
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
 
   return (
     <section className="bg-white pb-16 pt-8 antialiased lg:pb-24 lg:pt-28">
@@ -80,7 +157,22 @@ const ReadArticle = () => {
               itemLayout="horizontal"
               dataSource={articles.doc}
               renderItem={(item) => (
-                <List.Item actions={[<Button key="download" shape="circle" icon={<DownloadOutlined />} onClick={() => window.open(item.doc, '_blank')} />]}>
+                <List.Item
+                  actions={[
+                    <Button
+                      key="download"
+                      shape="circle"
+                      icon={<DownloadOutlined />}
+                      onClick={() => {
+                        if (articles.additional_quiz) {
+                          onAdditionalQuizTrue(item.doc);
+                        } else {
+                          window.open(item.doc, '_blank');
+                        }
+                      }}
+                    />
+                  ]}
+                >
                   <List.Item.Meta
                     avatar={
                       <div className="flex h-12 w-12 items-center justify-center rounded-md bg-blue-50">

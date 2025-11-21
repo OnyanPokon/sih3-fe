@@ -2,7 +2,7 @@ import { CrudModalType, InputType } from '@/constants';
 import clientAsset from '@/utils/clientAsset';
 import strings from '@/utils/strings';
 import { DeleteOutlined, InboxOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Form, Input, InputNumber, Modal } from 'antd';
+import { Button, DatePicker, Form, Input, InputNumber, Modal, Rate } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Dragger from 'antd/es/upload/Dragger';
 import PropTypes from 'prop-types';
@@ -102,6 +102,9 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
 
       case InputType.SELECT:
         return <Select {...field} />;
+
+      case InputType.RATING:
+        return <Rate />;
 
       case InputType.SELECT_FETCH:
         return <Select showSearch placeholder={`Cari ${field.label}`} filterOption={false} onSearch={(value) => handleSearch(value, field)} options={searchOptions} />;

@@ -6,6 +6,7 @@ enum Modul {
   ARTICLE = 'Article',
   MAPS = 'Pemetaan',
   ROLE = 'Role',
+  KUESIONER = 'Kuesioner',
   PERMISSION = 'Permission'
 }
 

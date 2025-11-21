@@ -11,3 +11,4 @@ export { default as Permissions } from './Permissions/Permissions';
 export { default as Articles } from './Articles/Articles';
 export { default as CreateArticles } from './Articles/Create';
 export { default as EditArticles } from './Articles/Edit';
+export { default as Kuesioners } from './Articles/Kuesioners';

@@ -3,7 +3,7 @@ import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
 import * as Model from '@/models';
-import { DashboardOutlined, EnvironmentOutlined, FileOutlined, UserOutlined } from '@ant-design/icons';
+import { DashboardOutlined, DatabaseOutlined, EnvironmentOutlined, FileOutlined, UserOutlined } from '@ant-design/icons';
 
 export const landingLink = [
   {
@@ -17,7 +17,7 @@ export const landingLink = [
     element: Landing.Map
   },
   {
-    label: 'Berita',
+    label: 'Info H3',
     children: [
       {
         label: 'Hidrologi',
@@ -64,33 +64,44 @@ export const dashboardLink = [
     label: 'Berita',
     icon: FileOutlined,
     path: '/dashboard/news',
-    element: Dashboard.News
+    element: Dashboard.News,
+    roles: [Role.ADMIN, Role.SUPERADMIN],
+    permissions: [[Action.READ, Model.News]]
   },
   {
     label: 'Artikel',
     icon: FileOutlined,
     path: '/dashboard/articles',
-    element: Dashboard.Articles
+    element: Dashboard.Articles,
+    roles: [Role.SUPERADMIN, Role.ADMIN],
+    permissions: [[Action.READ, Model.Articles]]
+  },
+  {
+    label: 'Kategori',
+    icon: DatabaseOutlined,
+    path: '/dashboard/categories',
+    element: Dashboard.Categories,
+    roles: [Role.SUPERADMIN, Role.ADMIN],
+    permissions: [[Action.READ, Model.Categories]]
   },
   {
     label: 'Personil',
     icon: UserOutlined,
-    roles: [Role.ADMIN, Role.SUPERADMIN],
+    roles: [Role.SUPERADMIN],
     children: [
       { path: '/dashboard/roles', label: 'Role', element: Dashboard.Roles, roles: [Role.SUPERADMIN] },
       { path: '/dashboard/permissions', label: 'Permission', element: Dashboard.Permissions, roles: [Role.SUPERADMIN] },
-      { path: '/dashboard/unors', label: 'Unor', element: Dashboard.Unors, roles: [Role.ADMIN] },
-      { path: '/dashboard/personils', label: 'Personil', element: Dashboard.Personils, roles: [Role.ADMIN], permissions: [[Action.READ, Model.Personils]] }
+      { path: '/dashboard/unors', label: 'Unor', element: Dashboard.Unors, roles: [Role.SUPERADMIN], permissions: [[Action.READ, Model.Unors]] },
+      { path: '/dashboard/personils', label: 'Personil', element: Dashboard.Personils, roles: [Role.SUPERADMIN], permissions: [[Action.READ, Model.Personils]] }
     ]
   },
   {
     label: 'Pemetaan',
     icon: EnvironmentOutlined,
-    roles: [Role.ADMIN, Role.SUPERADMIN],
-    children: [
-      { path: '/dashboard/maps', label: 'Peta', element: Dashboard.Map, roles: [Role.ADMIN] },
-      { path: '/dashboard/categories', label: 'Kategori', element: Dashboard.Categories, roles: [Role.ADMIN], permissions: [[Action.READ, Model.Categories]] }
-    ]
+    path: '/dashboard/maps',
+    element: Dashboard.Map,
+    roles: [Role.SUPERADMIN, Role.ADMIN],
+    permissions: [[Action.READ, Model.Maps]]
   }
 ];
 
