@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Personils } from '@/models';
+import { Personils, Profiles } from '@/models';
 import api from '@/utils/api';
 
 export default class PersonilsService {
@@ -31,6 +31,12 @@ export default class PersonilsService {
     };
   }
 
+  static async getById(id, token) {
+    const response = await api.get(`/personil/${id}`, token ? { token } : {});
+    if (!response.data) return response;
+    return { ...response, data: Personils.fromApiData(response.data) };
+  }
+
   /**
    * @param {Personils} data
    * @param {string} token
@@ -58,6 +64,10 @@ export default class PersonilsService {
    */
   static async update(id, data, token) {
     return await api.put(`/personil/${id}`, { body: Personils.toApiData(data), token });
+  }
+
+  static async updateProfile(id, data, token) {
+    return await api.put(`/personil/update-profil/${id}`, { body: Profiles.toApiDataProfileUpdate(data), token });
   }
 
   /**

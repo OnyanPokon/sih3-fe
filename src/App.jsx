@@ -7,7 +7,7 @@ import { RouterProvider } from 'react-router';
 import './index.css';
 import { flattenLandingLinks } from './utils/landingLink';
 import { Notfound } from './pages/result';
-import { CreateArticles, CreateNews, EditArticles, EditNews, Kuesioners } from './pages/dashboard';
+import { CreateArticles, CreateNews, EditArticles, EditNews, Kuesioners, ProfileSettings } from './pages/dashboard';
 import { News, ReadArticle, ReadNews } from './pages/landing';
 
 function App() {
@@ -78,7 +78,8 @@ function App() {
             { path: '/dashboard/articles/create', element: <CreateArticles /> },
             { path: '/dashboard/news/edit/:slug', element: <EditNews /> },
             { path: '/dashboard/articles/edit/:slug', element: <EditArticles /> },
-            { path: '/dashboard/articles/kuesioners/:id_artikel', element: <Kuesioners /> }
+            { path: '/dashboard/articles/kuesioners/:id_artikel', element: <Kuesioners /> },
+            { path: '/dashboard/profile-settings', element: <ProfileSettings /> }
           ]
         },
         {

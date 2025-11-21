@@ -1,4 +1,4 @@
-import { User } from '@/models';
+import { Profiles, User } from '@/models';
 import api from '@/utils/api';
 
 export default class AuthService {
@@ -45,8 +45,8 @@ export default class AuthService {
     return await api.post('/auth/forgot-password', { body: { email } });
   }
 
-  static async reset(token, password, password_confirmation) {
-    return await api.post('/auth/reset-password', { body: { password, password_confirmation, token } });
+  static async reset(token, data) {
+    return await api.post('/auth/reset-password', { body: data, token });
   }
 
   static async changeProfile(token, data) {
@@ -54,6 +54,6 @@ export default class AuthService {
   }
 
   static async changePassword(token, data) {
-    return await api.post('/auth/change-password', { body: data, token });
+    return await api.post('/auth/ganti-password', { body: Profiles.toApiDataPasswordUpdate(data), token });
   }
 }

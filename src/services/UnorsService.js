@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Unors } from '@/models';
+import { Profiles, Unors } from '@/models';
 import api from '@/utils/api';
 
 export default class UnorsService {
@@ -58,6 +58,10 @@ export default class UnorsService {
    */
   static async update(id, data, token, file) {
     return await api.post(`/unor/${id}`, { body: Unors.toApiData(data), token, file: { logo: file } });
+  }
+
+  static async updateUnorProfile(id, data, token) {
+    return await api.put(`/unor/update-profil/${id}`, { body: Profiles.toApiDataUnorUpdate(data), token });
   }
 
   /**

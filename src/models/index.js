@@ -10,3 +10,4 @@ export { default as Roles } from './Roles';
 export { default as ManagePermissions } from './ManagePermissions';
 export { default as Articles } from './Articles';
 export { default as Kuesioners } from './Kuesioners';
+export { default as Profiles } from './Profiles';

@@ -33,8 +33,10 @@ export interface OutgoingApiData {
   email: string;
   nama: string;
   nip: string;
-  unor_id: number;
-  role: string;
+  unor_id?: number;
+  jabatan?: string;
+  no_hp?: string;
+  role?: string;
 }
 
 interface FormValue {
@@ -42,8 +44,10 @@ interface FormValue {
   email: string;
   name: string;
   nip: string;
-  unor_id: number;
-  role: string;
+  unor_id?: number;
+  position?: string;
+  phone_number?: string;
+  role?: string;
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -112,12 +116,13 @@ export default class Personils extends Model {
     if (Array.isArray(personils)) return personils.map((object) => this.toApiData(object)) as ReturnType<T, FormValue, OutgoingApiData>;
     const apiData: OutgoingApiData = {
       ...(personils._method ? { _method: personils._method } : {}),
-
       email: personils.email,
       nama: personils.name,
       nip: personils.nip,
-      unor_id: personils.unor_id,
-      role: personils.role
+      ...(personils.unor_id ? { unor_id: personils.unor_id } : {}),
+      ...(personils.position ? { jabatan: personils.position } : {}),
+      ...(personils.phone_number ? { no_hp: personils.phone_number } : {}),
+      ...(personils.role ? { role: personils.role } : {})
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;
