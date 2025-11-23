@@ -8,3 +8,4 @@ export { default as RolesService } from './RolesService';
 export { default as ManagePermissionsService } from './ManagePermissionsService';
 export { default as ArticlesService } from './ArticlesService';
 export { default as KuesionersService } from './KuesionersService';
+export { default as PosTypesService } from './PosTypesService';

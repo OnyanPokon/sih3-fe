@@ -7,7 +7,8 @@ enum Modul {
   MAPS = 'Pemetaan',
   ROLE = 'Role',
   KUESIONER = 'Kuesioner',
-  PERMISSION = 'Permission'
+  PERMISSION = 'Permission',
+  POSTYPES = 'Jenis Pos'
 }
 
 export default Modul;

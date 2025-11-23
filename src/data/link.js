@@ -3,7 +3,7 @@ import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
 import * as Model from '@/models';
-import { DashboardOutlined, DatabaseOutlined, EnvironmentOutlined, FileOutlined, UserOutlined } from '@ant-design/icons';
+import { BellOutlined, DashboardOutlined, DatabaseOutlined, EnvironmentOutlined, FileOutlined, UserOutlined } from '@ant-design/icons';
 
 export const landingLink = [
   {
@@ -67,6 +67,14 @@ export const dashboardLink = [
     element: Dashboard.News,
     roles: [Role.ADMIN, Role.SUPERADMIN],
     permissions: [[Action.READ, Model.News]]
+  },
+  {
+    label: 'Jenis Pos',
+    icon: BellOutlined,
+    path: '/dashboard/pos_types',
+    element: Dashboard.PosTypes,
+    roles: [Role.ADMIN, Role.SUPERADMIN],
+    permissions: [[Action.READ, Model.PosTypes]]
   },
   {
     label: 'Artikel',
