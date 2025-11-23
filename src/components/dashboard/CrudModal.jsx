@@ -2,14 +2,15 @@ import { CrudModalType, InputType } from '@/constants';
 import clientAsset from '@/utils/clientAsset';
 import strings from '@/utils/strings';
 import { DeleteOutlined, InboxOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Form, Input, InputNumber, Modal, Rate } from 'antd';
+import { Button, DatePicker, Form, Input, InputNumber, Modal, Rate, Select as AntdSelect } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Dragger from 'antd/es/upload/Dragger';
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
 import { MapPicker, Select } from './input';
 import { debounce } from 'lodash';
 import { useAuth } from '@/hooks';
+import * as Icons from '@ant-design/icons';
+import React from 'react';
 
 /**
  * @param {{
@@ -20,10 +21,10 @@ import { useAuth } from '@/hooks';
 export default function CrudModal({ isModalOpen, data: initialData, close, title, formFields, onSubmit, onChange = () => {}, type = CrudModalType.SHOW, isLoading, ...props }) {
   const { token } = useAuth();
   const [form] = Form.useForm();
-  const [realtimeData, setRealtimeData] = useState(initialData);
-  const [searchOptions, setSearchOptions] = useState(null);
+  const [realtimeData, setRealtimeData] = React.useState(initialData);
+  const [searchOptions, setSearchOptions] = React.useState(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isModalOpen) {
       form.resetFields();
       form.setFieldsValue(initialData ?? {});
@@ -31,7 +32,7 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
     }
   }, [isModalOpen, initialData, form]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     onChange(realtimeData);
   }, [onChange, realtimeData]);
 
@@ -60,13 +61,17 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
     }
   }, 500);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isModalOpen) {
       setTimeout(() => {
         window.dispatchEvent(new Event('resize'));
       }, 300);
     }
   }, [isModalOpen]);
+
+  const iconNames = React.useMemo(() => {
+    return Object.keys(Icons).filter((name) => name.endsWith('Filled'));
+  }, []);
 
   /**
    * @param {import('@/types/FormField').default} field
@@ -121,6 +126,23 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
               </div>
             ))}
           </div>
+        );
+
+      case InputType.SELECT_ICON:
+        return (
+          <AntdSelect showSearch placeholder="Pilih ikon" style={{ width: '100%' }} optionLabelProp="label" size="large" dropdownStyle={{ maxHeight: 300, overflowY: 'auto' }} virtual={false}>
+            {iconNames.map((name) => {
+              const IconComp = Icons[name];
+              return (
+                <AntdSelect.Option key={name} value={name} label={name}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <IconComp />
+                    {name}
+                  </div>
+                </AntdSelect.Option>
+              );
+            })}
+          </AntdSelect>
         );
 
       case InputType.MAP_PICKER:

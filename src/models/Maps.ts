@@ -9,6 +9,7 @@ export interface IncomingApiData {
   file: string;
   koordinat: string[] | null;
   status: 'publikasi' | 'privasi';
+  marker: string | null;
   kategori_id: {
     id: number;
     nama_kategori: string;
@@ -44,6 +45,7 @@ export interface OutgoingApiData {
   file: string | null;
   koordinat?: string[];
   status: 'publikasi' | 'privasi';
+  marker?: string;
 }
 
 interface FormValue {
@@ -56,6 +58,7 @@ interface FormValue {
   file: string | null;
   coordinates?: string[];
   status: 'publikasi' | 'privasi';
+  marker?: string;
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -70,6 +73,7 @@ export default class Maps extends Model {
     public file: string,
     public coordinates: string[] | null,
     public status: 'publikasi' | 'privasi',
+    public marker: string | null,
     public category_id: {
       id: number;
       category_name: string;
@@ -108,6 +112,7 @@ export default class Maps extends Model {
       apiData.file,
       apiData.koordinat,
       apiData.status,
+      apiData.marker,
       {
         id: apiData.kategori_id.id,
         category_name: apiData.kategori_id.nama_kategori,
@@ -145,7 +150,8 @@ export default class Maps extends Model {
       jenis: maps.geometry,
       file: maps.file,
       ...(maps.coordinates ? { koordinat: maps.coordinates } : {}),
-      status: maps.status
+      status: maps.status,
+      ...(maps.marker ? { marker: maps.marker } : {})
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;

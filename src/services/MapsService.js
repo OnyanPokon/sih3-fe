@@ -48,14 +48,14 @@ export default class MapsService {
    *  errors?: { [key: string]: string[] };
    * }>}
    */
-  static async store(data, token, file) {
+  static async store(data, token, file, marker) {
     const payload = {
       body: Maps.toApiData(data),
       token
     };
 
     if (file) {
-      payload.file = { file };
+      payload.file = { file: file };
     }
 
     return await api.post('/pemetaan', payload);

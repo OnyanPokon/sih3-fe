@@ -5,7 +5,7 @@ import useAbortableService from '@/hooks/useAbortableService';
 import { Card, Skeleton, Space } from 'antd';
 import { Maps as MapModel } from '@/models';
 import React from 'react';
-import { Action } from '@/constants';
+import { Action, InputType } from '@/constants';
 import { DataTable, DataTableHeader } from '@/components';
 import { EnvironmentOutlined, ExpandAltOutlined, ExpandOutlined } from '@ant-design/icons';
 import MapsService from '@/services/MapsService.js';
@@ -77,15 +77,47 @@ const Maps = () => {
             title={`Edit ${Modul.MAPS}`}
             model={MapModel}
             onClick={() => {
+              let fields = [...formFields({ options: { categories } })];
+              if (record.geometry === 'point') {
+                fields.push({
+                  label: `Marker ${Modul.MAPS}`,
+                  name: 'marker',
+                  type: InputType.SELECT_ICON,
+                  rules: [
+                    {
+                      required: true,
+                      message: `Marker ${Modul.MAPS} harus diisi`
+                    }
+                  ]
+                });
+              }
               modal.edit({
                 title: `Edit ${Modul.MAPS}`,
-                data: { ...record, category_id: record.category_id.id },
-                formFields: formFields({ options: { categories } }),
+                data: {
+                  ...record,
+                  category_id: record.category_id.id
+                },
+                formFields: () => fields,
                 onSubmit: async (values) => {
-                  const { message, isSuccess } = await updateMap.execute(record.id, { ...values, _method: 'PUT', type: 'upload', geometry: record.geometry }, token, values.file.file);
+                  const { message, isSuccess } = await updateMap.execute(
+                    record.id,
+                    {
+                      ...values,
+                      _method: 'PUT',
+                      type: 'upload',
+                      geometry: record.geometry
+                    },
+                    token,
+                    values.file?.file
+                  );
+
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchMaps({ token: token, page: pagination.page, per_page: pagination.per_page });
+                    fetchMaps({
+                      token,
+                      page: pagination.page,
+                      per_page: pagination.per_page
+                    });
                   } else {
                     error('Gagal', message);
                   }
@@ -120,9 +152,23 @@ const Maps = () => {
   }
 
   const modalCreate = (geometry) => {
+    let fields = [...formFields({ options: { categories } })];
+    if (geometry === 'point') {
+      fields.push({
+        label: `Marker ${Modul.MAPS}`,
+        name: 'marker',
+        type: InputType.SELECT_ICON,
+        rules: [
+          {
+            required: true,
+            message: `Marker ${Modul.MAPS} harus diisi`
+          }
+        ]
+      });
+    }
     modal.create({
       title: `Tambah ${Modul.MAPS}`,
-      formFields: formFields({ options: { categories } }),
+      formFields: fields,
       onSubmit: async (values) => {
         const { message, isSuccess } = await storeMap.execute({ ...values, geometry: geometry, type: 'upload' }, token, values.file.file);
         if (isSuccess) {

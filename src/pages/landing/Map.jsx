@@ -7,6 +7,8 @@ import { Button, Checkbox, Collapse, Skeleton, Typography } from 'antd';
 import React from 'react';
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
+import L from 'leaflet';
+import { getLeafletIcon } from '@/utils/getLeafletIcon';
 
 const Map = () => {
   const navigate = useNavigate();
@@ -28,7 +30,8 @@ const Map = () => {
   const handleToggleLayer = async (pemetaan) => {
     const id = pemetaan.id;
 
-    // Jika layer sudah aktif → hapus
+    console.log(pemetaan);
+
     if (selectedLayers[id]) {
       const updated = { ...selectedLayers };
       delete updated[id];
@@ -44,7 +47,7 @@ const Map = () => {
 
       setSelectedLayers((prev) => ({
         ...prev,
-        [id]: { id, data: json }
+        [id]: { id, data: json, marker: pemetaan.marker ?? null }
       }));
     } catch (e) {
       console.error('Gagal mengambil GeoJSON:', e);
@@ -79,7 +82,21 @@ const Map = () => {
         <MapContainer center={[0.5412, 123.0595]} zoom={9} className="h-screen w-full">
           <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           {Object.values(selectedLayers).map((layer) => (
-            <GeoJSON key={layer.id} data={layer.data} style={getFeatureStyle} />
+            <GeoJSON
+              key={layer.id}
+              data={layer.data}
+              style={getFeatureStyle}
+              pointToLayer={(feature, latlng) => {
+                // kalau pemetaan punya marker → pakai icon
+                if (layer.marker) {
+                  const icon = getLeafletIcon(layer.marker);
+                  return L.marker(latlng, { icon });
+                }
+
+                // default marker
+                return L.marker(latlng);
+              }}
+            />
           ))}
         </MapContainer>
       </div>

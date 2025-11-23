@@ -11,7 +11,8 @@ enum InputType {
   DOCUMENT_EDITOR = 'document-editor',
   SELECT_SEARCH = 'select-search',
   MAP_PICKER = 'map-picker',
-  RATING = 'rating'
+  RATING = 'rating',
+  SELECT_ICON = 'select_icon'
 }
 
 export default InputType;
