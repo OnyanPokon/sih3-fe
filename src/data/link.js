@@ -3,7 +3,7 @@ import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
 import * as Model from '@/models';
-import { BellOutlined, DashboardOutlined, DatabaseOutlined, EnvironmentOutlined, FileOutlined, UserOutlined } from '@ant-design/icons';
+import { BellOutlined, DashboardOutlined, DatabaseOutlined, EnvironmentOutlined, EyeOutlined, FileOutlined, UserOutlined } from '@ant-design/icons';
 
 export const landingLink = [
   {
@@ -75,6 +75,14 @@ export const dashboardLink = [
     element: Dashboard.PosTypes,
     roles: [Role.ADMIN, Role.SUPERADMIN],
     permissions: [[Action.READ, Model.PosTypes]]
+  },
+  {
+    label: 'Pos Pengamatan',
+    icon: EyeOutlined,
+    path: '/dashboard/observation_pos',
+    element: Dashboard.ObservationPos,
+    roles: [Role.ADMIN, Role.SUPERADMIN],
+    permissions: [[Action.READ, Model.ObservationPos]]
   },
   {
     label: 'Artikel',

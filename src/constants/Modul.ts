@@ -8,7 +8,8 @@ enum Modul {
   ROLE = 'Role',
   KUESIONER = 'Kuesioner',
   PERMISSION = 'Permission',
-  POSTYPES = 'Jenis Pos'
+  POSTYPES = 'Jenis Pos',
+  OBSERVATION_POS = 'Pos Pengamatan'
 }
 
 export default Modul;

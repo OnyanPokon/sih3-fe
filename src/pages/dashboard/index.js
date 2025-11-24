@@ -14,3 +14,4 @@ export { default as EditArticles } from './Articles/Edit';
 export { default as Kuesioners } from './Articles/Kuesioners';
 export { default as ProfileSettings } from './ProfileSettings/ProfileSettings';
 export { default as PosTypes } from './PosTypes/PosTypes';
+export { default as ObservationPos } from './ObservationPos/ObservationPos';

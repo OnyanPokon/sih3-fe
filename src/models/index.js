@@ -12,3 +12,4 @@ export { default as Articles } from './Articles';
 export { default as Kuesioners } from './Kuesioners';
 export { default as Profiles } from './Profiles';
 export { default as PosTypes } from './PosTypes';
+export { default as ObservationPos } from './ObservationPos';
