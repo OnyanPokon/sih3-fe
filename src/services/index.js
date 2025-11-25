@@ -10,3 +10,4 @@ export { default as ArticlesService } from './ArticlesService';
 export { default as KuesionersService } from './KuesionersService';
 export { default as PosTypesService } from './PosTypesService';
 export { default as ObservationPosService } from './ObservationPosService';
+export { default as TelemetryCoordinatesService } from './TelemetryCoordinatesService';

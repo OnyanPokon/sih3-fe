@@ -32,6 +32,33 @@ export default class CategoriesService {
   }
 
   /**
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   *  data?: Categories[];
+   * }>}
+   * */
+  static getAllInLanding({ ...filters }) {
+    const params = Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== null && v !== undefined && v !== ''));
+    const abortController = new AbortController();
+    const response = api.get('/landing/kategori', {
+      signal: abortController.signal,
+      params
+    });
+
+    return {
+      abortController,
+      response,
+      parser: (apiData) => {
+        const kategori = apiData?.kategori ?? apiData?.data ?? apiData ?? [];
+        return Categories.fromApiData(kategori);
+      }
+    };
+  }
+
+  /**
    * @param {Categories} data
    * @param {string} token
    * @returns {Promise<{

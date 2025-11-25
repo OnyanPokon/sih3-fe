@@ -32,6 +32,33 @@ export default class PosTypesService {
   }
 
   /**
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   *  data?: PosTypes[];
+   * }>}
+   * */
+  static getAllInLanding({ ...filters }) {
+    const params = Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== null && v !== undefined && v !== ''));
+    const abortController = new AbortController();
+    const response = api.get('/landing/jenis-pos', {
+      signal: abortController.signal,
+      params
+    });
+
+    return {
+      abortController,
+      response,
+      parser: (apiData) => {
+        const posTypesService = apiData?.posTypesService ?? apiData?.data ?? apiData ?? [];
+        return PosTypes.fromApiData(posTypesService);
+      }
+    };
+  }
+
+  /**
    * @param {PosTypes} data
    * @param {string} token
    * @returns {Promise<{
@@ -41,8 +68,8 @@ export default class PosTypesService {
    *  errors?: { [key: string]: string[] };
    * }}
    */
-  static async store(data, token, file) {
-    return await api.post('/jenis-pos', { body: PosTypes.toApiData(data), token, file: { thumbnail: file } });
+  static async store(data, token) {
+    return await api.post('/jenis-pos', { body: PosTypes.toApiData(data), token });
   }
 
   /**
@@ -56,8 +83,8 @@ export default class PosTypesService {
    *  errors?: { [key: string]: string[] };
    * }>}
    */
-  static async update(id, data, token, file) {
-    return await api.patch(`/jenis-pos/${id}`, { body: PosTypes.toApiData(data), token, file: { thumbnail: file } });
+  static async update(id, data, token) {
+    return await api.patch(`/jenis-pos/${id}`, { body: PosTypes.toApiData(data), token });
   }
 
   /**

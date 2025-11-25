@@ -34,20 +34,16 @@ export interface IncomingApiData {
 }
 
 export interface OutgoingApiData {
-  _method?: 'PUT';
   kategori_id: number;
   nama: string;
   kewenangan: string;
-  thumbnail: string;
   status: 'publikasi' | 'draft';
 }
 
 interface FormValue {
-  _method?: 'PUT';
   id_kategori: number;
   name: string;
   authority: string;
-  thumbnail: string;
   status: 'publikasi' | 'draft';
 }
 
@@ -127,11 +123,9 @@ export default class PosTypes extends Model {
   public static toApiData<T extends FormValue | FormValue[]>(posTypes: T): ReturnType<T, FormValue, OutgoingApiData> {
     if (Array.isArray(posTypes)) return posTypes.map((object) => this.toApiData(object)) as ReturnType<T, FormValue, OutgoingApiData>;
     const apiData: OutgoingApiData = {
-      ...(posTypes._method ? { _method: posTypes._method } : {}),
       kategori_id: posTypes.id_kategori,
       nama: posTypes.name,
       kewenangan: posTypes.authority,
-      thumbnail: posTypes.thumbnail,
       status: posTypes.status
     };
 

@@ -9,7 +9,8 @@ enum Modul {
   KUESIONER = 'Kuesioner',
   PERMISSION = 'Permission',
   POSTYPES = 'Jenis Pos',
-  OBSERVATION_POS = 'Pos Pengamatan'
+  OBSERVATION_POS = 'Pos Pengamatan',
+  TELEMETRY_COORDINATE = 'Koordinat Telemetri'
 }
 
 export default Modul;

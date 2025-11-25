@@ -32,6 +32,33 @@ export default class ObservationPosService {
   }
 
   /**
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   *  data?: PosTypes[];
+   * }>}
+   * */
+  static getAllInLanding({ ...filters }) {
+    const params = Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== null && v !== undefined && v !== ''));
+    const abortController = new AbortController();
+    const response = api.get('/landing/pos-pengamatan', {
+      signal: abortController.signal,
+      params
+    });
+
+    return {
+      abortController,
+      response,
+      parser: (apiData) => {
+        const observationPos = apiData?.observationPos ?? apiData?.data ?? apiData ?? [];
+        return ObservationPos.fromApiData(observationPos);
+      }
+    };
+  }
+
+  /**
    * @param {ObservationPos} data
    * @param {string} token
    * @returns {Promise<{

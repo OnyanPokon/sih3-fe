@@ -17,6 +17,16 @@ export const landingLink = [
     element: Landing.Map
   },
   {
+    label: 'Pos Pengamatan',
+    key: '/jenis_pos',
+    element: Landing.PosTypes
+  },
+  {
+    label: 'Koordinat Telemetri',
+    key: '/koordinat_telemetri',
+    element: Landing.TelemetryCoordinates
+  },
+  {
     label: 'Info H3',
     children: [
       {

@@ -3,6 +3,8 @@ enum InputType {
   NUMBER = 'number',
   LONGTEXT = 'longtext',
   DATE = 'date',
+  TIME = 'time',
+  COLOR = 'color',
   UPLOAD = 'upload',
   SELECT = 'select',
   SELECT_FETCH = 'select_fetch',

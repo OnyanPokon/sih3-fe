@@ -2,18 +2,21 @@ import { Delete, Edit } from '@/components/dashboard/button';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import useAbortableService from '@/hooks/useAbortableService';
-import { Card, Skeleton, Space } from 'antd';
-import { ObservationPos as ObservationPosModel } from '@/models';
+import { Button, Card, Skeleton, Space, Tooltip } from 'antd';
+import { ObservationPos as ObservationPosModel, TelemetryCoordinates as TelemetryCoordinateModel } from '@/models';
 import React from 'react';
 import { Action, InputType } from '@/constants';
 import { DataTable, DataTableHeader } from '@/components';
 import { formFields } from './FormFields.js';
 import { ObservationPosService, PosTypesService } from '@/services';
+import { DatabaseOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 
 const { DELETE, UPDATE, READ } = Action;
 
 const ObservationPos = () => {
   const modal = useCrudModal();
+  const navigate = useNavigate();
   const { success, error } = useNotification();
   const { token, user, onUnauthorized } = useAuth();
   const { execute, ...getAllObservationPos } = useAbortableService(ObservationPosService.getAll, { onUnauthorized });
@@ -109,6 +112,11 @@ const ObservationPos = () => {
               });
             }}
           />
+          {user.eitherCan([READ, TelemetryCoordinateModel]) && (
+            <Tooltip title="Koordinat Telemetri">
+              <Button variant="outlined" color="primary" icon={<DatabaseOutlined />} onClick={() => navigate('/dashboard/telemetry_coordinate/' + record.id)} />
+            </Tooltip>
+          )}
         </Space>
       )
     });

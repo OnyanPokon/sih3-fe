@@ -7,8 +7,8 @@ import { RouterProvider } from 'react-router';
 import './index.css';
 import { flattenLandingLinks } from './utils/landingLink';
 import { Notfound } from './pages/result';
-import { CreateArticles, CreateNews, EditArticles, EditNews, Kuesioners, ProfileSettings } from './pages/dashboard';
-import { News, ReadArticle, ReadNews } from './pages/landing';
+import { CreateArticles, CreateNews, EditArticles, EditNews, Kuesioners, ProfileSettings, TelemetryCoordinates } from './pages/dashboard';
+import { News, ObservationPos, ReadArticle, ReadNews } from './pages/landing';
 
 function App() {
   const { user } = useAuth();
@@ -30,6 +30,7 @@ function App() {
               })),
             { path: '/news/:prefix/:slug', element: <ReadNews /> },
             { path: '/article/:prefix/:slug', element: <ReadArticle /> },
+            { path: '/pos_pengamatan/:pos_type_id', element: <ObservationPos /> },
             { path: '*', element: <Notfound /> }
           ]
         },
@@ -79,7 +80,8 @@ function App() {
             { path: '/dashboard/news/edit/:slug', element: <EditNews /> },
             { path: '/dashboard/articles/edit/:slug', element: <EditArticles /> },
             { path: '/dashboard/articles/kuesioners/:id_artikel', element: <Kuesioners /> },
-            { path: '/dashboard/profile-settings', element: <ProfileSettings /> }
+            { path: '/dashboard/profile-settings', element: <ProfileSettings /> },
+            { path: '/dashboard/telemetry_coordinate/:pos_pengamatan_id', element: <TelemetryCoordinates /> }
           ]
         },
         {

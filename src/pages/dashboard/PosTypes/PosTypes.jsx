@@ -76,7 +76,7 @@ const PosTypes = () => {
                 formFields: formFields({ options: { categories: categories } }),
                 onSubmit: async (values) => {
                   console.log(values);
-                  const { message, isSuccess } = await updatePosType.execute(record.id, { ...values, _method: 'PUT' }, token, values.thumbnail.file);
+                  const { message, isSuccess } = await updatePosType.execute(record.id, values, token);
                   if (isSuccess) {
                     success('Berhasil', message);
                     fetchCategories({ token: token, page: pagination.page, per_page: pagination.per_page });

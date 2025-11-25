@@ -59,23 +59,5 @@ export const formFields = ({ options }) => [
         value: 'draft'
       }
     ]
-  },
-  {
-    label: `Thumbnail ${Modul.MAPS}`,
-    name: 'thumbnail',
-    type: InputType.UPLOAD,
-    max: 1,
-    beforeUpload: () => {
-      return false;
-    },
-    getFileList: (data) => {
-      return [
-        {
-          url: data?.thumbnail,
-          name: data?.name
-        }
-      ];
-    },
-    accept: ['.jpg', '.png', '.jpeg']
   }
 ];
