@@ -31,7 +31,7 @@ const Roles = () => {
 
   React.useEffect(() => {
     fetchRoles();
-    fetchPermissions({ token: token });
+    fetchPermissions({ token: token, page: 1, per_page: 9999 });
   }, [fetchPermissions, fetchRoles, token]);
 
   const [selectedData, setSelectedData] = React.useState([]);

@@ -43,7 +43,7 @@ export default class NewsService {
   static getAllInLanding({ ...filters }) {
     const params = Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== null && v !== undefined && v !== ''));
     const abortController = new AbortController();
-    const response = api.get('/landing//berita', {
+    const response = api.get('/landing/berita', {
       signal: abortController.signal,
       params
     });
