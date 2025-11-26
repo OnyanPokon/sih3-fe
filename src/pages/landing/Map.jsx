@@ -56,6 +56,28 @@ const Map = () => {
     }
   };
 
+  const onEachFeature = (feature, layer) => {
+    if (feature.properties) {
+      layer.on('click', () => {
+        const dataForModal = Object.entries(feature.properties).map(([key, value]) => ({
+          key: key,
+          label: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+          children: String(value)
+        }));
+
+        modal.show.description({
+          title: feature.properties.name || feature.properties.nama || 'Detail Fitur GeoJSON',
+          data: dataForModal,
+        });
+      });
+      
+      // Opsional: Tambahkan tooltip sederhana untuk identifikasi fitur saat di-hover
+      if (feature.properties.name || feature.properties.nama) {
+           layer.bindTooltip(feature.properties.name || feature.properties.nama);
+      }
+    }
+  };
+
   const getFeatureStyle = (feature) => {
     const props = feature.properties;
     if (!props.fill) {
@@ -96,6 +118,7 @@ const Map = () => {
                 // default marker
                 return L.marker(latlng);
               }}
+              onEachFeature={onEachFeature}
             />
           ))}
         </MapContainer>
