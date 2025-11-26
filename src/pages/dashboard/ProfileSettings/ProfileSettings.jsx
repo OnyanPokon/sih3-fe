@@ -45,8 +45,6 @@ const ProfileSettings = () => {
     }
   }, [updateProfileForm, personil, updateUnorForm]);
 
-  console.log(personil);
-
   const onSubmitChangeProfile = async (values) => {
     const { message, isSuccess } = await updatePersonil.execute(user.id, values, token);
     if (isSuccess) {

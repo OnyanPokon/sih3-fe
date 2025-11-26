@@ -37,7 +37,6 @@ const PosTypes = () => {
     if (isSuccess) {
       success('Berhasil', message);
       setTelemetryCoordinates(data);
-      console.log(data);
     } else {
       error('Gagal', message);
     }
@@ -115,11 +114,11 @@ const PosTypes = () => {
             <div className="flex flex-wrap items-start justify-center gap-4 pt-12">
               <Card className="w-full">
                 <Form
+                  name="form"
                   form={form}
                   onFinish={handleSubmitForm}
                   layout="vertical"
                   onValuesChange={(changedValues) => {
-                    // Jika kategori berubah → reset semua dependent
                     if (changedValues.category_id) {
                       const categoryId = changedValues.category_id;
 
@@ -131,7 +130,6 @@ const PosTypes = () => {
                       fetchPosTypes({ kategori_id: categoryId });
                     }
 
-                    // Jika pos_type berubah → reset observation + fetch observation
                     if (changedValues.pos_type_id) {
                       const posTypeId = changedValues.pos_type_id;
 
@@ -167,14 +165,16 @@ const PosTypes = () => {
                     <Form.Item className="col-span-1 m-0 w-full" name="tanggal_mulai">
                       <DatePicker size="large" placeholder="Pilih Tanggal Mulai" className="w-full" />
                     </Form.Item>
-                    <Form.Item className="col-span-1 m-0 w-full" name="tanggal_berakhir">
+                    <Form.Item className="col-span-1 m-0 w-full" name="tanggal_akhir">
                       <DatePicker size="large" placeholder="Pilih Tanggal Berakhir" className="w-full" />
                     </Form.Item>
 
-                    <Form.Item className="col-span-5 m-0 w-full">
-                      <Button disabled={!form.getFieldValue('observation_pos_id')} className="w-full" size="large" variant="solid" color="primary" icon={<SearchOutlined />} htmlType="submit" loading={browseTelemetryCoordinates.isLoading}>
-                        Tampilkan
-                      </Button>
+                    <Form.Item className="col-span-5 m-0 w-full" shouldUpdate>
+                      {() => (
+                        <Button disabled={!form.getFieldValue('observation_pos_id')} className="w-full" size="large" variant="solid" color="primary" icon={<SearchOutlined />} htmlType="submit" loading={browseTelemetryCoordinates.isLoading}>
+                          Tampilkan
+                        </Button>
+                      )}
                     </Form.Item>
                   </div>
                 </Form>

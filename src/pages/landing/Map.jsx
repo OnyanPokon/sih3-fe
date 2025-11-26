@@ -30,8 +30,6 @@ const Map = () => {
   const handleToggleLayer = async (pemetaan) => {
     const id = pemetaan.id;
 
-    console.log(pemetaan);
-
     if (selectedLayers[id]) {
       const updated = { ...selectedLayers };
       delete updated[id];
@@ -61,19 +59,19 @@ const Map = () => {
       layer.on('click', () => {
         const dataForModal = Object.entries(feature.properties).map(([key, value]) => ({
           key: key,
-          label: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+          label: key.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
           children: String(value)
         }));
 
         modal.show.description({
           title: feature.properties.name || feature.properties.nama || 'Detail Fitur GeoJSON',
-          data: dataForModal,
+          data: dataForModal
         });
       });
-      
+
       // Opsional: Tambahkan tooltip sederhana untuk identifikasi fitur saat di-hover
       if (feature.properties.name || feature.properties.nama) {
-           layer.bindTooltip(feature.properties.name || feature.properties.nama);
+        layer.bindTooltip(feature.properties.name || feature.properties.nama);
       }
     }
   };

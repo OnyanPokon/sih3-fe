@@ -75,7 +75,6 @@ const PosTypes = () => {
                 data: { ...record, id_kategori: record.id_kategori.id },
                 formFields: formFields({ options: { categories: categories } }),
                 onSubmit: async (values) => {
-                  console.log(values);
                   const { message, isSuccess } = await updatePosType.execute(record.id, values, token);
                   if (isSuccess) {
                     success('Berhasil', message);

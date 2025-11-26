@@ -2,7 +2,7 @@ import { Delete, Edit } from '@/components/dashboard/button';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import useAbortableService from '@/hooks/useAbortableService';
-import { Card, ColorPicker, Rate, Skeleton, Space } from 'antd';
+import { Card, ColorPicker, Skeleton, Space } from 'antd';
 import { TelemetryCoordinates as TelemetryCoordinateModel } from '@/models';
 import React from 'react';
 import { Action, InputType } from '@/constants';
@@ -71,8 +71,7 @@ const TelemetryCoordinates = () => {
       title: 'Nilai',
       dataIndex: 'rating',
       sorter: (a, b) => a.rating.length - b.rating.length,
-      searchable: true,
-      render: (record) => <Rate value={record} disabled />
+      searchable: true
     }
   ];
 
@@ -143,8 +142,6 @@ const TelemetryCoordinates = () => {
       title: `Tambah ${Modul.TELEMETRY_COORDINATE}`,
       formFields: formFields(),
       onSubmit: async (values) => {
-        console.log(values);
-
         const payload = {
           observation_pos_id: params.pos_pengamatan_id,
           date: values.date?.format('YYYY-MM-DD'),
@@ -152,8 +149,6 @@ const TelemetryCoordinates = () => {
           color: values.color?.toHexString(),
           rating: values.rating
         };
-
-        console.log('payload:', payload);
 
         const { message, isSuccess } = await storeTelemetryCoordinate.execute(payload, token);
 
@@ -210,7 +205,7 @@ const TelemetryCoordinates = () => {
       <Skeleton loading={getAllTelemetryCoordinates.isLoading}>
         <DataTableHeader
           model={TelemetryCoordinateModel}
-          onImport={{ templateFile: 'pos_pengamatan.xlsx', importHandler: onImport }}
+          onImport={{ templateFile: 'koordinat_telemetri.xlsx', importHandler: onImport }}
           modul={Modul.TELEMETRY_COORDINATE}
           onStore={onCreate}
           selectedData={selectedData}

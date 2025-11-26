@@ -41,7 +41,7 @@ export const formFields = () => [
   {
     label: `Rating ${Modul.OBSERVATION_POS}`,
     name: 'rating',
-    type: InputType.RATING,
+    type: InputType.NUMBER,
     rules: [
       {
         required: true,
