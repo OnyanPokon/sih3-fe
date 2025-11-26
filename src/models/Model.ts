@@ -1,4 +1,4 @@
-type ModelKeys = 'kategori' | 'personil' | 'profil' | 'unor' | 'artikel' | 'pemetaan' | 'thumbnail' | 'berita' | 'role' | 'permissions' | 'kuesioner' | 'jenis_pos' | 'pos_pengamatan' | 'koordinat_telemetri';
+type ModelKeys = 'kategori' | 'personil' | 'profil' | 'unor' | 'artikel' | 'pemetaan' | 'thumbnail' | 'berita' | 'role' | 'permissions' | 'kuesioner' | 'jenis_pos' | 'pos_pengamatan' | 'koordinat_telemetri' | 'produk_hukum';
 
 export default abstract class Model {
   static children: { [key in ModelKeys]?: ModelChildren | ModelChildren[] } = {
@@ -15,7 +15,8 @@ export default abstract class Model {
     kuesioner: undefined,
     jenis_pos: undefined,
     pos_pengamatan: undefined,
-    koordinat_telemetri: undefined
+    koordinat_telemetri: undefined,
+    produk_hukum: undefined
   };
 }
 

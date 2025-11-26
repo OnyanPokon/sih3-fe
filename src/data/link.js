@@ -27,6 +27,11 @@ export const landingLink = [
     element: Landing.TelemetryCoordinates
   },
   {
+    label: 'Produk Hukum',
+    key: '/legal_products',
+    element: Landing.LegalProducts
+  },
+  {
     label: 'Info H3',
     children: [
       {
@@ -77,6 +82,14 @@ export const dashboardLink = [
     element: Dashboard.News,
     roles: [Role.ADMIN, Role.SUPERADMIN],
     permissions: [[Action.READ, Model.News]]
+  },
+  {
+    label: 'Produk Hukum',
+    icon: FileOutlined,
+    path: '/dashboard/legal_products',
+    element: Dashboard.LegalProducts,
+    roles: [Role.ADMIN, Role.SUPERADMIN],
+    permissions: [[Action.READ, Model.LegalProducts]]
   },
   {
     label: 'Jenis Pos',

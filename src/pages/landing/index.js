@@ -6,3 +6,4 @@ export { default as ReadArticle } from './News/ReadArticle';
 export { default as PosTypes } from './ObservationPos/Postypes';
 export { default as ObservationPos } from './ObservationPos/ObservationPos';
 export { default as TelemetryCoordinates } from './ObservationPos/TelemetryCoordinates';
+export { default as LegalProducts } from './LegalProducts/LegalProducts';
