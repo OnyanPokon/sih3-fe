@@ -2,10 +2,11 @@ import { useAuth, useNotification } from '@/hooks';
 import { EyeInvisibleOutlined, EyeOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Card, Form, Input } from 'antd';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const { login, isLoading } = useAuth();
+  const navigate = useNavigate();
   const { error } = useNotification();
   const [passwordVisible, setPasswordVisible] = useState(false);
 
@@ -62,8 +63,11 @@ const Login = () => {
           </Form.Item>
         </Form.Item>
         <Form.Item>
-          <Button block loading={isLoading} type="primary" htmlType="submit" size="large">
+          <Button block loading={isLoading} type="primary" htmlType="submit" size="large" className="mb-2">
             Masuk
+          </Button>
+          <Button block size="large" icon={<img src="/image_asset/logo/sso_symbol_colored_logo.png" className="h-[18px] w-4" />} onClick={() => navigate('/auth/sso_login')}>
+            Masuk Dengan SSO
           </Button>
         </Form.Item>
         <Form.Item>

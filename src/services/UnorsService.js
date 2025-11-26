@@ -32,6 +32,33 @@ export default class UnorsService {
   }
 
   /**
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   *  data?: Unors[];
+   * }>}
+   * */
+  static getAllInLanding({ ...filters }) {
+    const params = Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== null && v !== undefined && v !== ''));
+    const abortController = new AbortController();
+    const response = api.get('/landing/unor', {
+      signal: abortController.signal,
+      params
+    });
+
+    return {
+      abortController,
+      response,
+      parser: (apiData) => {
+        const unor = apiData?.unor ?? apiData?.data ?? apiData ?? [];
+        return Unors.fromApiData(unor);
+      }
+    };
+  }
+
+  /**
    * @param {Unors} data
    * @param {string} token
    * @returns {Promise<{

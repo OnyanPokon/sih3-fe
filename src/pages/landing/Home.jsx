@@ -1,6 +1,6 @@
 import { useAuth } from '@/hooks';
 import useAbortableService from '@/hooks/useAbortableService';
-import { NewsService } from '@/services';
+import { NewsService, UnorsService } from '@/services';
 import { CheckCircleFilled, CloudFilled, CompassFilled, EnvironmentFilled } from '@ant-design/icons';
 import { Card, Skeleton, Typography } from 'antd';
 import React from 'react';
@@ -12,12 +12,15 @@ const Home = () => {
   const navigte = useNavigate();
   const { onUnauthorized } = useAuth();
   const { execute: fetchNews, ...getAllNews } = useAbortableService(NewsService.getAllInLanding, { onUnauthorized });
+  const { execute: fetchUnors, ...getAllUnors } = useAbortableService(UnorsService.getAllInLanding, { onUnauthorized });
 
   React.useEffect(() => {
     fetchNews({ page: 1, per_page: 4 });
-  }, [fetchNews]);
+    fetchUnors({ page: 1, per_page: 999 });
+  }, [fetchNews, fetchUnors]);
 
   const news = getAllNews.data ?? [];
+  const unors = getAllUnors.data ?? [];
 
   return (
     <>
@@ -36,15 +39,11 @@ const Home = () => {
             <Typography.Title style={{ margin: 0, color: '#fff' }}>Sistem Informasi Hidrologi, Hidrometerologi, dan Hidrogeologi Provinsi Gorontalo</Typography.Title>
             <p className="mb-6 max-w-lg text-sm text-white">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,</p>
             <div className="flex items-center justify-center gap-x-8">
-              <Card className="[&_.ant-card-body]:!p-2">
-                <img src="/image_asset/logo/prov_gto_logo.png" className="h-12 w-12 object-cover" loading="lazy" />
-              </Card>
-              <Card className="[&_.ant-card-body]:!p-2">
-                <img src="/image_asset/logo/pupr_logo.png" className="h-12 w-12 object-cover" loading="lazy" />
-              </Card>
-              <Card className="[&_.ant-card-body]:!p-2">
-                <img src="/image_asset/logo/bmkg_logo.png" className="h-12 w-12 object-cover" loading="lazy" />
-              </Card>
+              {unors.map((item) => (
+                <Card key={item.id} className="[&_.ant-card-body]:!p-2">
+                  <img src={item.logo} className="h-12 w-12 object-cover" loading="lazy" />
+                </Card>
+              ))}
             </div>
           </div>
         </div>

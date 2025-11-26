@@ -28,6 +28,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 export default function AuthProvider({ children }) {
   const { execute: loginService, isLoading: loginIsLoading } = useService(AuthService.login);
+  const { execute: ssoLoginService, isLoading: ssoLoginLoading } = useService(AuthService.ssoLogin);
   const { execute: logoutService, isLoading: logoutIsLoading } = useService(AuthService.logout);
   const { execute: forgotService, isLoading: forgotIsLoading } = useService(AuthService.forgot);
   const { execute: resetService, isLoading: resetIsLoading } = useService(AuthService.reset);
@@ -74,6 +75,25 @@ export default function AuthProvider({ children }) {
       };
     },
     [loginService, setToken]
+  );
+
+  const ssoLogin = useCallback(
+    /**
+     * @param {string} username
+     * @param {string} password
+     * @returns {Promise<Response>}
+     */
+    async (username, password) => {
+      const { message, isSuccess, data: token } = await ssoLoginService(username, password);
+      if (!isSuccess) return { message, isSuccess };
+
+      setToken(token);
+      return {
+        isSuccess,
+        message: 'Login berhasil'
+      };
+    },
+    [setToken, ssoLoginService]
   );
 
   const forgot = useCallback(
@@ -123,12 +143,13 @@ export default function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         login,
+        ssoLogin,
         logout,
         forgot,
         reset,
         token,
         user,
-        isLoading: loginIsLoading || logoutIsLoading || getUserIsLoading || forgotIsLoading || resetIsLoading,
+        isLoading: loginIsLoading || logoutIsLoading || getUserIsLoading || forgotIsLoading || resetIsLoading || ssoLoginLoading,
         onUnauthorized
       }}
     >

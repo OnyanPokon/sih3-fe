@@ -135,5 +135,9 @@ export const authLink = [
   {
     path: '/auth/login',
     element: Auth.Login
+  },
+  {
+    path: '/auth/sso_login',
+    element: Auth.SsoLogin
   }
 ];

@@ -22,6 +22,15 @@ export default class AuthService {
     };
   }
 
+  static async ssoLogin(email, password) {
+    const response = await api.post('/auth/login/sso', { body: { email, password } });
+    if (!response.data) return response;
+    return {
+      ...response,
+      data: response.data.token
+    };
+  }
+
   /**
    * @param {string} token
    * @returns {Promise<Promise<{

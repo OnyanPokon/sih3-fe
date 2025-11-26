@@ -2,6 +2,7 @@ import { createContext } from 'react';
 
 const AuthContext = createContext({
   login: () => Promise.resolve({ isSuccess: false, message: '' }),
+  ssoLogin: () => Promise.resolve({ isSuccess: false, message: '' }),
   logout: () => undefined,
   forgot: () => Promise.resolve({ isSuccess: false, message: '' }),
   reset: () => Promise.resolve({ isSuccess: false, message: '' }),
