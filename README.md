@@ -1,8 +1,20 @@
-# React + Vite
+# 💻 SIH3 Frontend – Sistem Informasi H3 FrontEnd
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## ⚙️ Cara Menjalankan Project Frontend
 
-Currently, two official plugins are available:
+Ikuti langkah-langkah di bawah ini untuk menjalankan aplikasi frontend secara lokal:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. **Clone repository ini** ke direktori lokal
+2. Ubah nama file .env.example menjadi .env:
+3. Install semua dependencies frontend:
+   
+   ```bash
+   npm install
+4. Jalankan aplikasi secara lokal:
+   
+   ```bash
+    npm run dev
+5. Aplikasi akan berjalan di:
+   
+   ```bash
+   http://localhost:5173

@@ -2,16 +2,15 @@ import { Delete, Edit } from '@/components/dashboard/button';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import useAbortableService from '@/hooks/useAbortableService';
-import { Button, Card, Skeleton, Space, Tooltip } from 'antd';
+import { Card, Skeleton, Space } from 'antd';
 import { News as NewsModel } from '@/models';
 import React from 'react';
 import { Action } from '@/constants';
 import { DataTable, DataTableHeader } from '@/components';
-import { DatabaseOutlined } from '@ant-design/icons';
 import NewsService from '@/services/NewsService.js';
 import { useNavigate } from 'react-router-dom';
 
-const { DELETE, UPDATE, READ } = Action;
+const { DELETE, UPDATE } = Action;
 
 const News = () => {
   const modal = useCrudModal();
@@ -57,7 +56,7 @@ const News = () => {
     }
   ];
 
-  if (user && user.eitherCan([UPDATE, NewsModel], [DELETE, NewsModel], [READ, NewsModel])) {
+  if (user && user.eitherCan([UPDATE, NewsModel], [DELETE, NewsModel])) {
     column.push({
       title: 'Aksi',
       render: (_, record) => (
@@ -89,9 +88,6 @@ const News = () => {
               });
             }}
           />
-          <Tooltip title="Dataset">
-            <Button icon={<DatabaseOutlined />} variant="outlined" color="primary" />
-          </Tooltip>
         </Space>
       )
     });

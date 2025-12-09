@@ -11,7 +11,7 @@ import { CheckSquareOutlined, UserAddOutlined, UserDeleteOutlined } from '@ant-d
 import { ArticlesService } from '@/services';
 import { useNavigate } from 'react-router-dom';
 
-const { DELETE, UPDATE, READ } = Action;
+const { DELETE, UPDATE } = Action;
 
 const Articles = () => {
   const modal = useCrudModal();
@@ -58,7 +58,7 @@ const Articles = () => {
     }
   ];
 
-  if (user && user.eitherCan([UPDATE, ArticleModel], [DELETE, ArticleModel], [READ, ArticleModel])) {
+  if (user && user.eitherCan([UPDATE, ArticleModel], [DELETE, ArticleModel])) {
     column.push({
       title: 'Aksi',
       render: (_, record) => (

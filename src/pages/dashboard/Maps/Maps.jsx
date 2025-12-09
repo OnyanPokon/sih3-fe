@@ -12,7 +12,7 @@ import MapsService from '@/services/MapsService.js';
 import { formFields } from './FormFields';
 import { CategoriesService } from '@/services';
 
-const { DELETE, UPDATE, READ } = Action;
+const { DELETE, UPDATE } = Action;
 
 const Maps = () => {
   const modal = useCrudModal();
@@ -61,14 +61,14 @@ const Maps = () => {
       searchable: true
     },
     {
-      title: 'Nama',
+      title: 'Status',
       dataIndex: 'status',
       sorter: (a, b) => a.status.length - b.status.length,
       searchable: true
     }
   ];
 
-  if (user && user.eitherCan([UPDATE, MapModel], [DELETE, MapModel], [READ, MapModel])) {
+  if (user && user.eitherCan([UPDATE, MapModel], [DELETE, MapModel])) {
     column.push({
       title: 'Aksi',
       render: (_, record) => (
