@@ -9,6 +9,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { error } = useNotification();
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [isLoadingSSO, setIsLoadingSSO] = useState(false);
 
   /**
    * @param {{
@@ -21,6 +22,26 @@ const Login = () => {
     const { isSuccess, message } = await login(values.email, values.password);
     if (!isSuccess) return error('Gagal', message);
   };
+
+  const handleLoginSSO = async () => {
+    try {
+      setIsLoadingSSO(true);
+      const params = new URLSearchParams({
+        client_id: import.meta.env.VITE_CLIENT_ID_SSO,
+        redirect_uri: import.meta.env.VITE_REDIRECT_URI,
+        response_type: "code",
+        scope: "",
+        state: "xyz"
+      });
+      const ssoUrl = import.meta.env.VITE_SSO_URL;
+      window.location.href = `${ssoUrl}oauth/authorize?${params.toString()}`;
+
+    } catch (err) {
+      setError(err?.response?.data?.message || err.message || "Gagal melakukan login.");
+    } finally {
+      setIsLoadingSSO(false);
+    }
+  }
 
   return (
     <Card className="w-full max-w-md px-4">
@@ -66,7 +87,7 @@ const Login = () => {
           <Button block loading={isLoading} type="primary" htmlType="submit" size="large" className="mb-2">
             Masuk
           </Button>
-          <Button block size="large" icon={<img src="/image_asset/logo/sso_symbol_colored_logo.png" className="h-[18px] w-4" />} onClick={() => navigate('/auth/sso_login')}>
+          <Button block size="large" icon={<img src="/image_asset/logo/sso_symbol_colored_logo.png" className="h-[18px] w-4" />} onClick={handleLoginSSO} loading={isLoadingSSO}>
             Masuk Dengan SSO
           </Button>
         </Form.Item>

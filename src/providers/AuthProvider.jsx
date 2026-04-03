@@ -16,6 +16,8 @@ import { useCallback, useEffect, useState } from 'react';
 /**
  * @type {React.Context<{
  *  login: (username: string, password: string) => Promise<Response>;
+ *  ssoLogin: (username: string, password: string) => Promise<Response>;
+ *  ssoCallback: (code: string) => Promise<Response>;
  *  logout: () => void;
  *  forgot: (email: string) => Promise<Response>;
  *  reset: (token: string, password: string) => Promise<Response>;
@@ -29,6 +31,7 @@ import { useCallback, useEffect, useState } from 'react';
 export default function AuthProvider({ children }) {
   const { execute: loginService, isLoading: loginIsLoading } = useService(AuthService.login);
   const { execute: ssoLoginService, isLoading: ssoLoginLoading } = useService(AuthService.ssoLogin);
+  const { execute: ssoCallbackService, isLoading: ssoCallbackLoading } = useService(AuthService.callback);
   const { execute: logoutService, isLoading: logoutIsLoading } = useService(AuthService.logout);
   const { execute: forgotService, isLoading: forgotIsLoading } = useService(AuthService.forgot);
   const { execute: resetService, isLoading: resetIsLoading } = useService(AuthService.reset);
@@ -96,6 +99,24 @@ export default function AuthProvider({ children }) {
     [setToken, ssoLoginService]
   );
 
+  const ssoCallback = useCallback(
+    /**
+     * @param {string} code
+     * @returns {Promise<Response>}
+     */
+    async (code) => {
+      const { message, isSuccess, data: token } = await ssoCallbackService(code);
+      if (!isSuccess) return { message, isSuccess };
+
+      setToken(token);
+      return {
+        isSuccess,
+        message: 'Login berhasil'
+      };
+    },
+    [setToken, ssoCallbackService]
+  );
+
   const forgot = useCallback(
     /**
      * @param {string} email
@@ -144,12 +165,13 @@ export default function AuthProvider({ children }) {
       value={{
         login,
         ssoLogin,
+        ssoCallback,
         logout,
         forgot,
         reset,
         token,
         user,
-        isLoading: loginIsLoading || logoutIsLoading || getUserIsLoading || forgotIsLoading || resetIsLoading || ssoLoginLoading,
+        isLoading: loginIsLoading || logoutIsLoading || getUserIsLoading || forgotIsLoading || resetIsLoading || ssoLoginLoading || ssoCallbackLoading,
         onUnauthorized
       }}
     >
