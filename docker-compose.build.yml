@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  frontend:
+    build:
+      context: .
+      args:
+        # Override at build time only if you add another npm script.
+        BUILD_CMD: ${BUILD_CMD:-build}
+    image: sih3-frontend:latest
+    ports:
+      - "${PORT_DOCKER:-8080}:80"  # default 8080 jika PORT_DOCKER tidak diset
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+
+# Gunakan file ini bila ingin membangun image penuh dari source.
+# Perintah: PORT_DOCKER=9000 docker compose -f docker-compose.build.yml up --build
+# Tanpa env, default ke 8080 → http://localhost:8080
