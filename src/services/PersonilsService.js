@@ -95,4 +95,8 @@ export default class PersonilsService {
   static async deleteBatch(ids, token) {
     return await api.delete(`/personil/multi-delete/?id=${ids.join(',')}`, { token });
   }
+
+  static async updateStatus(id, status, token) {
+    return await api.put(`/personil/status/${id}`, { body: { status }, token });
+  }
 }

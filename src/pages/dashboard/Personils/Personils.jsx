@@ -1,8 +1,8 @@
-import { Delete, Detail, Edit } from '@/components/dashboard/button';
+import { Delete, Detail, Edit, Verify } from '@/components/dashboard/button';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import useAbortableService from '@/hooks/useAbortableService';
-import { Card, Skeleton, Space } from 'antd';
+import { Card, Skeleton, Space, Tag } from 'antd';
 import { Personils as PersonilModel } from '@/models';
 import React from 'react';
 import { Action } from '@/constants';
@@ -45,6 +45,7 @@ const Personils = () => {
   const storePersonil = useService(PersonilsService.store, onUnauthorized);
   const updatePersonil = useService(PersonilsService.update, onUnauthorized);
   const deletePersonil = useService(PersonilsService.delete, onUnauthorized);
+  const updateStatusPersonil = useService(PersonilsService.updateStatus, onUnauthorized);
 
   const column = [
     {
@@ -70,6 +71,18 @@ const Personils = () => {
       dataIndex: ['user_id', 'role'],
       sorter: (a, b) => a.user_id.role.length - b.user_id.role.length,
       searchable: true
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      render: (status) => {
+        const color = status === 'aktif' ? 'green' : 'volcano';
+        return (
+          <Tag color={color}>
+            {status ? status.toUpperCase() : '-'}
+          </Tag>
+        );
+      }
     }
   ];
   if (user && user.eitherCan([UPDATE, PersonilModel], [DELETE, PersonilModel], [READ, PersonilModel])) {
@@ -83,7 +96,7 @@ const Personils = () => {
             onClick={() => {
               modal.edit({
                 title: `Edit ${Modul.PERSONIL}`,
-                data: { ...record, email: record.user_id.email, unor_id: record.unor_id.id, role: record.user_id.role },
+                data: { ...record, email: record.user_id.email, unor_id: record.unor_id?.id || null, role: record.user_id.role },
                 formFields: formFields({ options: { unors } }),
                 onSubmit: async (values) => {
                   const { message, isSuccess } = await updatePersonil.execute(record.id, values, token);
@@ -98,6 +111,22 @@ const Personils = () => {
               });
             }}
           />
+          {record.status === 'nonaktif' && (
+            <Verify
+              title="Aktifkan Akun"
+              model={PersonilModel}
+              action={Action.UPDATE}
+              onClick={async () => {
+                const { isSuccess, message } = await updateStatusPersonil.execute(record.id, 'aktif', token);
+                if (isSuccess) {
+                  success('Berhasil', message);
+                  fetchPersonils({ token: token, page: pagination.page, per_page: pagination.per_page });
+                } else {
+                  error('Gagal', message);
+                }
+              }}
+            />
+          )}
           <Detail
             title={`Detail ${Modul.PERSONIL}`}
             model={PersonilModel}
@@ -138,17 +167,17 @@ const Personils = () => {
                   {
                     key: 'unor.name',
                     label: `Nama Unor`,
-                    children: record.unor_id.name
+                    children: record.unor_id?.name || '-'
                   },
                   {
                     key: 'unor.region',
                     label: `Wilayah Unor`,
-                    children: record.unor_id.region
+                    children: record.unor_id?.region || '-'
                   },
                   {
                     key: 'unor.address',
                     label: `Alamat Unor`,
-                    children: record.unor_id.address
+                    children: record.unor_id?.address || '-'
                   }
                 ]
               });

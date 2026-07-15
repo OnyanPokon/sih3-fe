@@ -38,6 +38,7 @@ export default function AuthProvider({ children }) {
   const { execute: getUser, isLoading: getUserIsLoading } = useService(AuthService.me);
   const [token, setToken] = useLocalStorage('token', '');
   const [user, setUser] = useState(null);
+  const [isInitializing, setIsInitializing] = useState(true);
 
   env.dev(() => {
     window.token = token;
@@ -47,6 +48,7 @@ export default function AuthProvider({ children }) {
   useEffect(() => {
     if (!token) {
       setUser(null);
+      setIsInitializing(false);
       return;
     }
 
@@ -54,10 +56,12 @@ export default function AuthProvider({ children }) {
       const { code, data } = await getUser(token);
       if (code === HttpStatusCode.UNAUTHORIZED) {
         setToken('');
+        setIsInitializing(false);
         return;
       }
 
       setUser(data);
+      setIsInitializing(false);
     })();
   }, [getUser, setToken, token]);
 
@@ -171,7 +175,7 @@ export default function AuthProvider({ children }) {
         reset,
         token,
         user,
-        isLoading: loginIsLoading || logoutIsLoading || getUserIsLoading || forgotIsLoading || resetIsLoading || ssoLoginLoading || ssoCallbackLoading,
+        isLoading: isInitializing || loginIsLoading || logoutIsLoading || getUserIsLoading || forgotIsLoading || resetIsLoading || ssoLoginLoading || ssoCallbackLoading,
         onUnauthorized
       }}
     >
