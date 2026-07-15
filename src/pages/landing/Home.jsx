@@ -1,12 +1,14 @@
 import { useAuth } from '@/hooks';
 import useAbortableService from '@/hooks/useAbortableService';
 import { NewsService, UnorsService } from '@/services';
-import { CheckCircleFilled, CloudFilled, CompassFilled, EnvironmentFilled } from '@ant-design/icons';
-import { Card, Skeleton, Typography } from 'antd';
+import { ArrowRightOutlined, CheckCircleFilled, CompassOutlined } from '@ant-design/icons';
+import { Button, Card, Skeleton, Typography } from 'antd';
 import React from 'react';
 import parse from 'html-react-parser';
 import { useNavigate } from 'react-router-dom';
 import dateFormatterID from '@/utils/dateFormatterId';
+import { CloudHail, Droplets, Layers2 } from 'lucide-react';
+import { getThemeByCategory } from '@/utils/getThemeByCategory';
 
 const Home = () => {
   const navigte = useNavigate();
@@ -15,7 +17,7 @@ const Home = () => {
   const { execute: fetchUnors, ...getAllUnors } = useAbortableService(UnorsService.getAllInLanding, { onUnauthorized });
 
   React.useEffect(() => {
-    fetchNews({ page: 1, per_page: 4 });
+    fetchNews({ page: 1, per_page: 5 });
     fetchUnors({ page: 1, per_page: 999 });
   }, [fetchNews, fetchUnors]);
 
@@ -30,14 +32,12 @@ const Home = () => {
           backgroundImage: "url('/image_asset/background/hero_bg.jpg')",
           backgroundPosition: 'center',
           backgroundSize: 'cover',
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          backgroundColor: 'rgba(0, 0, 0, 0.4)',
           backgroundBlendMode: 'multiply'
         }}
       >
         <div className="mx-auto flex min-h-screen w-full max-w-screen-xl flex-col items-center justify-center gap-x-10 px-6 py-28 text-white">
           <div className="flex max-w-2xl flex-col items-center gap-y-4 text-center">
-            <Typography.Title style={{ margin: 0, color: '#fff' }}>Sistem Informasi Hidrologi, Hidrometerologi, dan Hidrogeologi Provinsi Gorontalo</Typography.Title>
-            <p className="mb-6 max-w-lg text-sm text-white">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,</p>
             <div className="flex items-center justify-center gap-x-8">
               {unors.map((item) => (
                 <Card key={item.id} className="[&_.ant-card-body]:!p-2">
@@ -45,153 +45,196 @@ const Home = () => {
                 </Card>
               ))}
             </div>
+            <Typography.Title style={{ margin: 0, color: '#fff' }}>Sistem Informasi Hidrologi, Hidrometeorologi, dan Hidrogeologi Provinsi Gorontalo</Typography.Title>
+            <p className="mb-6 max-w-lg text-sm text-white">Platform digital terintegrasi untuk pengelolaan data sumber daya air yang presisi, mendukung keberlanjutan ekosistem di wilayah Gorontalo.</p>
+            <div className="flex items-center justify-center gap-x-8">
+              <Button type="primary" size="large" icon={<CompassOutlined />}>
+                Jelajahi Data
+              </Button>
+              <Button size="large">Pelajari Selengkapnya</Button>
+            </div>
           </div>
         </div>
       </section>
-      <section
-        style={{
-          backgroundImage: "url('/image_asset/background/h3_section_bg.png')",
-          backgroundPosition: 'center',
-          backgroundSize: 'cover'
-        }}
-        className="-translate-y-9 rounded-t-3xl bg-white"
-      >
-        <div className="mx-auto flex w-full max-w-screen-xl items-start justify-center gap-x-28 px-6 py-28">
-          <div className="flex max-w-xs flex-col items-center justify-center gap-y-4 text-center">
-            <div className="flex h-24 w-24 items-center justify-center rounded-2xl bg-green-100 p-4 text-green-500">
-              <CloudFilled className="text-4xl" />
+      <section className="rounded-t-3xl bg-gray-100">
+        <div className="mx-auto flex w-full max-w-screen-xl items-start justify-center gap-x-8 px-6 py-12">
+          <div onClick={() => navigte('/news/hidrologi')} className="group relative cursor-pointer overflow-hidden rounded-xl border-t-4 border-blue-500 bg-white p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+            <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-blue-50/60 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+            <div className="relative z-10 flex flex-col gap-y-4">
+              <div className="w-fit rounded-lg bg-blue-100 p-4 transition-all duration-300 group-hover:scale-110 group-hover:bg-blue-500">
+                <Droplets size={28} className="text-blue-500 transition-colors duration-300 group-hover:text-white" />
+              </div>
+
+              <Typography.Title level={4} style={{ margin: 0 }} className="font-bold transition-colors duration-300 group-hover:text-blue-600">
+                Hidrologi
+              </Typography.Title>
+
+              <small className="max-w-xs text-gray-500">Kajian aliran dan ketersediaan air di permukaan, interaksi dengan air hujan serta air tanah, untuk mendukung perencanaan sumber daya air yang berkelanjutan.</small>
             </div>
-            <Typography.Title level={5} style={{ margin: 0 }} className="font-bold">
-              Hidrologi
-            </Typography.Title>
-            <small className="text-gray-500">Kajian aliran dan ketersediaan air di permukaan, interaksi dengan air hujan serta air tanah, untuk mendukung perencanaan sumber daya air yang berkelanjutan.</small>
+            <div className="absolute -right-16 -top-16 h-40 w-40 scale-0 rounded-full bg-blue-100/40 transition-transform duration-500 group-hover:scale-100" />
           </div>
-          <div className="flex max-w-xs flex-col items-center justify-center gap-y-4 text-center">
-            <div className="flex h-24 w-24 items-center justify-center rounded-2xl bg-yellow-100 p-4 text-yellow-500">
-              <CompassFilled className="text-4xl" />
+          <div onClick={() => navigte('/news/hidrometeorologi')} className="group relative cursor-pointer overflow-hidden rounded-xl border-t-4 border-green-500 bg-white p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+            <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-green-50/60 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+            <div className="relative z-10 flex flex-col gap-y-4">
+              <div className="w-fit rounded-lg bg-green-100 p-4 transition-all duration-300 group-hover:scale-110 group-hover:bg-green-500">
+                <CloudHail size={28} className="text-green-500 transition-colors duration-300 group-hover:text-white" />
+              </div>
+
+              <Typography.Title level={4} style={{ margin: 0 }} className="font-bold transition-colors duration-300 group-hover:text-green-600">
+                Hidrometeorologi
+              </Typography.Title>
+
+              <small className="max-w-xs text-gray-500">Pemantauan dan analisis hujan serta fenomena atmosfer yang memengaruhi debit sungai, banjir, dan ketersediaan air di berbagai wilayah.</small>
             </div>
-            <Typography.Title level={5} style={{ margin: 0 }} className="font-bold">
-              Hidrometerologi
-            </Typography.Title>
-            <small className="text-gray-500">Pemantauan dan analisis hujan serta fenomena atmosfer yang memengaruhi debit sungai, banjir, dan ketersediaan air di berbagai wilayah.</small>
+            <div className="absolute -right-16 -top-16 h-40 w-40 scale-0 rounded-full bg-green-100/40 transition-transform duration-500 group-hover:scale-100" />
           </div>
-          <div className="flex max-w-xs flex-col items-center justify-center gap-y-4 text-center">
-            <div className="flex h-24 w-24 items-center justify-center rounded-2xl bg-blue-100 p-4 text-blue-500">
-              <EnvironmentFilled className="text-4xl" />
+          <div onClick={() => navigte('/news/hidrogeologi')} className="group relative cursor-pointer overflow-hidden rounded-xl border-t-4 border-amber-500 bg-white p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+            <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-amber-50/60 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+            <div className="relative z-10 flex flex-col gap-y-4">
+              <div className="w-fit rounded-lg bg-amber-100 p-4 transition-all duration-300 group-hover:scale-110 group-hover:bg-amber-500">
+                <Layers2 size={28} className="text-amber-500 transition-colors duration-300 group-hover:text-white" />
+              </div>
+
+              <Typography.Title level={4} style={{ margin: 0 }} className="font-bold transition-colors duration-300 group-hover:text-amber-600">
+                Hidrogeologi
+              </Typography.Title>
+
+              <small className="max-w-xs text-gray-500">Studi air bawah tanah pada zona jenuh, dinamika akuifer, serta keterkaitannya dengan air permukaan untuk pemenuhan kebutuhan air bersih.</small>
             </div>
-            <Typography.Title level={5} style={{ margin: 0 }} className="font-bold">
-              Hidrogeologi
-            </Typography.Title>
-            <small className="text-gray-500">Studi air bawah tanah pada zona jenuh, dinamika akuifer, serta keterkaitannya dengan air permukaan untuk pemenuhan kebutuhan air bersih.</small>
+            <div className="absolute -right-16 -top-16 h-40 w-40 scale-0 rounded-full bg-amber-100/40 transition-transform duration-500 group-hover:scale-100" />
           </div>
         </div>
       </section>
-      <section className="bg-gray-100">
+      <section className="bg-white">
         <div className="mx-auto flex w-full max-w-screen-xl items-start justify-center gap-x-40 px-6 py-16">
-          <div className="flex w-full flex-col gap-y-4">
-            <Typography.Title level={3} style={{ margin: 0 }}>
-              Tentang Website SIH³
+          <div className="flex w-full flex-col gap-y-6">
+            <span className="text-xs font-semibold uppercase tracking-widest text-blue-500">TENTANG SIH3 - PROVINSI GORONTALO</span>
+            <Typography.Title level={2} style={{ margin: 0 }}>
+              Platform Digital Pengelolaan Sumber Daya Air Terpadu
             </Typography.Title>
-            <p className="mb-8 text-gray-500">
-              Website SIH³ (Sistem Informasi Hidrologi, Hidrogeologi, dan Hidrometeorologi) merupakan platform digital yang dikembangkan untuk menyediakan data dan informasi terkait kondisi sumber daya air, curah hujan, dan potensi bencana di
+            <p className="text-sm text-gray-500">
+              Website SIH3 (Sistem Informasi Hidrologi, Hidrometeorologi, dan Hidrogeologi) merupakan platform digital yang dikembangkan untuk menyediakan data dan informasi terkait kondisi sumber daya air, curah hujan, dan potensi bencana di
               Provinsi Gorontalo.
             </p>
-            <div className="relative rounded-xl bg-white p-6 text-sm">
-              <div className="absolute -right-4 -top-4 h-14 w-14 rounded-full bg-blue-500 p-3">
-                <img src="/image_asset/logo/prov_gto_logo.png" />
+            <div className="grid grid-cols-2 gap-y-2">
+              <div className="col-span-1 inline-flex items-center gap-x-2">
+                <CheckCircleFilled className="mt-0.5 text-blue-500" />
+                <span className="text-sm">Visualisasi Data Interaktif</span>
               </div>
-              Sistem ini bertujuan mendukung pengelolaan sumber daya air yang berkelanjutan, membantu pengambilan keputusan berbasis data, serta meningkatkan kesadaran masyarakat terhadap pentingnya menjaga keseimbangan lingkungan dan ekosistem air
-              di Gorontalo.
+              <div className="col-span-1 inline-flex items-center gap-x-2">
+                <CheckCircleFilled className="mt-0.5 text-blue-500" />
+                <span className="text-sm">Laporan Terintegrasi</span>
+              </div>
+              <div className="col-span-1 inline-flex items-center gap-x-2">
+                <CheckCircleFilled className="mt-0.5 text-blue-500" />
+                <span className="text-sm">Pemantauan Real-Time</span>
+              </div>
+              <div className="col-span-1 inline-flex items-center gap-x-2">
+                <CheckCircleFilled className="mt-0.5 text-blue-500" />
+                <span className="text-sm">Analisis Ahli</span>
+              </div>
             </div>
+            <Button className="w-fit" size="large" type="primary">
+              Baca Selengkapnya
+            </Button>
           </div>
-          <div className="flex w-full flex-col gap-y-4 rounded-xl bg-white p-8">
-            <div className="inline-flex items-start gap-x-2">
-              <CheckCircleFilled className="mt-1.5 text-green-500" />
-              <span>Pusat data hidrologi, hidrogeologi, dan hidrometeorologi Gorontalo.</span>
-            </div>
-            <div className="inline-flex items-start gap-x-2">
-              <CheckCircleFilled className="mt-1.5 text-green-500" />
-              <span>Informasi cuaca dan curah hujan terkini.</span>
-            </div>
-            <div className="inline-flex items-start gap-x-2">
-              <CheckCircleFilled className="mt-1.5 text-green-500" />
-              <span>Pemantauan potensi banjir dan kekeringan.</span>
-            </div>
-            <div className="inline-flex items-start gap-x-2">
-              <CheckCircleFilled className="mt-1.5 text-green-500" />
-              <span>Dukungan untuk kebijakan dan riset lingkungan.</span>
-            </div>
-            <div className="inline-flex items-start gap-x-2">
-              <CheckCircleFilled className="mt-1.5 text-green-500" />
-              <span>Visualisasi data interaktif dan mudah dipahami.</span>
-            </div>
-            <div className="inline-flex items-start gap-x-2">
-              <CheckCircleFilled className="mt-1.5 text-green-500" />
-              <span>Kolaborasi antarinstansi dan masyarakat.</span>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section
-        style={{
-          backgroundImage: "url('/image_asset/background/news_section_bg.png')",
-          backgroundPosition: 'center',
-          backgroundSize: 'cover'
-        }}
-        className="bg-gray-50"
-      >
-        <div className="mx-auto max-w-screen-xl items-center gap-16 px-4 py-8 lg:grid lg:grid-cols-2 lg:px-6 lg:py-16">
-          <div className="font-light">
-            <Typography.Title level={3}>Portal Berita</Typography.Title>
-            <p className="mb-4 text-gray-500">
-              Portal Berita SIH³ merupakan pusat informasi seputar hidrologi, hidrogeologi, dan hidrometeorologi di Provinsi Gorontalo. Melalui portal ini, masyarakat dan instansi dapat memantau kondisi sumber daya air, iklim, serta potensi bencana
-              yang berkaitan dengan air secara akurat dan terupdate.
-            </p>
-            <p className="mb-4 text-gray-500">
-              Kami berupaya menghadirkan berita dan data yang relevan untuk mendukung pengelolaan lingkungan, perencanaan pembangunan, serta peningkatan kesadaran masyarakat terhadap pentingnya keseimbangan ekosistem air.
-            </p>
-            <div className="flex items-center gap-x-4">
-              <div className="flex h-16 w-16 flex-col items-center justify-center rounded-2xl bg-green-100 p-4 text-green-500">
-                <CloudFilled className="text-4xl" />
+          <div className="flex h-[400px] w-full gap-4">
+            {/* Kiri */}
+            <div className="flex flex-[2] flex-col gap-4">
+              <div className="flex-1 overflow-hidden rounded-xl">
+                <img src="/image_asset/background/lombongo.jpg" className="h-full w-full object-cover transition duration-700 hover:scale-110" />
               </div>
-              <div className="flex h-16 w-16 flex-col items-center justify-center rounded-2xl bg-yellow-100 p-4 text-yellow-500">
-                <CompassFilled className="text-4xl" />
-              </div>
-              <div className="flex h-16 w-16 flex-col items-center justify-center rounded-2xl bg-blue-100 p-4 text-blue-500">
-                <EnvironmentFilled className="text-4xl" />
+              <div className="flex h-20 items-center gap-x-4 rounded-xl bg-blue-500 px-4 text-white">
+                <div className="w-fit rounded-lg bg-white p-3 transition-all duration-300">
+                  <Droplets size={28} className="text-blue-500 transition-colors duration-300 group-hover:text-white" />
+                </div>
+                <div className="">
+                  <h2 className="text-xl font-bold">15+</h2>
+                  <p className="text-xs tracking-widest">Stasiun Telemetri</p>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="mt-8 grid grid-cols-2 gap-4">
-            <img className="h-full w-full rounded-lg object-cover hover:scale-110" src="/image_asset/background/lombongo.jpg" alt="office content 1" />
-            <img className="mt-4 h-full w-full rounded-lg object-cover lg:mt-10" src="/image_asset/background/sherly.jpeg" alt="office content 2" />
+
+            {/* Kanan */}
+            <div className="flex flex-1 flex-col gap-4">
+              <div className="flex-1 overflow-hidden rounded-xl">
+                <img src="/image_asset/background/sherly.jpeg" className="h-full w-full object-cover transition duration-700 hover:scale-110" />
+              </div>
+
+              <div className="flex-1 overflow-hidden rounded-xl">
+                <img src="/image_asset/background/embun.jpg" className="h-full w-full object-cover transition duration-700 hover:scale-110" />
+              </div>
+            </div>
           </div>
         </div>
       </section>
       <section className="bg-gray-50">
-        <div className="mx-auto w-full max-w-screen-xl px-6 pb-32">
-          <hr />
-          <div className="mt-12 flex w-full items-center justify-center">
-            <Typography.Title level={4}>Berita Terkini</Typography.Title>
+        <div className="mx-auto w-full max-w-screen-xl px-6 py-8">
+          <div className="inline-flex w-full items-center justify-between">
+            <div className="flex w-full flex-col justify-center gap-y-2">
+              <span className="text-xs font-semibold uppercase tracking-widest text-blue-500">PUSAT INFORMASI</span>
+              <Typography.Title level={4}>Berita Terkini & Publikasi</Typography.Title>
+            </div>
+            <Button icon={<ArrowRightOutlined />} variant="link" color="primary" iconPosition="end">
+              Lihat Semua Berita
+            </Button>
           </div>
-          <div className="flex flex-wrap items-start justify-center gap-4 pt-12">
+
+          <div className="flex flex-wrap items-start justify-around pt-12">
             {getAllNews.isLoading
-              ? Array.from({ length: 4 }, (_, i) => i).map((index) => (
-                  <Card className="w-full max-w-[280px]" key={index}>
+              ? Array.from({ length: 5 }, (_, i) => i).map((index) => (
+                  <Card className="w-full max-w-[230px]" key={index}>
                     <Skeleton active />
                   </Card>
                 ))
-              : news?.map((item) => (
-                  <Card onClick={() => navigte(window.location.pathname + 'news/' + item.category_id.slug + '/' + item.slug)} key={item.id} hoverable className="w-full max-w-[280px]" cover={<img src={item.thumbnail} className="h-52 object-cover" />}>
-                    <div className="text-gray-500">
-                      <Typography.Title level={5}>
-                        <span className="news-text">{item.title}</span>
-                      </Typography.Title>
-                      <p className="news-text mb-4">{parse(item.content)}</p>
-                      <p className="text-xs">{dateFormatterID(item.created_at)}</p>
-                    </div>
-                  </Card>
-                ))}
+              : news?.map((item) => {
+                  const theme = getThemeByCategory(item.category_id.category_name);
+                  return (
+                    <Card
+                      onClick={() => navigte(window.location.pathname + 'news/' + item.category_id.slug + '/' + item.slug)}
+                      key={item.id}
+                      hoverable
+                      className="w-full max-w-[230px]"
+                      cover={
+                        <div className="relative overflow-hidden rounded-t-lg">
+                          <img src={item.thumbnail} alt={item.title} className="h-32 w-full object-cover" />
+
+                          <span className={`absolute left-3 top-3 rounded-full ${theme.bg} px-3 py-1 text-[8px] font-medium text-white shadow-md`}>{item.category_id.category_name}</span>
+                        </div>
+                      }
+                    >
+                      <div className="text-gray-500">
+                        <p className="mb-2 text-xs">{dateFormatterID(item.created_at)}</p>
+                        <Typography.Title level={5}>
+                          <span className="news-text">{item.title}</span>
+                        </Typography.Title>
+                        <p className="news-text">{parse(item.content)}</p>
+                      </div>
+                    </Card>
+                  );
+                })}
+          </div>
+        </div>
+      </section>
+      <section className="bg-white">
+        <div className="mx-auto w-full max-w-screen-xl px-6 py-8">
+          <div
+            style={{
+              backgroundImage: "url('/image_asset/background/peta_card_background.png')",
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              backgroundColor: 'rgba(0, 0, 0, 0.8)'
+            }}
+            className="flex flex-col gap-y-10 rounded-2xl p-20"
+          >
+            <Typography.Title style={{ margin: 0, color: '#fff' }} className="max-w-sm">
+              Akses Data Spasial Real-time Secara Terbuka
+            </Typography.Title>
+            <p className="max-w-sm text-sm text-white">Buka portal pemetaan interaktif kami untuk melihat kondisi hidrologi terkini di seluruh penjuru Provinsi Gorontalo.</p>
+
+            <Button className="w-fit" size="large">
+              Lihat Peta Interaktif
+            </Button>
           </div>
         </div>
       </section>

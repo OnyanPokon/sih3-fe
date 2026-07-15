@@ -37,17 +37,17 @@ export const landingLink = [
       {
         label: 'Hidrologi',
         key: '/news/hidrologi',
-        element: Landing.Map
+        element: Landing.PortalHidrologi
       },
       {
-        label: 'Hidrometerologi',
-        key: '/news/hidrometerologi',
-        element: Landing.Map
+        label: 'Hidrometeorologi',
+        key: '/news/hidrometeorologi',
+        element: Landing.PortalHidrometeorologi
       },
       {
         label: 'Hidrogeologi',
         key: '/news/hidrogeologi',
-        element: Landing.Map
+        element: Landing.PortalHidrogeologi
       }
     ]
   }

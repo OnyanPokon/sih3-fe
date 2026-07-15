@@ -1,9 +1,11 @@
-import { DataTable } from '@/components';
 import { useAuth, usePagination } from '@/hooks';
 import useAbortableService from '@/hooks/useAbortableService';
 import { CategoriesService, PosTypesService } from '@/services';
-import { DatabaseOutlined } from '@ant-design/icons';
-import { Button, Card, Skeleton, Space, Tabs, Tooltip, Typography } from 'antd';
+import dateFormatter from '@/utils/dateFormatter';
+import { getThemeByCategory } from '@/utils/getThemeByCategory';
+import { RightOutlined } from '@ant-design/icons';
+import { Button, Card, Input, Radio, Skeleton, Typography } from 'antd';
+import { Calendar, Gavel, TrendingUpDown } from 'lucide-react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -32,55 +34,19 @@ const PosTypes = () => {
 
   // 🔹 Fetch Pos Types whenever tab or pagination changes
   React.useEffect(() => {
-    if (activeTab !== null) {
-      fetchPosTypes({
-        page: pagination.page,
-        per_page: pagination.perPage,
-        kategori_id: activeTab
-      });
-    }
+    fetchPosTypes({
+      page: pagination.page,
+      per_page: pagination.perPage
+    });
   }, [activeTab, pagination.page, pagination.perPage, fetchPosTypes]);
 
   const posTypes = getAllPosTypes.data ?? [];
-
-  const column = [
-    {
-      title: 'Nama',
-      dataIndex: 'name',
-      sorter: (a, b) => a.name.length - b.name.length,
-      searchable: true
-    },
-    {
-      title: 'Kewenangan',
-      dataIndex: 'authority',
-      sorter: (a, b) => a.authority.length - b.authority.length,
-      searchable: true
-    },
-    {
-      title: 'Kategori',
-      dataIndex: ['id_kategori', 'category_name'],
-      sorter: (a, b) => a.id_kategori.category_name.length - b.id_kategori.category_name.length,
-      searchable: true
-    },
-    {
-      title: 'Aksi',
-      render: (_, record) => (
-        <Space size="small">
-          <Tooltip title="Ps Pengamatan">
-            <Button icon={<DatabaseOutlined />} variant="outlined" color="primary" onClick={() => navigte('/pos_pengamatan/' + record.id)}>
-              Pos Pengamatan
-            </Button>
-          </Tooltip>
-        </Space>
-      )
-    }
-  ];
 
   return (
     <>
       <section
         style={{
-          backgroundImage: "url('/image_asset/background/pos_pengamatan_bg.jpeg')",
+          backgroundImage: "url('/image_asset/background/hero_bg.jpg')",
           backgroundPosition: 'center',
           backgroundSize: 'cover',
           backgroundColor: 'rgba(0, 0, 0, 0.4)',
@@ -88,17 +54,74 @@ const PosTypes = () => {
         }}
       >
         <div className="mx-auto flex w-full max-w-screen-xl flex-col gap-y-2 px-6 py-20 pt-48">
-          <div className="w-full">
+          <div className="w-full max-w-sm">
             <Typography.Title level={2} className="uppercase" style={{ color: '#fff' }}>
               Jenis Pos
             </Typography.Title>
-            <Typography.Text style={{ color: '#fff' }}>Informasi Pos Pengamatan SIH3</Typography.Text>
+            <Typography.Text style={{ color: '#fff' }}>Sistem Informasi Hidrologi, Hidrometeorologi, dan Hidrogeologi Provinsi Gorontalo. Pantau data titik pengamatan secara real-time untuk keberlanjutan sumber daya air.</Typography.Text>
           </div>
         </div>
       </section>
-      <section className="bg-gray-50 pt-12">
-        <div className="mx-auto flex w-full max-w-screen-xl flex-col gap-y-2 px-6 pb-32">
-          <div className="">
+      <section className="bg-gray-100">
+        <div className="mx-auto flex w-full max-w-screen-xl items-center justify-between gap-x-2 p-6">
+          <Input.Search size="large" placeholder="Cari nama jenis pos" className="max-w-md" />
+          <Radio.Group defaultValue="a" size="large" className="">
+            <Radio.Button value="a">Semua</Radio.Button>
+            <Radio.Button value="b">Hidrologi</Radio.Button>
+            <Radio.Button value="c">Hidrometeorologi</Radio.Button>
+            <Radio.Button value="d">Hidrogeologi</Radio.Button>
+          </Radio.Group>
+        </div>
+      </section>
+      <section className="bg-gray-50">
+        <div className="mx-auto flex w-full max-w-screen-xl flex-col gap-y-2 px-12 py-12">
+          <div className="flex flex-wrap items-start justify-start gap-4">
+            {getAllPosTypes.isLoading
+              ? Array.from({ length: 3 }, (_, i) => i).map((index) => (
+                  <Card className="w-full max-w-[382px]" key={index}>
+                    <Skeleton active />
+                  </Card>
+                ))
+              : posTypes?.map((item) => {
+                  const theme = getThemeByCategory(item.id_kategori.category_name);
+
+                  return (
+                    <Card key={item.id} className="w-full max-w-[382px]">
+                      <div className="text-gray-500">
+                        <Typography.Title level={5}>
+                          <span className="news-text">{item.name}</span>
+                        </Typography.Title>
+                        <div className="inline-flex w-full items-center justify-between">
+                          <span className="inline-flex items-start gap-x-2 text-xs">
+                            <TrendingUpDown size={16} />
+                            Jenis Pos
+                          </span>
+                          <span className={`rounded-full ${theme.bg} mb-2 px-3 py-1 text-xs font-medium text-white`}>{item.id_kategori.category_name}</span>
+                        </div>
+                        <div className="inline-flex w-full items-center justify-between">
+                          <span className="inline-flex items-start gap-x-2 text-xs">
+                            <Gavel size={16} />
+                            Kewenangan
+                          </span>
+                          <span className="text-xs">{item.authority}</span>
+                        </div>
+                        <div className="inline-flex w-full items-center justify-between">
+                          <span className="inline-flex items-start gap-x-2 text-xs">
+                            <Calendar size={16} />
+                            Update Terakhir
+                          </span>
+                          <span className="text-xs">{dateFormatter(item.updated_at, 'dd MMMM yyyy')}</span>
+                        </div>
+
+                        <Button icon={<RightOutlined className="text-xs" />} variant="outlined" color="primary" className="mt-4 w-full" iconPosition="end" onClick={() => navigte('/pos_pengamatan/' + item.id)}>
+                          Lihat Detail
+                        </Button>
+                      </div>
+                    </Card>
+                  );
+                })}
+          </div>
+          {/* <div className="">
             <div className="flex flex-wrap items-start justify-center gap-4 pt-12">
               {getAllPosTypes.isLoading || getAllCategories.isLoading ? (
                 <Card className="w-full">
@@ -116,7 +139,7 @@ const PosTypes = () => {
                 </Card>
               )}
             </div>
-          </div>
+          </div> */}
         </div>
       </section>
     </>

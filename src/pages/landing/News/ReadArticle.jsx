@@ -67,7 +67,7 @@ const ReadArticle = () => {
           ]
         },
         {
-          label: `Asal`,
+          label: `Alamat`,
           name: 'provenance',
           type: InputType.TEXT,
           rules: [
@@ -88,14 +88,22 @@ const ReadArticle = () => {
             }
           ]
         },
+
         {
-          label: `Nilai/Rating`,
+          label: 'Tingkat Kepuasan',
           name: 'rating',
-          type: InputType.RATING,
+          type: InputType.RADIO,
+          options: [
+            { label: 'Sangat Tidak Puas', value: 1 },
+            { label: 'Tidak Puas', value: 2 },
+            { label: 'Netral', value: 3 },
+            { label: 'Puas', value: 4 },
+            { label: 'Sangat Puas', value: 5 }
+          ],
           rules: [
             {
               required: true,
-              message: `Nilai/Rating harus diisi`
+              message: 'Tingkat kepuasan harus dipilih'
             }
           ]
         }

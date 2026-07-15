@@ -7,3 +7,6 @@ export { default as PosTypes } from './ObservationPos/Postypes';
 export { default as ObservationPos } from './ObservationPos/ObservationPos';
 export { default as TelemetryCoordinates } from './ObservationPos/TelemetryCoordinates';
 export { default as LegalProducts } from './LegalProducts/LegalProducts';
+export { default as PortalHidrologi } from './Hidrologi/Portal';
+export { default as PortalHidrometeorologi } from './Hidrometeorologi/Portal';
+export { default as PortalHidrogeologi } from './Hidrogeologi/Portal';

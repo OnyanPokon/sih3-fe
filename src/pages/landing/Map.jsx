@@ -3,7 +3,7 @@ import { useCrudModal, useService } from '@/hooks';
 import { MapsService } from '@/services';
 import { BASE_URL } from '@/utils/api';
 import { AimOutlined, InfoCircleOutlined, MenuOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Collapse, Skeleton, Typography } from 'antd';
+import { Button, Checkbox, Collapse, Input, Skeleton, Typography } from 'antd';
 import React from 'react';
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
@@ -132,6 +132,9 @@ const Map = () => {
           <Button variant="solid" color="primary" shape="round" onClick={() => navigate('/')}>
             Ke Beranda
           </Button>
+        </div>
+        <div>
+          <Input.Search placeholder="Cari Layer..." size="large" />
         </div>
         {getAllMaps.isLoading ? (
           <div className="flex flex-col gap-y-8">

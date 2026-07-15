@@ -8,7 +8,7 @@ import './index.css';
 import { flattenLandingLinks } from './utils/landingLink';
 import { Notfound } from './pages/result';
 import { CreateArticles, CreateNews, EditArticles, EditNews, Kuesioners, ProfileSettings, TelemetryCoordinates } from './pages/dashboard';
-import { News, ObservationPos, ReadArticle, ReadNews } from './pages/landing';
+import { ObservationPos, ReadArticle, ReadNews } from './pages/landing';
 
 function App() {
   const { user } = useAuth();
@@ -20,14 +20,11 @@ function App() {
         {
           element: <LandingLayout />,
           children: [
-            { path: '/news/:prefix', element: <News /> },
             // Tambahkan route dari landingLink
-            ...flatLandingLinks
-              .filter((route) => !route.path.startsWith('/news/'))
-              .map(({ path, element: Element }) => ({
-                path,
-                element: <Element />
-              })),
+            ...flatLandingLinks.map(({ path, element: Element }) => ({
+              path,
+              element: <Element />
+            })),
             { path: '/news/:prefix/:slug', element: <ReadNews /> },
             { path: '/article/:prefix/:slug', element: <ReadArticle /> },
             { path: '/pos_pengamatan/:pos_type_id', element: <ObservationPos /> },
