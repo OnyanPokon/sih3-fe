@@ -9,6 +9,7 @@ import { Action } from '@/constants';
 import { DataTable, DataTableHeader } from '@/components';
 import { formFields } from './FormFields.js';
 import CategoriesService from '@/services/CategoriesService.js';
+import UnorsService from '@/services/UnorsService.js';
 
 const { DELETE, UPDATE, READ } = Action;
 
@@ -17,6 +18,7 @@ const Categories = () => {
   const { success, error } = useNotification();
   const { token, user, onUnauthorized } = useAuth();
   const { execute, ...getAllCategories } = useAbortableService(CategoriesService.getAll, { onUnauthorized });
+  const { execute: fetchUnors, ...getAllUnors } = useAbortableService(UnorsService.getAll, { onUnauthorized });
 
   const pagination = usePagination({ totalData: getAllCategories.totalData });
   const [filterValues, setFilterValues] = React.useState({ search: '' });
@@ -32,11 +34,13 @@ const Categories = () => {
 
   React.useEffect(() => {
     fetchCategories();
-  }, [fetchCategories, token]);
+    fetchUnors({ token: token, per_page: 9999 });
+  }, [fetchCategories, fetchUnors, token]);
 
   const [selectedData, setSelectedData] = React.useState([]);
 
   const categories = getAllCategories.data ?? [];
+  const unors = getAllUnors.data ?? [];
 
   const storeCategory = useService(CategoriesService.store, onUnauthorized);
   const updateCategory = useService(CategoriesService.update, onUnauthorized);
@@ -68,6 +72,23 @@ const Categories = () => {
       dataIndex: 'desc',
       sorter: (a, b) => a.desc.length - b.desc.length,
       searchable: true
+    },
+    {
+      title: 'Unit Organisasi (Unor)',
+      dataIndex: 'unors',
+      render: (unors) => (
+        <div className="flex flex-wrap gap-1">
+          {unors && unors.length > 0 ? (
+            unors.map((u) => (
+              <span key={u.id} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                {u.name}
+              </span>
+            ))
+          ) : (
+            <span className="text-gray-400">-</span>
+          )}
+        </div>
+      )
     }
   ];
 
@@ -83,7 +104,7 @@ const Categories = () => {
               modal.edit({
                 title: `Edit ${Modul.CATEGORY}`,
                 data: record,
-                formFields: formFields(),
+                formFields: formFields({ unors }),
                 onSubmit: async (values) => {
                   const { message, isSuccess } = await updateCategory.execute(record.id, { ...values, _method: 'PUT' }, token, values.logo.file);
                   if (isSuccess) {
@@ -125,7 +146,7 @@ const Categories = () => {
   const onCreate = () => {
     modal.create({
       title: `Tambah ${Modul.CATEGORY}`,
-      formFields: formFields,
+      formFields: formFields({ unors }),
       onSubmit: async (values) => {
         const { message, isSuccess } = await storeCategory.execute(values, token, values.logo.file);
         if (isSuccess) {

@@ -27,7 +27,13 @@ async function customFetch(endpoint, method, body = {}, token, file = {}, abortC
   for (const key in body) {
     if (hasFile && key in file) continue;
     const value = body[key];
-    if (value !== undefined && value !== null) formData.append(key, value);
+    if (value !== undefined && value !== null) {
+      if (Array.isArray(value)) {
+        value.forEach((item) => formData.append(`${key}[]`, item));
+      } else {
+        formData.append(key, value);
+      }
+    }
   }
 
   // 2️⃣ Tangani semua kemungkinan file

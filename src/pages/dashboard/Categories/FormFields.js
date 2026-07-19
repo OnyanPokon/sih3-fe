@@ -1,7 +1,7 @@
 import { InputType } from '@/constants';
 import Modul from '@/constants/Modul';
 
-export const formFields = () => [
+export const formFields = ({ unors = [] } = {}) => [
   {
     label: `Nama ${Modul.CATEGORY}`,
     name: 'category_name',
@@ -41,5 +41,21 @@ export const formFields = () => [
       ];
     },
     accept: ['.png', '.jpg']
+  },
+  {
+    label: `Unit Organisasi (Unor)`,
+    name: 'unor_ids',
+    type: InputType.SELECT,
+    mode: 'multiple',
+    rules: [
+      {
+        required: true,
+        message: 'Unit Organisasi (Unor) harus diisi'
+      }
+    ],
+    options: unors.map((item) => ({
+      label: item.name,
+      value: item.id
+    }))
   }
 ];
