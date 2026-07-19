@@ -11,7 +11,8 @@ enum Modul {
   PERMISSION = 'Permission',
   POSTYPES = 'Jenis Pos',
   OBSERVATION_POS = 'Pos Pengamatan',
-  TELEMETRY_COORDINATE = 'Koordinat Telemetri'
+  TELEMETRY_COORDINATE = 'Koordinat Telemetri',
+  WILAYAH_SUNGAI = 'Wilayah Sungai'
 }
 
 export default Modul;

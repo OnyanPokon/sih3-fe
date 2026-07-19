@@ -15,3 +15,4 @@ export { default as PosTypes } from './PosTypes';
 export { default as ObservationPos } from './ObservationPos';
 export { default as TelemetryCoordinates } from './TelemetryCoordinates';
 export { default as LegalProducts } from './LegalProducts';
+export { default as WilayahSungai } from './WilayahSungai';

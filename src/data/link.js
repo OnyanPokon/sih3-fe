@@ -124,6 +124,14 @@ export const dashboardLink = [
     permissions: [[Action.READ, Model.Categories]]
   },
   {
+    label: 'Wilayah Sungai',
+    icon: DatabaseOutlined,
+    path: '/dashboard/wilayah-sungai',
+    element: Dashboard.WilayahSungai,
+    roles: [Role.SUPERADMIN, Role.ADMIN],
+    permissions: [[Action.READ, Model.WilayahSungai]]
+  },
+  {
     label: 'Personil',
     icon: UserOutlined,
     roles: [Role.SUPERADMIN],

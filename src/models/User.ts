@@ -9,6 +9,7 @@ export interface IncomingApiData {
   role: string;
   permissions: string[];
   unor?: {
+    id: number;
     nama: string;
     wilayah: string;
   };
@@ -25,7 +26,8 @@ export default class User extends Model {
     public name: string,
     public token: string,
     public role: Role,
-    public permissions: Permission[] = []
+    public permissions: Permission[] = [],
+    public unor: { id: number; nama: string; wilayah: string } | null = null
   ) {
     super();
   }
@@ -68,7 +70,7 @@ export default class User extends Model {
 
     const permissions = Permission.fromApiData(validPermissions);
 
-    return new User(apiData.id, apiData.email, apiData.username, token, role, permissions);
+    return new User(apiData.id, apiData.email, apiData.username, token, role, permissions, apiData.unor ?? null);
   }
 
   static toApiData(user: User): OutgoingApiData {

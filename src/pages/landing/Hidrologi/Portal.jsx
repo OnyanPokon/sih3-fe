@@ -1,6 +1,6 @@
 import { useAuth } from '@/hooks';
 import useAbortableService from '@/hooks/useAbortableService';
-import { ArticlesService, NewsService } from '@/services';
+import { ArticlesService, NewsService, WilayahSungaiService } from '@/services';
 import { Card, Empty, Skeleton, Typography } from 'antd';
 import { Cloud, CloudRain, Droplet, FlaskConical, Gauge, IndentIncrease, Ruler, Waves } from 'lucide-react';
 import React from 'react';
@@ -13,6 +13,7 @@ const Portal = () => {
   const navigate = useNavigate();
   const { execute: fetchNews, ...getAllNews } = useAbortableService(NewsService.getAllInLanding, { onUnauthorized });
   const { execute: fetchArticles, ...getAllArticles } = useAbortableService(ArticlesService.getAllInLanding, { onUnauthorized });
+  const { execute: fetchWilayahSungai, ...getAllWilayahSungai } = useAbortableService(WilayahSungaiService.getAllInLanding, { onUnauthorized });
 
   React.useEffect(() => {
     fetchNews({
@@ -26,7 +27,11 @@ const Portal = () => {
       per_page: 999,
       category_slug: 'hidrologi'
     });
-  }, [fetchNews, fetchArticles]);
+
+    fetchWilayahSungai({
+      kategori: 'hidrologi'
+    });
+  }, [fetchNews, fetchArticles, fetchWilayahSungai]);
 
   const mergedData = React.useMemo(() => {
     const news = (getAllNews.data ?? []).map((item) => ({
@@ -41,6 +46,8 @@ const Portal = () => {
 
     return [...news, ...articles].sort((a, b) => b.title.localeCompare(a.title));
   }, [getAllNews.data, getAllArticles.data]);
+
+  const wilayahSungaiList = getAllWilayahSungai.data ?? [];
 
   const onClickHandler = (item) => {
     if (item.type === 'berita') {
@@ -126,96 +133,49 @@ const Portal = () => {
             <p>Eksplorasi Daerah Aliran Sungai (DAS) strategis yang dikelola melalui sistem pemantauan terpadu SIH3.</p>
           </div>
           <div className="grid grid-cols-3 gap-4">
-            <div
-              style={{
-                backgroundImage: "url('/image_asset/background/das_limboto_reference.jpg')",
-                backgroundPosition: 'center',
-                backgroundSize: 'cover',
-                backgroundColor: 'rgba(0, 0, 0, 0.4)',
-                backgroundBlendMode: 'multiply'
-              }}
-              className="relative col-span-1 min-h-96 w-full rounded-lg"
-            >
-              <div className="absolute left-0 top-0 flex h-full w-full items-end rounded-lg bg-gradient-to-t from-black/80 via-black/10 to-transparent text-white">
-                <div className="flex flex-col gap-y-2 p-6">
-                  <p className="text-sm font-bold">DAS Limboto</p>
-                  <span className="text-xs text-white/80">Menyuplai air ke Danau Limboto dengan tantangan sedimentasi yang tinggi.</span>
-                  <hr className="my-2" />
-                  <div className="inline-flex w-full items-center">
-                    <div className="flex w-full flex-col">
-                      <span className="text-xs font-bold text-white/80">Luas Wilayah</span>
-                      <p className="text-sm font-bold">
-                        890 km<sup>2</sup>
-                      </p>
-                    </div>
-                    <div className="flex w-full flex-col">
-                      <span className="text-xs font-bold text-white/80">Titik Pantau</span>
-                      <p className="text-sm font-bold">12 Stasiun</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              style={{
-                backgroundImage: "url('/image_asset/background/das_randangan_reference.jpg')",
-                backgroundPosition: 'center',
-                backgroundSize: 'cover',
-                backgroundColor: 'rgba(0, 0, 0, 0.4)',
-                backgroundBlendMode: 'multiply'
-              }}
-              className="relative col-span-1 min-h-96 w-full rounded-lg"
-            >
-              <div className="absolute left-0 top-0 flex h-full w-full items-end rounded-lg bg-gradient-to-t from-black/80 via-black/10 to-transparent text-white">
-                <div className="flex flex-col gap-y-2 p-6">
-                  <p className="text-sm font-bold">DAS Randangan</p>
-                  <span className="text-xs text-white/80">Tulang punggung irigasi pertanian terbesar di wilayah barat provinsi.</span>
-                  <hr className="my-2" />
-                  <div className="inline-flex w-full items-center">
-                    <div className="flex w-full flex-col">
-                      <span className="text-xs font-bold text-white/80">Luas Wilayah</span>
-                      <p className="text-sm font-bold">
-                        2,400 km<sup>2</sup>
-                      </p>
-                    </div>
-                    <div className="flex w-full flex-col">
-                      <span className="text-xs font-bold text-white/80">Titik Pantau</span>
-                      <p className="text-sm font-bold">15 Stasiun</p>
+            {getAllWilayahSungai.isLoading ? (
+              Array.from({ length: 3 }, (_, i) => i).map((index) => (
+                <Card className="min-h-96 w-full rounded-lg" key={index}>
+                  <Skeleton active />
+                </Card>
+              ))
+            ) : wilayahSungaiList.length > 0 ? (
+              wilayahSungaiList.map((item) => (
+                <div
+                  key={item.id}
+                  style={{
+                    backgroundImage: `url('${item.thumbnail}')`,
+                    backgroundPosition: 'center',
+                    backgroundSize: 'cover',
+                    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                    backgroundBlendMode: 'multiply'
+                  }}
+                  className="relative col-span-1 min-h-96 w-full rounded-lg"
+                >
+                  <div className="absolute left-0 top-0 flex h-full w-full items-end rounded-lg bg-gradient-to-t from-black/80 via-black/10 to-transparent text-white">
+                    <div className="flex flex-col gap-y-2 p-6">
+                      <p className="text-sm font-bold">{item.name}</p>
+                      <span className="text-xs text-white/80">{item.description}</span>
+                      <hr className="my-2" />
+                      <div className="inline-flex w-full items-center">
+                        <div className="flex w-full flex-col">
+                          <span className="text-xs font-bold text-white/80">Luas Wilayah</span>
+                          <p className="text-sm font-bold">{item.luas_wilayah}</p>
+                        </div>
+                        <div className="flex w-full flex-col">
+                          <span className="text-xs font-bold text-white/80">Titik Pantau</span>
+                          <p className="text-sm font-bold">{item.total_titik_pantau} Stasiun</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="col-span-3 flex justify-center py-6">
+                <Empty description="Belum ada data wilayah sungai" />
               </div>
-            </div>
-            <div
-              style={{
-                backgroundImage: "url('/image_asset/background/das_bonebolango_reference.jpg')",
-                backgroundPosition: 'center',
-                backgroundSize: 'cover',
-                backgroundColor: 'rgba(0, 0, 0, 0.4)',
-                backgroundBlendMode: 'multiply'
-              }}
-              className="relative col-span-1 min-h-96 w-full rounded-lg"
-            >
-              <div className="absolute left-0 top-0 flex h-full w-full items-end rounded-lg bg-gradient-to-t from-black/80 via-black/10 to-transparent text-white">
-                <div className="flex flex-col gap-y-2 p-6">
-                  <p className="text-sm font-bold">DAS Bonebolango</p>
-                  <span className="text-xs text-white/80">Sumber air baku utama Kota Gorontalo dengan potensi energi hidro.</span>
-                  <hr className="my-2" />
-                  <div className="inline-flex w-full items-center">
-                    <div className="flex w-full flex-col">
-                      <span className="text-xs font-bold text-white/80">Luas Wilayah</span>
-                      <p className="text-sm font-bold">
-                        1,250 km<sup>2</sup>
-                      </p>
-                    </div>
-                    <div className="flex w-full flex-col">
-                      <span className="text-xs font-bold text-white/80">Titik Pantau</span>
-                      <p className="text-sm font-bold">18 Stasiun</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </section>
