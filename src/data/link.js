@@ -3,7 +3,7 @@ import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
 import * as Model from '@/models';
-import { BellOutlined, DashboardOutlined, DatabaseOutlined, EnvironmentOutlined, EyeOutlined, FileOutlined, UserOutlined } from '@ant-design/icons';
+import { BellOutlined, DashboardOutlined, DatabaseOutlined, EnvironmentOutlined, EyeOutlined, FileOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 
 export const landingLink = [
   {
@@ -149,6 +149,12 @@ export const dashboardLink = [
     element: Dashboard.Map,
     roles: [Role.SUPERADMIN, Role.ADMIN],
     permissions: [[Action.READ, Model.Maps]]
+  },
+  {
+    label: 'Pengaturan',
+    icon: SettingOutlined,
+    path: '/dashboard/settings',
+    element: Dashboard.Settings
   }
 ];
 

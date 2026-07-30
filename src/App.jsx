@@ -5,7 +5,7 @@ import { RouterProvider } from 'react-router';
 import './index.css';
 import { flattenLandingLinks } from './utils/landingLink';
 import { Notfound } from './pages/result';
-import { CreateArticles, CreateNews, EditArticles, EditNews, Kuesioners, ProfileSettings, TelemetryCoordinates } from './pages/dashboard';
+import { CreateArticles, CreateNews, EditArticles, EditNews, Kuesioners, ProfileSettings, Settings, TelemetryCoordinates } from './pages/dashboard';
 import { ObservationPos, ReadArticle, ReadNews } from './pages/landing';
 import { PermissionGuard } from './components';
 
@@ -72,6 +72,7 @@ const router = createBrowserRouter([
       { path: '/dashboard/articles/edit/:slug', element: <EditArticles /> },
       { path: '/dashboard/articles/kuesioners/:id_artikel', element: <Kuesioners /> },
       { path: '/dashboard/profile-settings', element: <ProfileSettings /> },
+      { path: '/dashboard/settings', element: <Settings /> },
       { path: '/dashboard/telemetry_coordinate/:pos_pengamatan_id', element: <TelemetryCoordinates /> }
     ]
   },
