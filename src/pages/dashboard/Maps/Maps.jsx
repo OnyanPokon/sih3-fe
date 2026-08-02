@@ -35,7 +35,7 @@ const Maps = () => {
 
   React.useEffect(() => {
     fetchMaps();
-    fetchCategories({ token: token });
+    fetchCategories({ token: token, per_page: 'all' });
   }, [fetchCategories, fetchMaps, token]);
 
   const [selectedData, setSelectedData] = React.useState([]);

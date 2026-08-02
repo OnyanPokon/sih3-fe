@@ -1,5 +1,6 @@
 import asset from '@/utils/asset';
 import Model from './Model';
+import Tags, { IncomingApiData as TagsIncomingApiData } from './Tags';
 
 export interface IncomingApiData {
   id: number;
@@ -31,6 +32,7 @@ export interface IncomingApiData {
     logo: string;
     deskripsi: string;
   };
+  tags?: TagsIncomingApiData[];
   created_at: string;
   updated_at: string;
 }
@@ -42,6 +44,7 @@ export interface OutgoingApiData {
   thumbnail: string;
   kategori_id: number;
   status: 'publikasi' | 'draft';
+  tag_ids?: number[];
 }
 
 interface FormValue {
@@ -51,6 +54,7 @@ interface FormValue {
   thumbnail: string;
   category_id: number;
   status: 'publikasi' | 'draft';
+  tag_ids?: number[];
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -86,6 +90,7 @@ export default class News extends Model {
       logo: string;
       desc: string;
     },
+    public tags: Tags[],
     public created_at: string,
     public udpated_at: string
   ) {
@@ -124,6 +129,7 @@ export default class News extends Model {
         logo: asset(apiData.kategori_id.logo),
         desc: apiData.kategori_id.deskripsi
       },
+      apiData.tags ? Tags.fromApiData(apiData.tags) : [],
       apiData.created_at,
       apiData.updated_at
     ) as ReturnType<T, IncomingApiData, News>;
@@ -137,7 +143,8 @@ export default class News extends Model {
       konten: news.content,
       thumbnail: news.thumbnail,
       kategori_id: news.category_id,
-      status: news.status
+      status: news.status,
+      tag_ids: news.tag_ids
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;

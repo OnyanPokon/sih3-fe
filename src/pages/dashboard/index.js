@@ -18,5 +18,7 @@ export { default as ObservationPos } from './ObservationPos/ObservationPos';
 export { default as TelemetryCoordinates } from './TelemetryCoordinates/TelemetryCoordinates';
 export { default as LegalProducts } from './LegalProducts/LegalProducts';
 export { default as WilayahSungai } from './WilayahSungai/WilayahSungai';
+export { default as Tags } from './Tags/Tags';
 export { default as Settings } from './Settings/Settings';
+
 

@@ -12,7 +12,8 @@ enum Modul {
   POSTYPES = 'Jenis Pos',
   OBSERVATION_POS = 'Pos Pengamatan',
   TELEMETRY_COORDINATE = 'Koordinat Telemetri',
-  WILAYAH_SUNGAI = 'Wilayah Sungai'
+  WILAYAH_SUNGAI = 'Wilayah Sungai',
+  TAG = 'Tag'
 }
 
 export default Modul;

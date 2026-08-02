@@ -191,9 +191,12 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
         <Form form={form} layout="vertical" name="crudForm" className="mt-6 flex flex-col gap-y-2" onFinish={onSubmit} onValuesChange={handleValuesChange}>
           {formFields.map(({ renderIf, ...field }, index) => {
             if (renderIf && !renderIf(realtimeData)) return null;
+            const computedLabel = typeof field.label === 'function' ? field.label(realtimeData) : field.label;
+            const computedPlaceholder = typeof field.placeholder === 'function' ? field.placeholder(realtimeData) : field.placeholder;
+            const finalField = { ...field, label: computedLabel, placeholder: computedPlaceholder };
             return (
-              <Form.Item key={index} label={field.label} name={field.name} className="m-0" rules={field.rules} dependencies={field.dependencies}>
-                {renderFormInput(field)}
+              <Form.Item key={index} label={computedLabel} name={field.name} className="m-0" rules={field.rules} dependencies={field.dependencies}>
+                {renderFormInput(finalField)}
               </Form.Item>
             );
           })}

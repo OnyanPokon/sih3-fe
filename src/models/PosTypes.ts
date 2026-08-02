@@ -1,5 +1,6 @@
 import asset from '@/utils/asset';
 import Model from './Model';
+import Tags, { IncomingApiData as TagsIncomingApiData } from './Tags';
 
 export interface IncomingApiData {
   id: number;
@@ -29,6 +30,7 @@ export interface IncomingApiData {
     username: string;
     email: string;
   };
+  tags?: TagsIncomingApiData[];
   created_at: string;
   updated_at: string;
 }
@@ -38,6 +40,7 @@ export interface OutgoingApiData {
   nama: string;
   kewenangan: string;
   status: 'publikasi' | 'draft';
+  tag_ids?: number[];
 }
 
 interface FormValue {
@@ -45,6 +48,7 @@ interface FormValue {
   name: string;
   authority: string;
   status: 'publikasi' | 'draft';
+  tag_ids?: number[];
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -78,7 +82,7 @@ export default class PosTypes extends Model {
       username: string;
       email: string;
     },
-
+    public tags: Tags[],
     public created_at: string,
     public updated_at: string
   ) {
@@ -115,6 +119,7 @@ export default class PosTypes extends Model {
         username: apiData.user_id.username,
         email: apiData.user_id.email
       },
+      apiData.tags ? Tags.fromApiData(apiData.tags) : [],
       apiData.created_at,
       apiData.updated_at
     ) as ReturnType<T, IncomingApiData, PosTypes>;
@@ -126,7 +131,8 @@ export default class PosTypes extends Model {
       kategori_id: posTypes.id_kategori,
       nama: posTypes.name,
       kewenangan: posTypes.authority,
-      status: posTypes.status
+      status: posTypes.status,
+      tag_ids: posTypes.tag_ids
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;

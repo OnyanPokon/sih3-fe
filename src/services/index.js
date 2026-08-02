@@ -13,4 +13,6 @@ export { default as ObservationPosService } from './ObservationPosService';
 export { default as TelemetryCoordinatesService } from './TelemetryCoordinatesService';
 export { default as LegalProductsService } from './LegalProductsService';
 export { default as WilayahSungaiService } from './WilayahSungaiService';
+export { default as TagsService } from './TagsService';
+
 

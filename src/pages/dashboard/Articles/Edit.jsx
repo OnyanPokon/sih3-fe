@@ -6,7 +6,7 @@ import { useAuth, useCrudModal, useNotification, useService } from '@/hooks';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { ArticlesService, CategoriesService } from '@/services';
+import { ArticlesService, CategoriesService, TagsService } from '@/services';
 import useAbortableService from '@/hooks/useAbortableService';
 import { docsColumn, thumbnailsColumn } from './Columns';
 import { PlusOutlined } from '@ant-design/icons';
@@ -22,6 +22,7 @@ const Edit = () => {
 
   const { execute: fetchArticles, ...getAllArticles } = useService(ArticlesService.getBySlug);
   const { execute: fetchCategories, ...getAllCategories } = useAbortableService(CategoriesService.getAll, { onUnauthorized });
+  const { execute: fetchTags, ...getAllTags } = useAbortableService(TagsService.getAll, { onUnauthorized });
   const { execute: fetchThumbnails, ...getAllThumbnails } = useService(ArticlesService.getAllThumbnails);
   const { execute: fetchDocs, ...getAllDocs } = useService(ArticlesService.getAllDocs);
 
@@ -31,19 +32,22 @@ const Edit = () => {
   const storeDoc = useService(ArticlesService.storeDoc);
   const deleteDoc = useService(ArticlesService.deleteDocs);
 
-  // Fetch articles dan categories
+  // Fetch articles, categories, and tags
   useEffect(() => {
     fetchArticles({ slug, token });
-    fetchCategories({ token });
-  }, [fetchArticles, fetchCategories, slug, token]);
+    fetchCategories({ token, per_page: 'all' });
+    fetchTags({ token, per_page: 'all' });
+  }, [fetchArticles, fetchCategories, fetchTags, slug, token]);
 
   const categories = useMemo(() => getAllCategories.data ?? [], [getAllCategories.data]);
+  const tags = useMemo(() => getAllTags.data ?? [], [getAllTags.data]);
 
   const initialData = useMemo(() => {
     const news = getAllArticles.data ?? {};
     return {
       ...news,
-      category_id: news?.category_id?.id
+      category_id: news?.category_id?.id,
+      tag_ids: news?.tags ? news.tags.map((t) => t.id) : []
     };
   }, [getAllArticles.data]);
 
@@ -168,6 +172,21 @@ const Edit = () => {
                       size="large"
                       options={categories.map((item) => ({
                         label: item.category_name,
+                        value: item.id
+                      }))}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    className="mb-4"
+                    name="tag_ids"
+                    label="Tag"
+                  >
+                    <Select
+                      mode="multiple"
+                      placeholder="Pilih Tag"
+                      size="large"
+                      options={tags.map((item) => ({
+                        label: item.name,
                         value: item.id
                       }))}
                     />

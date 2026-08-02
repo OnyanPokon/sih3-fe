@@ -8,7 +8,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import Dragger from 'antd/es/upload/Dragger';
 import { InboxOutlined } from '@ant-design/icons';
 import strings from '@/utils/strings';
-import { CategoriesService, NewsService } from '@/services';
+import { CategoriesService, NewsService, TagsService } from '@/services';
 import useAbortableService from '@/hooks/useAbortableService';
 
 const Edit = () => {
@@ -19,20 +19,24 @@ const Edit = () => {
   const { success, error } = useNotification();
   const { execute: fetchNews, ...getAllNews } = useService(NewsService.getBySlug);
   const { execute: fetchCategories, ...getAllCategories } = useAbortableService(CategoriesService.getAll, { onUnauthorized });
+  const { execute: fetchTags, ...getAllTags } = useAbortableService(TagsService.getAll, { onUnauthorized });
   const updateNews = useService(NewsService.update);
 
   useEffect(() => {
     fetchNews({ slug, token });
-    fetchCategories({ token });
-  }, [fetchNews, fetchCategories, slug, token]);
+    fetchCategories({ token, per_page: 'all' });
+    fetchTags({ token, per_page: 'all' });
+  }, [fetchNews, fetchCategories, fetchTags, slug, token]);
 
   const categories = useMemo(() => getAllCategories.data ?? [], [getAllCategories.data]);
+  const tags = useMemo(() => getAllTags.data ?? [], [getAllTags.data]);
 
   const initialData = useMemo(() => {
     const news = getAllNews.data ?? {};
     return {
       ...news,
-      category_id: news?.category_id?.id
+      category_id: news?.category_id?.id,
+      tag_ids: news?.tags ? news.tags.map((t) => t.id) : []
     };
   }, [getAllNews.data]);
 
@@ -157,6 +161,21 @@ const Edit = () => {
                   size="large"
                   options={categories.map((item) => ({
                     label: item.category_name,
+                    value: item.id
+                  }))}
+                />
+              </Form.Item>
+              <Form.Item
+                className="mb-4"
+                name="tag_ids"
+                label="Tag"
+              >
+                <Select
+                  mode="multiple"
+                  placeholder="Pilih Tag"
+                  size="large"
+                  options={tags.map((item) => ({
+                    label: item.name,
                     value: item.id
                   }))}
                 />

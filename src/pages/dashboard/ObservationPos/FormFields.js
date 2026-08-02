@@ -54,5 +54,16 @@ export const formFields = ({ options }) => [
     name: 'longitude',
     type: InputType.TEXT,
     rules: [{ required: true, message: 'Longitude harus diisi' }]
+  },
+  {
+    label: 'Tag',
+    name: 'tag_ids',
+    type: InputType.SELECT,
+    mode: 'multiple',
+    placeholder: 'Pilih Tag (Opsional)',
+    options: (options.tags || []).map((item) => ({
+      label: item.name,
+      value: item.id
+    }))
   }
 ];

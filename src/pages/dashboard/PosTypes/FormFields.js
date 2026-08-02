@@ -59,5 +59,16 @@ export const formFields = ({ options }) => [
         value: 'draft'
       }
     ]
+  },
+  {
+    label: 'Tag',
+    name: 'tag_ids',
+    type: InputType.SELECT,
+    mode: 'multiple',
+    placeholder: 'Pilih Tag (Opsional)',
+    options: (options.tags || []).map((item) => ({
+      label: item.name,
+      value: item.id
+    }))
   }
 ];

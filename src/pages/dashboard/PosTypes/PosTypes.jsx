@@ -1,11 +1,11 @@
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import useAbortableService from '@/hooks/useAbortableService';
-import { Card, Skeleton, Space } from 'antd';
+import { Card, Skeleton, Space, Tag as AntTag } from 'antd';
 import { PosTypes as PosTypeModel } from '@/models';
 import React from 'react';
 import { DataTable, DataTableHeader } from '@/components';
-import { PosTypesService, CategoriesService } from '@/services';
+import { PosTypesService, CategoriesService, TagsService } from '@/services';
 import { formFields } from './FormFields.js';
 import Action from '@/constants/Action.js';
 import Edit from '@/components/dashboard/button/Edit.jsx';
@@ -19,6 +19,7 @@ const PosTypes = () => {
   const { token, user, onUnauthorized } = useAuth();
   const { execute, ...getAllPosTypes } = useAbortableService(PosTypesService.getAll, { onUnauthorized });
   const { execute: fetchCategories, ...getAllCategories } = useAbortableService(CategoriesService.getAll, { onUnauthorized });
+  const { execute: fetchTags, ...getAllTags } = useAbortableService(TagsService.getAll, { onUnauthorized });
 
   const pagination = usePagination({ totalData: getAllPosTypes.totalData });
   const [filterValues, setFilterValues] = React.useState({ search: '' });
@@ -34,13 +35,15 @@ const PosTypes = () => {
 
   React.useEffect(() => {
     fetchPosTypes();
-    fetchCategories({ token: token });
-  }, [fetchCategories, fetchPosTypes, token]);
+    fetchCategories({ token: token, per_page: 'all' });
+    fetchTags({ token: token, per_page: 'all' });
+  }, [fetchCategories, fetchPosTypes, fetchTags, token]);
 
   const [selectedData, setSelectedData] = React.useState([]);
 
   const posTypes = getAllPosTypes.data ?? [];
   const categories = getAllCategories.data ?? [];
+  const tags = getAllTags.data ?? [];
 
   const storePosType = useService(PosTypesService.store, onUnauthorized);
   const updatePosType = useService(PosTypesService.update, onUnauthorized);
@@ -58,6 +61,20 @@ const PosTypes = () => {
       dataIndex: ['id_kategori', 'category_name'],
       sorter: (a, b) => a.id_kategori.category_name.length - b.id_kategori.category_name.length,
       searchable: true
+    },
+    {
+      title: 'Tag',
+      render: (_, record) => (
+        <div className="flex flex-wrap gap-1">
+          {record.tags && record.tags.length > 0 ? (
+            record.tags.map((t) => (
+              <AntTag key={t.id} color="blue">{t.name}</AntTag>
+            ))
+          ) : (
+            <span className="text-gray-400">-</span>
+          )}
+        </div>
+      )
     }
   ];
 
@@ -72,13 +89,17 @@ const PosTypes = () => {
             onClick={() => {
               modal.edit({
                 title: `Edit ${Modul.POSTYPES}`,
-                data: { ...record, id_kategori: record.id_kategori.id },
-                formFields: formFields({ options: { categories: categories } }),
+                data: {
+                  ...record,
+                  id_kategori: record.id_kategori.id,
+                  tag_ids: record.tags ? record.tags.map((t) => t.id) : []
+                },
+                formFields: formFields({ options: { categories: categories, tags: tags } }),
                 onSubmit: async (values) => {
                   const { message, isSuccess } = await updatePosType.execute(record.id, values, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchCategories({ token: token, page: pagination.page, per_page: pagination.per_page });
+                    fetchPosTypes();
                   } else {
                     error('Gagal', message);
                   }
@@ -98,7 +119,7 @@ const PosTypes = () => {
                   const { isSuccess, message } = await deletePosType.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchCategories({ token: token, page: pagination.page, per_page: pagination.per_page });
+                    fetchPosTypes();
                   } else {
                     error('Gagal', message);
                   }
@@ -115,12 +136,12 @@ const PosTypes = () => {
   const onCreate = () => {
     modal.create({
       title: `Tambah ${Modul.POSTYPES}`,
-      formFields: formFields({ options: { categories: categories } }),
+      formFields: formFields({ options: { categories: categories, tags: tags } }),
       onSubmit: async (values) => {
         const { message, isSuccess } = await storePosType.execute(values, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchPosTypes({ token: token, page: pagination.page, per_page: pagination.per_page });
+          fetchPosTypes();
         } else {
           error('Gagal', message);
         }

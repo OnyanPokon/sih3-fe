@@ -1,5 +1,6 @@
 import asset from '@/utils/asset';
 import Model from './Model';
+import Tags, { IncomingApiData as TagsIncomingApiData } from './Tags';
 
 export interface IncomingApiData {
   id: number;
@@ -40,6 +41,7 @@ export interface IncomingApiData {
     artikel_id: number;
     dokumen: string;
   }[];
+  tags?: TagsIncomingApiData[];
   total_kunjungan: number;
   total_unduh: number;
   kuesioner_tambahan: boolean;
@@ -55,6 +57,7 @@ export interface OutgoingApiData {
   thumbnails: string[];
   kuesioner_tambahan: boolean;
   dokumen: string[] | null;
+  tag_ids?: number[];
 }
 
 interface FormValue {
@@ -65,6 +68,7 @@ interface FormValue {
   thumbnails: string[];
   additional_quiz: boolean;
   doc: string[] | null;
+  tag_ids?: number[];
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -109,6 +113,7 @@ export default class Articles extends Model {
       article_id: number;
       doc: string;
     }[],
+    public tags: Tags[],
     public total_visits: number,
     public total_downloads: number,
     public additional_quiz: boolean,
@@ -159,6 +164,7 @@ export default class Articles extends Model {
         article_id: item.artikel_id,
         doc: asset(item.dokumen)
       })),
+      apiData.tags ? Tags.fromApiData(apiData.tags) : [],
       apiData.total_kunjungan,
       apiData.total_unduh,
       apiData.kuesioner_tambahan,
@@ -176,7 +182,8 @@ export default class Articles extends Model {
       konten: articles.content,
       thumbnails: articles.thumbnails,
       kuesioner_tambahan: articles.additional_quiz,
-      dokumen: articles.doc
+      dokumen: articles.doc,
+      tag_ids: articles.tag_ids
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;

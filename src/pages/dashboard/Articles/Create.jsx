@@ -1,6 +1,6 @@
 import Modul from '@/constants/Modul';
 import { useAuth, useNotification, useService } from '@/hooks';
-import { CategoriesService, ArticlesService } from '@/services';
+import { CategoriesService, ArticlesService, TagsService } from '@/services';
 import { Button, Card, Form, Input, Select, Typography } from 'antd';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -17,13 +17,16 @@ const Create = () => {
   const [form] = Form.useForm();
   const { success, error } = useNotification();
   const { execute: fetchCategories, ...getAllCategories } = useAbortableService(CategoriesService.getAll, { onUnauthorized });
+  const { execute: fetchTags, ...getAllTags } = useAbortableService(TagsService.getAll, { onUnauthorized });
   const storeArticle = useService(ArticlesService.store);
 
   useEffect(() => {
-    fetchCategories({ token: token });
-  }, [fetchCategories, token]);
+    fetchCategories({ token: token, per_page: 'all' });
+    fetchTags({ token: token, per_page: 'all' });
+  }, [fetchCategories, fetchTags, token]);
 
   const categories = getAllCategories.data ?? [];
+  const tags = getAllTags.data ?? [];
 
   const handleEditorChange = (editor) => {
     const content = editor.getContent();
@@ -56,7 +59,8 @@ const Create = () => {
             ...values,
             additional_quiz: location.state.withQuiz ? 1 : 0,
             thumbnails,
-            doc: dokumen
+            doc: dokumen,
+            tag_ids: values.tag_ids || []
           };
 
           const { message, isSuccess } = await storeArticle.execute(payload, token);
@@ -128,6 +132,21 @@ const Create = () => {
               size="large"
               options={categories.map((item) => ({
                 label: item.category_name,
+                value: item.id
+              }))}
+            />
+          </Form.Item>
+          <Form.Item
+            className="mb-4"
+            name="tag_ids"
+            label="Tag"
+          >
+            <Select
+              mode="multiple"
+              placeholder="Pilih Tag"
+              size="large"
+              options={tags.map((item) => ({
+                label: item.name,
                 value: item.id
               }))}
             />

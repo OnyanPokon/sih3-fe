@@ -86,6 +86,12 @@ export default class ArticlesService {
       });
     }
 
+    if (Array.isArray(data.tag_ids)) {
+      data.tag_ids.forEach((id) => {
+        formData.append('tag_ids[]', String(id));
+      });
+    }
+
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/artikel`, {
       method: 'POST',
       headers: {

@@ -1,4 +1,5 @@
 import Model from './Model';
+import Tags, { IncomingApiData as TagsIncomingApiData } from './Tags';
 
 export interface IncomingApiData {
   id: number;
@@ -15,6 +16,7 @@ export interface IncomingApiData {
   nama: string;
   koordinat: string;
   alamat: string;
+  tags?: TagsIncomingApiData[];
   created_at: string;
   updated_at: string;
 }
@@ -24,6 +26,7 @@ export interface OutgoingApiData {
   nama: string;
   koordinat: string;
   alamat: string;
+  tag_ids?: number[];
 }
 
 interface FormValue {
@@ -31,6 +34,7 @@ interface FormValue {
   name: string;
   coordinate: string;
   address: string;
+  tag_ids?: number[];
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -51,6 +55,7 @@ export default class ObservationPos extends Model {
     public name: string,
     public coordinate: string,
     public address: string,
+    public tags: Tags[],
     public created_at: string,
     public updated_at: string
   ) {
@@ -74,6 +79,7 @@ export default class ObservationPos extends Model {
       apiData.nama,
       apiData.koordinat,
       apiData.alamat,
+      apiData.tags ? Tags.fromApiData(apiData.tags) : [],
       apiData.created_at,
       apiData.updated_at
     ) as ReturnType<T, IncomingApiData, ObservationPos>;
@@ -85,7 +91,8 @@ export default class ObservationPos extends Model {
       nama: observationPos.name,
       alamat: observationPos.address,
       jenis_pos_id: observationPos.pos_type_id,
-      koordinat: observationPos.coordinate
+      koordinat: observationPos.coordinate,
+      tag_ids: observationPos.tag_ids
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;

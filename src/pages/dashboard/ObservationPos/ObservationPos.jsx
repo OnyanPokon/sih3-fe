@@ -2,13 +2,13 @@ import { Delete, Edit } from '@/components/dashboard/button';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import useAbortableService from '@/hooks/useAbortableService';
-import { Button, Card, Skeleton, Space, Tooltip } from 'antd';
+import { Button, Card, Skeleton, Space, Tag as AntTag, Tooltip } from 'antd';
 import { ObservationPos as ObservationPosModel, TelemetryCoordinates as TelemetryCoordinateModel } from '@/models';
 import React from 'react';
 import { Action, InputType } from '@/constants';
 import { DataTable, DataTableHeader } from '@/components';
 import { formFields } from './FormFields.js';
-import { ObservationPosService, PosTypesService } from '@/services';
+import { ObservationPosService, PosTypesService, TagsService } from '@/services';
 import { DatabaseOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
@@ -21,6 +21,7 @@ const ObservationPos = () => {
   const { token, user, onUnauthorized } = useAuth();
   const { execute, ...getAllObservationPos } = useAbortableService(ObservationPosService.getAll, { onUnauthorized });
   const { execute: fetchPosTypes, ...getAllPosTypes } = useAbortableService(PosTypesService.getAll, { onUnauthorized });
+  const { execute: fetchTags, ...getAllTags } = useAbortableService(TagsService.getAll, { onUnauthorized });
 
   const pagination = usePagination({ totalData: getAllObservationPos.totalData });
   const [filterValues, setFilterValues] = React.useState({ search: '' });
@@ -37,12 +38,14 @@ const ObservationPos = () => {
   React.useEffect(() => {
     fetchObservationPos();
     fetchPosTypes({ token: token });
-  }, [fetchObservationPos, fetchPosTypes, token]);
+    fetchTags({ token: token, per_page: 'all' });
+  }, [fetchObservationPos, fetchPosTypes, fetchTags, token]);
 
   const [selectedData, setSelectedData] = React.useState([]);
 
   const observationPos = getAllObservationPos.data ?? [];
   const posTypes = getAllPosTypes.data ?? [];
+  const tags = getAllTags.data ?? [];
 
   const storeObservationPos = useService(ObservationPosService.store, onUnauthorized);
   const updateObservationPos = useService(ObservationPosService.update, onUnauthorized);
@@ -61,6 +64,20 @@ const ObservationPos = () => {
       dataIndex: ['pos_type_id', 'name'],
       sorter: (a, b) => a.pos_type_id.name.length - b.pos_type_id.name.length,
       searchable: true
+    },
+    {
+      title: 'Tag',
+      render: (_, record) => (
+        <div className="flex flex-wrap gap-1">
+          {record.tags && record.tags.length > 0 ? (
+            record.tags.map((t) => (
+              <AntTag key={t.id} color="blue">{t.name}</AntTag>
+            ))
+          ) : (
+            <span className="text-gray-400">-</span>
+          )}
+        </div>
+      )
     }
   ];
 
@@ -77,8 +94,14 @@ const ObservationPos = () => {
               const [longitude = '', latitude = ''] = coordinates.split(',').map((coord) => coord.trim());
               modal.edit({
                 title: `Edit ${Modul.OBSERVATION_POS}`,
-                data: { ...record, longitude: longitude, latitude: latitude, pos_type_id: record.pos_type_id.id },
-                formFields: formFields({ options: { posTypes: posTypes } }),
+                data: {
+                  ...record,
+                  longitude: longitude,
+                  latitude: latitude,
+                  pos_type_id: record.pos_type_id.id,
+                  tag_ids: record.tags ? record.tags.map((t) => t.id) : []
+                },
+                formFields: formFields({ options: { posTypes: posTypes, tags: tags } }),
                 onSubmit: async (values) => {
                   const { message, isSuccess } = await updateObservationPos.execute(record.id, { ...values, coordinate: `${values.latitude},${values.longitude}` }, token);
                   if (isSuccess) {
@@ -125,7 +148,7 @@ const ObservationPos = () => {
   const onCreate = () => {
     modal.create({
       title: `Tambah ${Modul.OBSERVATION_POS}`,
-      formFields: formFields({ options: { posTypes: posTypes } }),
+      formFields: formFields({ options: { posTypes: posTypes, tags: tags } }),
       onSubmit: async (values) => {
         const payload = { ...values, coordinate: `${values.latitude},${values.longitude}` };
         const { message, isSuccess } = await storeObservationPos.execute(payload, token);

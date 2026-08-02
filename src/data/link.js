@@ -3,7 +3,7 @@ import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
 import * as Model from '@/models';
-import {CameraOutlined, CompassOutlined, DashboardOutlined, DatabaseOutlined, EnvironmentOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import {CameraOutlined, CompassOutlined, DashboardOutlined, DatabaseOutlined, EnvironmentOutlined, SettingOutlined, TagOutlined, UserOutlined } from '@ant-design/icons';
 import DefaultCategories from '@/constants/DefaultCategories';
 
 export const landingLink = [
@@ -121,6 +121,13 @@ export const dashboardLink = [
     element: Dashboard.WilayahSungai,
     roles: [Role.SUPERADMIN],
     permissions: [[Action.READ, Model.WilayahSungai]],
+  },
+  {
+    label: 'Tag',
+    icon: TagOutlined,
+    path: '/dashboard/tags',
+    element: Dashboard.Tags,
+    roles: [Role.SUPERADMIN, Role.ADMIN]
   },
   {
     label: 'Personil',
