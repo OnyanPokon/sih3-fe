@@ -130,9 +130,13 @@ const Roles = () => {
   };
 
   return (
-    <Card>
-      <Skeleton loading={getAllRoles.isLoading}>
+    <Card
+      title={
         <DataTableHeader model={RoleModel} modul={Modul.ROLE} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
+      }
+    >
+      <Skeleton loading={getAllRoles.isLoading}>
+
         <div className="flex w-full items-center justify-end">
           <Button type="primary" className="mb-4" icon={<PlusOutlined />} onClick={onCreate}>
             Tambah

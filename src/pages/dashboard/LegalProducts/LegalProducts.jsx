@@ -156,9 +156,13 @@ const LegalProducts = () => {
   };
 
   return (
-    <Card>
-      <Skeleton loading={getAllLegalProducts.isLoading}>
+    <Card
+    title={
         <DataTableHeader model={LegalProductModel} modul={Modul.LEGAL_PRODUCTS} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
+      }
+    >
+      <Skeleton loading={getAllLegalProducts.isLoading}>
+
         <div className="w-full max-w-full overflow-x-auto">
           <DataTable
             data={legalProducts}

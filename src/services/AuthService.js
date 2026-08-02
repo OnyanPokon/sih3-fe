@@ -59,8 +59,8 @@ export default class AuthService {
     return await api.post('/auth/logout');
   }
 
-  static async forgot(email) {
-    return await api.post('/auth/forgot-password', { body: { email } });
+  static async sendEmailForgot(email) {
+    return await api.post('/auth/kirim-email', { body: { email } });
   }
 
   static async reset(token, data) {

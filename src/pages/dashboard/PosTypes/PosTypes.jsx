@@ -130,9 +130,13 @@ const PosTypes = () => {
   };
 
   return (
-    <Card>
-      <Skeleton loading={getAllPosTypes.isLoading}>
+  <Card
+      title={
         <DataTableHeader model={PosTypeModel} modul={Modul.POSTYPES} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
+      }
+    >
+      <Skeleton loading={getAllPosTypes.isLoading}>
+
         <div className="w-full max-w-full overflow-x-auto">
           <DataTable data={posTypes} columns={column} loading={getAllPosTypes.isLoading} map={(posTypes) => ({ key: posTypes.id, ...posTypes })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} pagination={pagination} />
         </div>

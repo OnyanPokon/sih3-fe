@@ -41,7 +41,7 @@ const Navbar = () => {
               </div>
             ) : (
               <>
-                <Image width={40} preview={false} src={''} />
+                <Image width={40} preview={false} src={'/image_asset/logo/prov_gto_logo.png'} />
                 <b>
                   <span className="text-blue-500">SIH3</span>{' '}
                 </b>

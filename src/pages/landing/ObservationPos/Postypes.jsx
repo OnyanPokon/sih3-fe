@@ -4,7 +4,7 @@ import { CategoriesService, PosTypesService } from '@/services';
 import dateFormatter from '@/utils/dateFormatter';
 import { getThemeByCategory } from '@/utils/getThemeByCategory';
 import { RightOutlined } from '@ant-design/icons';
-import { Button, Card, Input, Radio, Skeleton, Typography } from 'antd';
+import { Button, Card, Empty, Input, Radio, Skeleton, Typography } from 'antd';
 import { Calendar, Gavel, TrendingUpDown } from 'lucide-react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -16,7 +16,7 @@ const PosTypes = () => {
   const { execute: fetchCategories, ...getAllCategories } = useAbortableService(CategoriesService.getAllInLanding, { onUnauthorized });
 
   const pagination = usePagination({ totalData: getAllPosTypes.totalData });
-  const [activeTab, setActiveTab] = React.useState(null);
+  const [filterValues, setFilterValues] = React.useState({ search: '', kategori_id: null });
 
   const categories = React.useMemo(() => getAllCategories.data ?? [], [getAllCategories.data]);
 
@@ -25,20 +25,14 @@ const PosTypes = () => {
     fetchCategories({});
   }, [fetchCategories]);
 
-  // 🔹 Set default tab AFTER categories loaded
-  React.useEffect(() => {
-    if (categories.length > 0 && activeTab === null) {
-      setActiveTab(categories[0].id); // tab pertama
-    }
-  }, [categories, activeTab]);
-
-  // 🔹 Fetch Pos Types whenever tab or pagination changes
   React.useEffect(() => {
     fetchPosTypes({
       page: pagination.page,
-      per_page: pagination.perPage
+      per_page: pagination.perPage,
+      kategori_id: filterValues.kategori_id ?? undefined,
+      search: filterValues.search
     });
-  }, [activeTab, pagination.page, pagination.perPage, fetchPosTypes]);
+  }, [pagination.page, pagination.perPage, fetchPosTypes, filterValues.kategori_id, filterValues.search]);
 
   const posTypes = getAllPosTypes.data ?? [];
 
@@ -64,82 +58,84 @@ const PosTypes = () => {
       </section>
       <section className="bg-gray-100">
         <div className="mx-auto flex w-full max-w-screen-xl items-center justify-between gap-x-2 p-6">
-          <Input.Search size="large" placeholder="Cari nama jenis pos" className="max-w-md" />
-          <Radio.Group defaultValue="a" size="large" className="">
-            <Radio.Button value="a">Semua</Radio.Button>
-            <Radio.Button value="b">Hidrologi</Radio.Button>
-            <Radio.Button value="c">Hidrometeorologi</Radio.Button>
-            <Radio.Button value="d">Hidrogeologi</Radio.Button>
+          <Input.Search allowClear  onSearch={(values) => setFilterValues((prev) => ({ ...prev, search: values }))} size="large" placeholder="Cari nama jenis pos" className="max-w-md" />
+          <Radio.Group
+            value={filterValues.kategori_id}
+            onChange={(e) => {
+              setFilterValues((prev) => ({ ...prev, kategori_id: e.target.value }));
+            }}
+            size="large"
+          >
+            <Radio.Button value={null}>Semua</Radio.Button>
+
+            {categories.map((item) => (
+              <Radio.Button value={item.id} key={item.id}>
+                {item.category_name}
+              </Radio.Button>
+            ))}
           </Radio.Group>
         </div>
       </section>
       <section className="bg-gray-50">
         <div className="mx-auto flex w-full max-w-screen-xl flex-col gap-y-2 px-12 py-12">
           <div className="flex flex-wrap items-start justify-start gap-4">
-            {getAllPosTypes.isLoading
-              ? Array.from({ length: 3 }, (_, i) => i).map((index) => (
-                  <Card className="w-full max-w-[382px]" key={index}>
-                    <Skeleton active />
-                  </Card>
-                ))
-              : posTypes?.map((item) => {
-                  const theme = getThemeByCategory(item.id_kategori.category_name);
-
-                  return (
-                    <Card key={item.id} className="w-full max-w-[382px]">
-                      <div className="text-gray-500">
-                        <Typography.Title level={5}>
-                          <span className="news-text">{item.name}</span>
-                        </Typography.Title>
-                        <div className="inline-flex w-full items-center justify-between">
-                          <span className="inline-flex items-start gap-x-2 text-xs">
-                            <TrendingUpDown size={16} />
-                            Jenis Pos
-                          </span>
-                          <span className={`rounded-full ${theme.bg} mb-2 px-3 py-1 text-xs font-medium text-white`}>{item.id_kategori.category_name}</span>
-                        </div>
-                        <div className="inline-flex w-full items-center justify-between">
-                          <span className="inline-flex items-start gap-x-2 text-xs">
-                            <Gavel size={16} />
-                            Kewenangan
-                          </span>
-                          <span className="text-xs">{item.authority}</span>
-                        </div>
-                        <div className="inline-flex w-full items-center justify-between">
-                          <span className="inline-flex items-start gap-x-2 text-xs">
-                            <Calendar size={16} />
-                            Update Terakhir
-                          </span>
-                          <span className="text-xs">{dateFormatter(item.updated_at, 'dd MMMM yyyy')}</span>
-                        </div>
-
-                        <Button icon={<RightOutlined className="text-xs" />} variant="outlined" color="primary" className="mt-4 w-full" iconPosition="end" onClick={() => navigte('/pos_pengamatan/' + item.id)}>
-                          Lihat Detail
-                        </Button>
-                      </div>
-                    </Card>
-                  );
-                })}
-          </div>
-          {/* <div className="">
-            <div className="flex flex-wrap items-start justify-center gap-4 pt-12">
-              {getAllPosTypes.isLoading || getAllCategories.isLoading ? (
-                <Card className="w-full">
+            {getAllPosTypes.isLoading ? (
+              Array.from({ length: 3 }, (_, i) => (
+                <Card className="w-full max-w-[382px]" key={i}>
                   <Skeleton active />
                 </Card>
-              ) : (
-                <Card className="w-full">
-                  <Tabs activeKey={String(activeTab)} onChange={(key) => setActiveTab(Number(key))}>
-                    {categories.map((item) => (
-                      <Tabs.TabPane tab={item.category_name} key={item.id}>
-                        <DataTable data={posTypes} columns={column} loading={getAllPosTypes.isLoading} pagination={pagination} />
-                      </Tabs.TabPane>
-                    ))}
-                  </Tabs>
-                </Card>
-              )}
-            </div>
-          </div> */}
+              ))
+            ) : posTypes.length > 0 ? (
+              posTypes.map((item) => {
+                const theme = getThemeByCategory(item.id_kategori.category_name);
+
+                return (
+                  <Card key={item.id} className="w-full max-w-[382px]">
+                    <div className="text-gray-500">
+                      <Typography.Title level={5}>
+                        <span className="news-text">{item.name}</span>
+                      </Typography.Title>
+                      <div className="inline-flex w-full items-center justify-between">
+                        <span className="inline-flex items-start gap-x-2 text-xs">
+                          <TrendingUpDown size={16} />
+                          Jenis Pos
+                        </span>
+                        <span className={`rounded-full ${theme.bg} mb-2 px-3 py-1 text-xs font-medium text-white`}>{item.id_kategori.category_name}</span>
+                      </div>
+                      <div className="inline-flex w-full items-center justify-between">
+                        <span className="inline-flex items-start gap-x-2 text-xs">
+                          <Gavel size={16} />
+                          Kewenangan
+                        </span>
+                        <span className="text-xs">{item.authority}</span>
+                      </div>
+                      <div className="inline-flex w-full items-center justify-between">
+                        <span className="inline-flex items-start gap-x-2 text-xs">
+                          <Calendar size={16} />
+                          Update Terakhir
+                        </span>
+                        <span className="text-xs">{dateFormatter(item.updated_at, 'dd MMMM yyyy')}</span>
+                      </div>
+
+                      <Button icon={<RightOutlined className="text-xs" />} variant="outlined" color="primary" className="mt-4 w-full" iconPosition="end" onClick={() => navigte('/pos_pengamatan/' + item.id)}>
+                        Lihat Detail
+                      </Button>
+                    </div>
+                  </Card>
+                );
+              })
+            ) : (
+              <div className="flex w-full justify-center py-20">
+                <Empty
+                  description={
+                    filterValues.search || filterValues.kategori_id
+                      ? 'Tidak ada jenis pos yang sesuai dengan filter.'
+                      : 'Belum ada data jenis pos.'
+                  }
+                />
+              </div>
+            )}
+          </div>
         </div>
       </section>
     </>

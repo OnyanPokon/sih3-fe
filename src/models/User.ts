@@ -1,6 +1,7 @@
 import { Action, Role } from '@/constants';
 import Model, { ModelChildren } from './Model';
 import Permission from './Permission';
+import DefaultCategories from '@/constants/DefaultCategories';
 
 export interface IncomingApiData {
   id: number;
@@ -12,6 +13,10 @@ export interface IncomingApiData {
     id: number;
     nama: string;
     wilayah: string;
+    kategoris: {
+      id: number;
+      nama: string;
+    }[]
   };
 }
 
@@ -27,14 +32,25 @@ export default class User extends Model {
     public token: string,
     public role: Role,
     public permissions: Permission[] = [],
-    public unor: { id: number; nama: string; wilayah: string } | null = null
+    public unor: { id: number; nama: string; wilayah: string; kategoris: { id: number; nama: string }[] } | null = null
   ) {
     super();
+  }
+
+  categoryIs(categories: DefaultCategories[]): boolean {
+    if (!categories.length) return true;
+
+    return (
+      this.unor?.kategoris?.some((kategori) =>
+        categories.includes(kategori.nama as DefaultCategories)
+      ) ?? false
+    );
   }
 
   is(role: Role) {
     return this.role === role;
   }
+
 
   can(action: Action, model: ModelChildren) {
     return this.permissions.some((permission) => permission.can(action, model));

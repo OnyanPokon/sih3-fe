@@ -17,17 +17,17 @@ export default function DataHeader({ modul, selectedData, onStore, onDeleteBatch
 
   const importMenuItems = hasImportCapability
     ? [
-        {
-          key: 'template',
-          label: 'Download Template',
-          onClick: () => templateDownloader(onImport.templateFile)
-        },
-        {
-          key: 'import',
-          label: 'Import Data',
-          onClick: () => onImport.importHandler?.()
-        }
-      ]
+      {
+        key: 'template',
+        label: 'Download Template',
+        onClick: () => templateDownloader(onImport.templateFile)
+      },
+      {
+        key: 'import',
+        label: 'Import Data',
+        onClick: () => onImport.importHandler?.()
+      }
+    ]
     : [];
 
   const menuItems = [];
@@ -81,7 +81,7 @@ export default function DataHeader({ modul, selectedData, onStore, onDeleteBatch
         break;
       case 'template':
         templateDownloader?.(onImport.templateFile);
-        break;
+      break;
       case 'export':
         onExport?.();
         break;
@@ -92,27 +92,22 @@ export default function DataHeader({ modul, selectedData, onStore, onDeleteBatch
 
   return (
     <>
-      <div className="flex w-full items-center justify-between lg:mb-6">
-        {modul ? (
-          <Title level={5} style={{ margin: 0 }}>
-            Data {modul}
-          </Title>
-        ) : (
-          <Skeleton.Input size="small" />
-        )}
-        <Dropdown className="lg:hidden" menu={{ items: menuItems, onClick: handleMenuClick }}>
+      <div className="my-4 inline-flex w-full items-center justify-between">
+        <div className="">
+          {modul ? (
+            <Title level={5} style={{ margin: 0 }}>
+              Data {modul}
+            </Title>
+          ) : (
+            <Skeleton.Input size="small" />
+          )}
+        </div>
+        <Dropdown className="md:hidden" menu={{ items: menuItems, onClick: handleMenuClick }}>
           <Button color="default" variant="link">
             <MenuOutlined />
           </Button>
         </Dropdown>
-      </div>
-      {(children || onExport || onImport || (user && user.eitherCan([DELETE, model], [CREATE, model]))) && (
-        <div className="mb-6 flex flex-col-reverse justify-end gap-2 empty:hidden md:flex-row">
-          {user && user.can(DELETE, model) && onDeleteBatch && (
-            <Button className="me-auto hidden lg:flex" icon={<DeleteOutlined />} variant="solid" color="danger" disabled={!selectedData?.length} onClick={onDeleteBatch}>
-              Hapus {selectedData?.length || null} Pilihan
-            </Button>
-          )}
+        <div className="hidden flex-col-reverse items-center justify-end gap-2 empty:hidden md:flex md:flex-row">
           <div className="mt-6 inline-flex items-center gap-x-2 lg:mt-0">
             {onSearch && <Input.Search style={{ margin: 0 }} onSearch={onSearch} className="mt-6 w-full lg:mt-0 lg:w-fit" placeholder="Cari Data" allowClear />}
             {filter && (
@@ -121,27 +116,47 @@ export default function DataHeader({ modul, selectedData, onStore, onDeleteBatch
               </Popover>
             )}
           </div>
-          {user && user.can(CREATE, model) && onStore && (
-            <Button className="hidden lg:flex" icon={<PlusOutlined />} type="primary" onClick={onStore}>
-              Tambah
-            </Button>
-          )}
-          {onImport && (
-            <div className="hidden lg:flex">
-              <Dropdown.Button icon={<ImportOutlined />} menu={{ items: importMenuItems }}>
-                Import
-              </Dropdown.Button>
-            </div>
-          )}
-          {onExport && (
-            <Button className="hidden lg:flex" variant="solid" icon={<ExportOutlined />} onClick={onExport}>
-              Export
-            </Button>
-          )}
+          {(children || (user && user.eitherCan([DELETE, model], [CREATE, model]))) && (
+            <>
+              {user && user.can(DELETE, model) && onDeleteBatch && (
+                <Button className="me-auto" icon={<DeleteOutlined />} variant="solid" color="danger" disabled={!selectedData?.length} onClick={onDeleteBatch}>
+                  Hapus {selectedData?.length || null} Pilihan
+                </Button>
+              )}
 
-          {children}
+              {user && user.can(CREATE, model) && onStore && (
+                <Button icon={<PlusOutlined />} variant="outlined" color="primary" shape="round" onClick={onStore}>
+                  Tambah
+                </Button>
+              )}
+              {onImport && (
+                <div className="hidden lg:flex">
+                  <Dropdown.Button icon={<ImportOutlined />} menu={{ items: importMenuItems }}>
+                    Import
+                  </Dropdown.Button>
+                </div>
+              )}
+              {onExport && (
+                <Button className="hidden lg:flex" variant="solid" icon={<ExportOutlined />} onClick={onExport}>
+                  Export
+                </Button>
+              )}
+
+              {children}
+            </>
+          )}
         </div>
-      )}
+      </div>
+      <div className="md:hidden">
+        <div className="mb-4 inline-flex w-full items-center gap-x-2 lg:mt-0">
+          {onSearch && <Input.Search style={{ margin: 0 }} onSearch={onSearch} className="mt-6 w-full lg:mt-0 lg:w-fit" placeholder="Cari Data" allowClear />}
+          {filter && (
+            <Popover placement="leftBottom" trigger="click" content={<Crud formFields={filter.formFields} initialData={filter.initialData} isLoading={filter.isLoading} onSubmit={filter.onSubmit} type="create" />}>
+              <Button icon={<FilterOutlined />} />
+            </Popover>
+          )}
+        </div>
+      </div>
     </>
   );
 }

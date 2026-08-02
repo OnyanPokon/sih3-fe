@@ -1,12 +1,12 @@
 import { useAuth, useNotification } from '@/hooks';
 import { EyeInvisibleOutlined, EyeOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Card, Form, Input } from 'antd';
+import { Button, Form, Input } from 'antd';
+import Typography from 'antd/es/typography/Typography';
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
   const { login, isLoading } = useAuth();
-  const navigate = useNavigate();
   const { error } = useNotification();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [isLoadingSSO, setIsLoadingSSO] = useState(false);
@@ -37,70 +37,104 @@ const Login = () => {
       window.location.href = `${ssoUrl}oauth/authorize?${params.toString()}`;
 
     } catch (err) {
-      setError(err?.response?.data?.message || err.message || "Gagal melakukan login.");
+      error(err?.response?.data?.message || err.message || "Gagal melakukan login.");
     } finally {
       setIsLoadingSSO(false);
     }
   }
 
   return (
-    <Card className="w-full max-w-md px-4">
-      <div className="mb-5 mt-4 flex w-full flex-col items-center justify-center gap-y-2">
-        <div className="mb-4 flex flex-col items-center justify-center gap-y-2 text-center">
-          <h1 className="text-xl font-semibold">Selamat Datang!</h1>
-          <p className="max-w-xs text-xs">Sistem Informasi berbasis website untuk memenuhi kebutuhan pengelolaan manajemen</p>
+    <div className='w-full h-screen flex items-center '>
+      <div className='w-full flex flex-col items-center justify-center'>
+        <div className="mb-5 mt-4 flex w-full flex-col items-center justify-center gap-y-2">
+          <div className="mb-4 flex flex-col items-center justify-center gap-y-2 text-center">
+            <h1 className="text-3xl font-semibold">Selamat Datang</h1>
+            <p className="max-w-sm text-xs">Masukan kredensial untuk mengakses halaman dashboard</p>
+          </div>
         </div>
-      </div>
-      <Form name="login" layout="vertical" initialValues={{ remember: true }} onFinish={onFinish}>
-        <Form.Item
-          label="Email"
-          name="email"
-          rules={[
-            {
-              required: true,
-              message: 'Mohon masukkan username!'
-            }
-          ]}
-        >
-          <Input prefix={<UserOutlined />} placeholder="Username" size="large" />
-        </Form.Item>
-        <Form.Item label="Kata Sandi">
+        <Form className='max-w-sm w-full' name="login" layout="vertical" initialValues={{ remember: true }} onFinish={onFinish}>
           <Form.Item
-            name="password"
+            label="Email"
+            name="email"
+            className='m-0 mb-3'
             rules={[
               {
                 required: true,
-                message: 'Mohon masukkan kata sandi!'
+                message: 'Mohon masukkan email!'
               }
             ]}
           >
-            <Input
-              prefix={<LockOutlined />}
-              type={passwordVisible ? 'text' : 'password'}
-              placeholder="Kata Sandi"
-              size="large"
-              suffix={passwordVisible ? <EyeOutlined onClick={() => setPasswordVisible(false)} /> : <EyeInvisibleOutlined onClick={() => setPasswordVisible(true)} />}
-            />
+            <Input prefix={<UserOutlined />} placeholder="Email" size="large" />
           </Form.Item>
-        </Form.Item>
-        <Form.Item>
-          <Button block loading={isLoading} type="primary" htmlType="submit" size="large" className="mb-2">
-            Masuk
-          </Button>
-          <Button block size="large" icon={<img src="/image_asset/logo/sso_symbol_colored_logo.png" className="h-[18px] w-4" />} onClick={handleLoginSSO} loading={isLoadingSSO}>
-            Masuk Dengan SSO
-          </Button>
-        </Form.Item>
-        <Form.Item>
-          <span className="m-0 block text-center">
-            Bukan admin? Silahkan{' '}
-            <Link className="text-color-primary-500 hover:text-color-primary-200 font-bold underline" to="/">
-              Kembali ke beranda
-            </Link>
-          </span>
-        </Form.Item>
-      </Form>
-    </Card>
+          <Form.Item label="Kata Sandi">
+            <Form.Item
+              name="password"
+              className='m-0 '
+              rules={[
+                {
+                  required: true,
+                  message: 'Mohon masukkan kata sandi!'
+                }
+              ]}
+            >
+              <Input
+                prefix={<LockOutlined />}
+                type={passwordVisible ? 'text' : 'password'}
+                placeholder="Kata Sandi"
+                size="large"
+                suffix={passwordVisible ? <EyeOutlined onClick={() => setPasswordVisible(false)} /> : <EyeInvisibleOutlined onClick={() => setPasswordVisible(true)} />}
+              />
+            </Form.Item>
+            <Form.Item
+              className='m-0 mt-2'
+            >
+              <Link className='text-blue-500' to='/auth/forget_password'>
+                Lupa Password ?
+              </Link>
+            </Form.Item>
+          </Form.Item>
+          <Form.Item>
+            <Button block loading={isLoading} type="primary" htmlType="submit" size="large" className="mb-2">
+              Masuk
+            </Button>
+            <Button block size="large" icon={<img src="/image_asset/logo/sso_symbol_colored_logo.png" className="h-[18px] w-4" />} onClick={handleLoginSSO} loading={isLoadingSSO}>
+              Masuk Dengan SSO
+            </Button>
+          </Form.Item>
+          <Form.Item>
+            <span className="m-0 block text-center">
+              Bukan admin? Silahkan{' '}
+              <Link className="text-color-primary-500 hover:text-color-primary-200 font-bold underline" to="/">
+                Kembali ke beranda
+              </Link>
+            </span>
+          </Form.Item>
+        </Form>
+      </div>
+      <div className=' w-full h-full p-4'>
+        <div
+          style={{
+            backgroundImage: "url('/image_asset/background/hero_bg.jpg')",
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            backgroundColor: 'rgba(0, 0, 0, 0.4)',
+            backgroundBlendMode: 'multiply'
+          }}
+          className='h-full w-full rounded-xl flex flex-col gap-y-2 p-12 justify-end'
+        >
+          <Typography.Title
+            className=""
+            level={2}
+            style={{ margin: 0, color: '#fff' }}
+          >
+            Presisi Data, Masa Depan Gorontalo
+          </Typography.Title>
+          <p className="mb-6 max-w-lg text-sm text-white">Platform digital terintegrasi untuk pengelolaan data sumber daya air yang presisi, mendukung keberlanjutan ekosistem di wilayah Gorontalo.</p>
+
+        </div>
+      </div>
+    </div>
+
   );
 };
 

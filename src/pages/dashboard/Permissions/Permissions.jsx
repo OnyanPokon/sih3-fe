@@ -119,9 +119,12 @@ const Permissions = () => {
   };
 
   return (
-    <Card>
-      <Skeleton loading={getAllPermissions.isLoading}>
+    <Card
+      title={
         <DataTableHeader model={PermissionModel} modul={Modul.PERMISSION} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
+      }
+    >
+      <Skeleton loading={getAllPermissions.isLoading}>
         <div className="flex w-full items-center justify-end">
           <Button type="primary" className="mb-4" icon={<PlusOutlined />} onClick={onCreate}>
             Tambah

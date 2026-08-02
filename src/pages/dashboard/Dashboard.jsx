@@ -1,5 +1,9 @@
+import HIdrologiDashboard from "./HIdrologiDashboard";
+
 const Dashboard = () => {
-  return <div className="grid w-full grid-cols-12 gap-4">wellcome</div>;
+  return (
+    <HIdrologiDashboard />
+  );
 };
 
 export default Dashboard;

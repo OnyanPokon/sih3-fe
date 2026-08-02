@@ -5,6 +5,10 @@ export { default as DashboardSider } from './dashboard/Sider';
 export { default as DashboardFooter } from './dashboard/Footer';
 export { default as DataTable } from './dashboard/DataTable';
 export { default as DataTableHeader } from './dashboard/DataTableHeader';
+export { default as DashboardProfileCard } from './dashboard/DashboardProfileCard';
+export { default as AdminStatisticCard } from './dashboard/AdminStatisticCard';
+export { default as AdminStatisticChart } from './dashboard/AdminStatisticChart';
+export { default as HidrologiWsStatisticCard } from './dashboard/HidrologiWsStatisticCard';
 
 export { default as Navbar } from './landing/Navbar';
 export { default as Footer } from './landing/Footer';

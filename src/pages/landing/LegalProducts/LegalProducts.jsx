@@ -1,6 +1,6 @@
 import { useAuth, usePagination } from '@/hooks';
 import useAbortableService from '@/hooks/useAbortableService';
-import { LegalProductsService } from '@/services';
+import { LegalProductsService, UnorsService } from '@/services';
 import { CustomerServiceOutlined, DownloadOutlined, EyeOutlined, FileOutlined, MailOutlined, PaperClipOutlined } from '@ant-design/icons';
 import { Button, Card, Form, Input, Progress, Select, Skeleton, Typography } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
@@ -8,23 +8,28 @@ import React from 'react';
 
 const LegalProducts = () => {
   const { onUnauthorized } = useAuth();
-  const { execute, ...getAllLegalProducts } = useAbortableService(LegalProductsService.getAllInLanding, { onUnauthorized });
+  const { execute: fetchLegalProducts, ...getAllLegalProducts } = useAbortableService(LegalProductsService.getAllInLanding, { onUnauthorized });
+  const { execute: fetchUnors, ...getAllUnors } = useAbortableService(UnorsService.getAllInLanding, { onUnauthorized });
 
   const pagination = usePagination({ totalData: getAllLegalProducts.totalData });
-  // eslint-disable-next-line no-unused-vars
-  const [filterValues, setFilterValues] = React.useState({ search: '' });
+  const [filterValues, setFilterValues] = React.useState({ search: '', tahun: null, unor_id: null });
 
-  const fetchLegalProducts = React.useCallback(() => {
-    execute({
-      page: pagination.page,
-      per_page: pagination.perPage,
-      search: filterValues.search
-    });
-  }, [execute, filterValues.search, pagination.page, pagination.perPage]);
+  const unors = React.useMemo(() => getAllUnors.data ?? [], [getAllUnors.data]);
+
+  // 🔹 Fetch categories once
+  React.useEffect(() => {
+    fetchUnors({});
+  }, [fetchUnors]);
 
   React.useEffect(() => {
-    fetchLegalProducts();
-  }, [fetchLegalProducts]);
+    fetchLegalProducts({
+      page: pagination.page,
+      per_page: pagination.perPage,
+      search: filterValues.search,
+      tahun: filterValues.tahun ?? undefined,
+      unor_id: filterValues.unor_id ?? undefined,
+    });
+  }, [fetchLegalProducts, filterValues.search, filterValues.tahun, filterValues.unor_id, pagination.page, pagination.perPage]);
 
   const legalProducts = getAllLegalProducts.data ?? [];
 
@@ -56,10 +61,22 @@ const LegalProducts = () => {
       </section>
       <section className="bg-gray-100">
         <div className="mx-auto flex w-full max-w-screen-xl items-center gap-x-2 p-6">
-          <Input.Search size="large" placeholder="Cari judul peraturan, deskripsi, atau nomor produk hukum..." />
-          <Select size="large" placeholder="Tahun" className="w-48" defaultValue="">
-            <Select.Option value="">Semua</Select.Option>
-
+          <Input.Search
+            allowClear
+            onSearch={(values) => setFilterValues((prev) => ({ ...prev, search: values }))}
+            size="large"
+            placeholder="Cari judul peraturan, deskripsi, atau nomor produk hukum..."
+          />
+          <Select onChange={(value) => setFilterValues((prev) => ({ ...prev, unor_id: value }))} size="large" placeholder="Tahun" className="w-72" defaultValue="">
+            <Select.Option value="">Semua Unor</Select.Option>
+            {unors.map((unor) => (
+              <Select.Option key={unor.id} value={unor.id}>
+                {unor.name}
+              </Select.Option>
+            ))}
+          </Select>
+          <Select onChange={(value) => setFilterValues((prev) => ({ ...prev, tahun: value }))} size="large" placeholder="Tahun" className="w-48" defaultValue="">
+            <Select.Option value="">Semua Tahun</Select.Option>
             {years.map((year) => (
               <Select.Option key={year} value={year}>
                 {year}
@@ -78,33 +95,33 @@ const LegalProducts = () => {
           <div className="flex flex-wrap items-start justify-center gap-4">
             {getAllLegalProducts.isLoading
               ? Array.from({ length: 3 }, (_, i) => i).map((index) => (
-                  <Card className="w-full max-w-[382px]" key={index}>
-                    <Skeleton active />
-                  </Card>
-                ))
+                <Card className="w-full max-w-[382px]" key={index}>
+                  <Skeleton active />
+                </Card>
+              ))
               : legalProducts?.map((item) => {
-                  return (
-                    <Card key={item.id} className="w-full max-w-[382px]">
-                      <div className="text-gray-500">
-                        <p className="mb-2 text-xs">{item.year}</p>
-                        <Typography.Title level={5}>
-                          <span className="news-text">{item.title}</span>
-                        </Typography.Title>
-                        <p className="news-text">{item.desc}</p>
-                        <hr className="my-4" />
-                        <div className="inline-flex w-full items-center justify-between">
-                          <div className="inline-flex items-center gap-x-2">
-                            <PaperClipOutlined />
-                            <span className="text-xs">PDF</span>
-                          </div>
-                          <Button variant="text" color="primary" size="small">
-                            Download
-                          </Button>
+                return (
+                  <Card key={item.id} className="w-full max-w-[382px]">
+                    <div className="text-gray-500">
+                      <p className="mb-2 text-xs">{item.year}</p>
+                      <Typography.Title level={5}>
+                        <span className="news-text">{item.title}</span>
+                      </Typography.Title>
+                      <p className="news-text">{item.desc}</p>
+                      <hr className="my-4" />
+                      <div className="inline-flex w-full items-center justify-between">
+                        <div className="inline-flex items-center gap-x-2">
+                          <PaperClipOutlined />
+                          <span className="text-xs">PDF</span>
                         </div>
+                        <Button variant="text" color="primary" size="small">
+                          Download
+                        </Button>
                       </div>
-                    </Card>
-                  );
-                })}
+                    </div>
+                  </Card>
+                );
+              })}
           </div>
           <div className="flex gap-x-4">
             <div className="flex w-full flex-[2] gap-x-4 rounded-xl border-l-4 border-blue-500 bg-white p-6 shadow-sm">
@@ -141,7 +158,7 @@ const LegalProducts = () => {
               </Typography.Title>
               <div className="inline-flex w-full items-center justify-between text-white">
                 <span className="text-xs">Total Produk Hukkum</span>
-                <span className="text-xs">142 File</span>
+                <span className="text-xs">{pagination.totalData} File</span>
               </div>
               <Progress showInfo={false} percent={80} />
               <p className="text-sm text-white">Semua dokumen telah diverifikasi oleh Biro Hukum Setda Provinsi Gorontalo.</p>

@@ -1,11 +1,11 @@
-import { Delete, Edit } from '@/components/dashboard/button';
+import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import useAbortableService from '@/hooks/useAbortableService';
 import { Card, Skeleton, Space } from 'antd';
 import { News as NewsModel } from '@/models';
 import React from 'react';
-import { Action } from '@/constants';
+import { Action, Role } from '@/constants';
 import { DataTable, DataTableHeader } from '@/components';
 import NewsService from '@/services/NewsService.js';
 import { useNavigate } from 'react-router-dom';
@@ -46,6 +46,18 @@ const News = () => {
       title: 'Judul',
       dataIndex: 'title',
       sorter: (a, b) => a.title.length - b.title.length,
+      searchable: true
+    },
+    {
+      title: 'Sumber Berita',
+      dataIndex: ['unor_id', 'name'],
+      sorter: (a, b) => a.unor_id.name.length - b.unor_id.name.length,
+      searchable: true
+    },
+    {
+      title: 'Kategori',
+      dataIndex: ['category_id', 'category_name'],
+      sorter: (a, b) => a.category_id.category_name.length - b.category_id.category_name.length,
       searchable: true
     },
     {
@@ -93,14 +105,37 @@ const News = () => {
     });
   }
 
+  if (user && user.is(Role.SUPERADMIN)) {
+    column.push({
+      title: 'Aksi',
+      render: (_, record) => (
+        <Space size="small">
+          <Detail
+            title={`Detail ${Modul.NEWS}`}
+            model={NewsModel}
+            onClick={() => {
+              navigate('/news/' + record.category_id.category_name.toLowerCase() + '/' + record.slug);
+            }}
+          />
+
+        </Space>
+      )
+    });
+  }
+
+
   const onCreate = () => {
     navigate(window.location.pathname + '/create');
   };
 
   return (
-    <Card>
-      <Skeleton loading={getAllNews.isLoading}>
+    <Card
+      title={
         <DataTableHeader model={NewsModel} modul={Modul.NEWS} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
+      }
+    >
+      <Skeleton loading={getAllNews.isLoading}>
+
         <div className="w-full max-w-full overflow-x-auto">
           <DataTable data={news} columns={column} loading={getAllNews.isLoading} map={(news) => ({ key: news.id, ...news })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} pagination={pagination} />
         </div>

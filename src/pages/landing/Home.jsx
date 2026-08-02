@@ -7,7 +7,7 @@ import React from 'react';
 import parse from 'html-react-parser';
 import { useNavigate } from 'react-router-dom';
 import dateFormatterID from '@/utils/dateFormatterId';
-import { CloudHail, Droplets, Layers2 } from 'lucide-react';
+import { ArrowRight, CloudHail, Droplets, Layers2 } from 'lucide-react';
 import { getThemeByCategory } from '@/utils/getThemeByCategory';
 
 const Home = () => {
@@ -48,7 +48,7 @@ const Home = () => {
             <Typography.Title style={{ margin: 0, color: '#fff' }}>Sistem Informasi Hidrologi, Hidrometeorologi, dan Hidrogeologi Provinsi Gorontalo</Typography.Title>
             <p className="mb-6 max-w-lg text-sm text-white">Platform digital terintegrasi untuk pengelolaan data sumber daya air yang presisi, mendukung keberlanjutan ekosistem di wilayah Gorontalo.</p>
             <div className="flex items-center justify-center gap-x-8">
-              <Button type="primary" size="large" icon={<CompassOutlined />}>
+              <Button  type="primary" size="large" icon={<CompassOutlined />}>
                 Jelajahi Data
               </Button>
               <Button size="large">Pelajari Selengkapnya</Button>
@@ -70,6 +70,10 @@ const Home = () => {
               </Typography.Title>
 
               <small className="max-w-xs text-gray-500">Kajian aliran dan ketersediaan air di permukaan, interaksi dengan air hujan serta air tanah, untuk mendukung perencanaan sumber daya air yang berkelanjutan.</small>
+              <hr />
+              <small className='inline-flex items-center gap-x-2 group-hover:text-blue-500 transition-colors '>
+                Lihat Data Hidrologi <ArrowRight  size={12}/>
+              </small>
             </div>
             <div className="absolute -right-16 -top-16 h-40 w-40 scale-0 rounded-full bg-blue-100/40 transition-transform duration-500 group-hover:scale-100" />
           </div>
@@ -85,6 +89,10 @@ const Home = () => {
               </Typography.Title>
 
               <small className="max-w-xs text-gray-500">Pemantauan dan analisis hujan serta fenomena atmosfer yang memengaruhi debit sungai, banjir, dan ketersediaan air di berbagai wilayah.</small>
+              <hr />
+              <small className='inline-flex items-center gap-x-2 group-hover:text-green-500 transition-colors '>
+                Lihat Data Hidrometeorologi <ArrowRight  size={12}/>
+              </small>
             </div>
             <div className="absolute -right-16 -top-16 h-40 w-40 scale-0 rounded-full bg-green-100/40 transition-transform duration-500 group-hover:scale-100" />
           </div>
@@ -100,6 +108,10 @@ const Home = () => {
               </Typography.Title>
 
               <small className="max-w-xs text-gray-500">Studi air bawah tanah pada zona jenuh, dinamika akuifer, serta keterkaitannya dengan air permukaan untuk pemenuhan kebutuhan air bersih.</small>
+              <hr />
+              <small className='inline-flex items-center gap-x-2 group-hover:text-amber-500 transition-colors '>
+                Lihat Data Hidrogeologi <ArrowRight  size={12}/>
+              </small>
             </div>
             <div className="absolute -right-16 -top-16 h-40 w-40 scale-0 rounded-full bg-amber-100/40 transition-transform duration-500 group-hover:scale-100" />
           </div>

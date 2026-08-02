@@ -178,8 +178,8 @@ const ObservationPos = () => {
   };
 
   return (
-    <Card>
-      <Skeleton loading={getAllObservationPos.isLoading}>
+    <Card
+      title={
         <DataTableHeader
           model={ObservationPosModel}
           onImport={{ templateFile: 'pos_pengamatan.xlsx', importHandler: onImport }}
@@ -188,6 +188,10 @@ const ObservationPos = () => {
           selectedData={selectedData}
           onSearch={(values) => setFilterValues({ ...filterValues, search: values })}
         />
+      }
+    >
+      <Skeleton loading={getAllObservationPos.isLoading}>
+
         <div className="w-full max-w-full overflow-x-auto">
           <DataTable
             data={observationPos}

@@ -226,9 +226,13 @@ const Personils = () => {
   };
 
   return (
-    <Card>
-      <Skeleton loading={getAllPersonils.isLoading}>
+    <Card
+      title={
         <DataTableHeader model={PersonilModel} modul={Modul.PERSONIL} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
+      }
+    >
+      <Skeleton loading={getAllPersonils.isLoading}>
+
         <div className="w-full max-w-full overflow-x-auto">
           <DataTable data={personils} columns={column} loading={getAllPersonils.isLoading} map={(personil) => ({ key: personil.id, ...personil })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} pagination={pagination} />
         </div>

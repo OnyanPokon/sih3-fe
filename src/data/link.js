@@ -3,7 +3,8 @@ import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
 import * as Model from '@/models';
-import { BellOutlined, DashboardOutlined, DatabaseOutlined, EnvironmentOutlined, EyeOutlined, FileOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import {CameraOutlined, CompassOutlined, DashboardOutlined, DatabaseOutlined, EnvironmentOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import DefaultCategories from '@/constants/DefaultCategories';
 
 export const landingLink = [
   {
@@ -76,44 +77,23 @@ export const dashboardLink = [
     element: Dashboard.Dashboard
   },
   {
-    label: 'Berita',
-    icon: FileOutlined,
-    path: '/dashboard/news',
-    element: Dashboard.News,
-    roles: [Role.ADMIN, Role.SUPERADMIN],
-    permissions: [[Action.READ, Model.News]]
-  },
-  {
-    label: 'Produk Hukum',
-    icon: FileOutlined,
-    path: '/dashboard/legal_products',
-    element: Dashboard.LegalProducts,
-    roles: [Role.ADMIN, Role.SUPERADMIN],
-    permissions: [[Action.READ, Model.LegalProducts]]
-  },
-  {
-    label: 'Jenis Pos',
-    icon: BellOutlined,
-    path: '/dashboard/pos_types',
-    element: Dashboard.PosTypes,
-    roles: [Role.ADMIN, Role.SUPERADMIN],
-    permissions: [[Action.READ, Model.PosTypes]]
-  },
-  {
     label: 'Pos Pengamatan',
-    icon: EyeOutlined,
-    path: '/dashboard/observation_pos',
-    element: Dashboard.ObservationPos,
+    icon: CompassOutlined,
     roles: [Role.ADMIN, Role.SUPERADMIN],
-    permissions: [[Action.READ, Model.ObservationPos]]
+    children: [
+      { path: '/dashboard/pos_types', label: 'Jenis Pos', element: Dashboard.PosTypes, roles: [Role.ADMIN, Role.SUPERADMIN] },
+      { path: '/dashboard/observation_pos', label: 'Pos Pengamatan', element: Dashboard.ObservationPos, roles: [Role.ADMIN, Role.SUPERADMIN] },
+    ]
   },
   {
-    label: 'Artikel',
-    icon: FileOutlined,
-    path: '/dashboard/articles',
-    element: Dashboard.Articles,
-    roles: [Role.SUPERADMIN, Role.ADMIN],
-    permissions: [[Action.READ, Model.Articles]]
+    label: 'Publikasi',
+    icon: CameraOutlined,
+    roles: [Role.ADMIN, Role.SUPERADMIN],
+    children: [
+      { path: '/dashboard/news', label: 'Berita', element: Dashboard.News, roles: [Role.ADMIN, Role.SUPERADMIN] },
+      { path: '/dashboard/articles', label: 'Informasi Teknis', element: Dashboard.Articles, roles: [Role.ADMIN, Role.SUPERADMIN] },
+      { path: '/dashboard/legal_products', label: 'Produk Hukum', element: Dashboard.LegalProducts, roles: [Role.ADMIN, Role.SUPERADMIN] },
+    ]
   },
   {
     label: 'Kategori',
@@ -129,7 +109,18 @@ export const dashboardLink = [
     path: '/dashboard/wilayah-sungai',
     element: Dashboard.WilayahSungai,
     roles: [Role.SUPERADMIN, Role.ADMIN],
-    permissions: [[Action.READ, Model.WilayahSungai]]
+    permissions: [[Action.READ, Model.WilayahSungai]],
+    categories: [
+      DefaultCategories.HIDROLOGI,
+    ]
+  },
+  {
+    label: 'Wilayah Sungai',
+    icon: DatabaseOutlined,
+    path: '/dashboard/wilayah-sungai',
+    element: Dashboard.WilayahSungai,
+    roles: [Role.SUPERADMIN],
+    permissions: [[Action.READ, Model.WilayahSungai]],
   },
   {
     label: 'Personil',
@@ -170,5 +161,9 @@ export const authLink = [
   {
     path: '/callback',
     element: Auth.Callback
+  },
+  {
+    path: '/auth/forget_password',
+    element: Auth.ForgetPassword
   }
 ];

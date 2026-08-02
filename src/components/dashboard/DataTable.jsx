@@ -143,6 +143,7 @@ export default function DataTable({ columns, data, loading, title = '', handleSe
 
   return (
     <Table
+      size='small'
       rowSelection={handleSelectedData ? { type: 'checkbox', onChange: handleSelectedData } : undefined}
       columns={columnsWithTitle}
       dataSource={mappedData}

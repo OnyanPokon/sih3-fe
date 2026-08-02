@@ -201,8 +201,8 @@ const TelemetryCoordinates = () => {
   };
 
   return (
-    <Card>
-      <Skeleton loading={getAllTelemetryCoordinates.isLoading}>
+    <Card
+      title={
         <DataTableHeader
           model={TelemetryCoordinateModel}
           onImport={{ templateFile: 'koordinat_telemetri.xlsx', importHandler: onImport }}
@@ -211,6 +211,10 @@ const TelemetryCoordinates = () => {
           selectedData={selectedData}
           onSearch={(values) => setFilterValues({ ...filterValues, search: values })}
         />
+      }
+    >
+      <Skeleton loading={getAllTelemetryCoordinates.isLoading}>
+
         <div className="w-full max-w-full overflow-x-auto">
           <DataTable
             data={telemetryCoordinates}

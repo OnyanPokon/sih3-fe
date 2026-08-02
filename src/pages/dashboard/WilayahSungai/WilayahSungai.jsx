@@ -11,7 +11,7 @@ import Action from '@/constants/Action.js';
 import Edit from '@/components/dashboard/button/Edit.jsx';
 import Delete from '@/components/dashboard/button/Delete.jsx';
 
-const { DELETE, UPDATE, READ } = Action;
+const { DELETE, UPDATE } = Action;
 
 const WilayahSungai = () => {
   const modal = useCrudModal();
@@ -162,9 +162,13 @@ const WilayahSungai = () => {
   };
 
   return (
-    <Card>
-      <Skeleton loading={getAllWilayahSungai.isLoading}>
+    <Card
+      title={
         <DataTableHeader model={WilayahSungaiModel} modul={Modul.WILAYAH_SUNGAI} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
+      }
+    >
+      <Skeleton loading={getAllWilayahSungai.isLoading}>
+
         <div className="w-full max-w-full overflow-x-auto">
           <DataTable data={wilayahSungaiList} columns={column} loading={getAllWilayahSungai.isLoading} map={(item) => ({ key: item.id, ...item })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} pagination={pagination} />
         </div>

@@ -1,11 +1,10 @@
-import { Delete, Edit } from '@/components/dashboard/button';
-import Modul from '@/constants/Modul';
+import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import useAbortableService from '@/hooks/useAbortableService';
 import { Button, Card, Skeleton, Space, Tooltip } from 'antd';
 import { Articles as ArticleModel } from '@/models';
 import React from 'react';
-import { Action } from '@/constants';
+import { Action, Role } from '@/constants';
 import { DataTable, DataTableHeader } from '@/components';
 import { CheckSquareOutlined, UserAddOutlined, UserDeleteOutlined } from '@ant-design/icons';
 import { ArticlesService } from '@/services';
@@ -50,6 +49,20 @@ const Articles = () => {
       searchable: true
     },
     {
+      title: 'Sumber',
+      dataIndex: ['unor_id', 'name'],
+      sorter: (a, b) => a.unor_id.name.length - b.unor_id.name.length,
+      searchable: true
+    },
+    {
+      title: 'Kategori',
+      dataIndex: ['category_id', 'category_name'],
+      sorter: (a, b) => a.category_id.category_name.length - b.category_id.category_name.length,
+      searchable: true
+    },
+
+
+    {
       title: 'Dengan Kuisioner',
       dataIndex: 'additional_quiz',
       sorter: (a, b) => a.additional_quiz.length - b.additional_quiz.length,
@@ -64,18 +77,18 @@ const Articles = () => {
       render: (_, record) => (
         <Space size="small">
           <Edit
-            title={`Edit ${Modul.ARTICLE}`}
+            title={`Edit Informasi Teknis`}
             model={ArticleModel}
             onClick={() => {
               navigate(window.location.pathname + '/edit/' + record.slug);
             }}
           />
           <Delete
-            title={`Delete ${Modul.ARTICLE}`}
+            title={`Delete Informasi Teknis`}
             model={ArticleModel}
             onClick={() => {
               modal.delete.default({
-                title: `Delete ${Modul.ARTICLE}`,
+                title: `Delete Informasi Teknis`,
                 data: record,
                 onSubmit: async () => {
                   const { isSuccess, message } = await deleteCategory.execute(record.id, token);
@@ -99,6 +112,27 @@ const Articles = () => {
       )
     });
   }
+
+  if (user && user.is(Role.SUPERADMIN)) {
+    column.push({
+      title: 'Aksi',
+      render: (_, record) => (
+        <Space size="small">
+          <Detail
+            title={`Detail Informasi Teknis`}
+            model={ArticleModel}
+            onClick={() => {
+              navigate('/article/' + record.category_id.category_name.toLowerCase() + '/' + record.slug);
+            }}
+          />
+
+        </Space>
+      )
+    });
+  }
+
+
+
 
   const onNavigate = (data) => {
     navigate(window.location.pathname + '/create', { state: { withQuiz: data } });
@@ -144,9 +178,13 @@ const Articles = () => {
   };
 
   return (
-    <Card>
+    <Card
+      title={
+        <DataTableHeader model={ArticleModel} modul={'Informasi Teknis'} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
+      }
+    >
       <Skeleton loading={getAllArticles.isLoading}>
-        <DataTableHeader model={ArticleModel} modul={Modul.ARTICLE} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
+
         <div className="w-full max-w-full overflow-x-auto">
           <DataTable data={articles} columns={column} loading={getAllArticles.isLoading} map={(category) => ({ key: category.id, ...category })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} pagination={pagination} />
         </div>
