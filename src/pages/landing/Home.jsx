@@ -48,7 +48,7 @@ const Home = () => {
             <Typography.Title style={{ margin: 0, color: '#fff' }}>Sistem Informasi Hidrologi, Hidrometeorologi, dan Hidrogeologi Provinsi Gorontalo</Typography.Title>
             <p className="mb-6 max-w-lg text-sm text-white">Platform digital terintegrasi untuk pengelolaan data sumber daya air yang presisi, mendukung keberlanjutan ekosistem di wilayah Gorontalo.</p>
             <div className="flex items-center justify-center gap-x-8">
-              <Button  type="primary" size="large" icon={<CompassOutlined />}>
+              <Button type="primary" size="large" icon={<CompassOutlined />}>
                 Jelajahi Data
               </Button>
               <Button size="large">Pelajari Selengkapnya</Button>
@@ -58,7 +58,7 @@ const Home = () => {
       </section>
       <section className="rounded-t-3xl bg-gray-100">
         <div className="mx-auto flex w-full max-w-screen-xl items-start justify-center gap-x-8 px-6 py-12">
-          <div onClick={() => navigte('/news/hidrologi')} className="group relative cursor-pointer overflow-hidden rounded-xl border-t-4 border-blue-500 bg-white p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+          <div onClick={() => navigte('/portal/hidrologi')} className="group relative cursor-pointer overflow-hidden rounded-xl border-t-4 border-blue-500 bg-white p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
             <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-blue-50/60 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
             <div className="relative z-10 flex flex-col gap-y-4">
               <div className="w-fit rounded-lg bg-blue-100 p-4 transition-all duration-300 group-hover:scale-110 group-hover:bg-blue-500">
@@ -71,13 +71,13 @@ const Home = () => {
 
               <small className="max-w-xs text-gray-500">Kajian aliran dan ketersediaan air di permukaan, interaksi dengan air hujan serta air tanah, untuk mendukung perencanaan sumber daya air yang berkelanjutan.</small>
               <hr />
-              <small className='inline-flex items-center gap-x-2 group-hover:text-blue-500 transition-colors '>
-                Lihat Data Hidrologi <ArrowRight  size={12}/>
+              <small className="inline-flex items-center gap-x-2 transition-colors group-hover:text-blue-500">
+                Lihat Portal Hidrologi <ArrowRight size={12} />
               </small>
             </div>
             <div className="absolute -right-16 -top-16 h-40 w-40 scale-0 rounded-full bg-blue-100/40 transition-transform duration-500 group-hover:scale-100" />
           </div>
-          <div onClick={() => navigte('/news/hidrometeorologi')} className="group relative cursor-pointer overflow-hidden rounded-xl border-t-4 border-green-500 bg-white p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+          <div onClick={() => navigte('/portal/hidrometeorologi')} className="group relative cursor-pointer overflow-hidden rounded-xl border-t-4 border-green-500 bg-white p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
             <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-green-50/60 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
             <div className="relative z-10 flex flex-col gap-y-4">
               <div className="w-fit rounded-lg bg-green-100 p-4 transition-all duration-300 group-hover:scale-110 group-hover:bg-green-500">
@@ -90,13 +90,13 @@ const Home = () => {
 
               <small className="max-w-xs text-gray-500">Pemantauan dan analisis hujan serta fenomena atmosfer yang memengaruhi debit sungai, banjir, dan ketersediaan air di berbagai wilayah.</small>
               <hr />
-              <small className='inline-flex items-center gap-x-2 group-hover:text-green-500 transition-colors '>
-                Lihat Data Hidrometeorologi <ArrowRight  size={12}/>
+              <small className="inline-flex items-center gap-x-2 transition-colors group-hover:text-green-500">
+                Lihat Portal Hidrometeorologi <ArrowRight size={12} />
               </small>
             </div>
             <div className="absolute -right-16 -top-16 h-40 w-40 scale-0 rounded-full bg-green-100/40 transition-transform duration-500 group-hover:scale-100" />
           </div>
-          <div onClick={() => navigte('/news/hidrogeologi')} className="group relative cursor-pointer overflow-hidden rounded-xl border-t-4 border-amber-500 bg-white p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+          <div onClick={() => navigte('/portal/hidrogeologi')} className="group relative cursor-pointer overflow-hidden rounded-xl border-t-4 border-amber-500 bg-white p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
             <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-amber-50/60 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
             <div className="relative z-10 flex flex-col gap-y-4">
               <div className="w-fit rounded-lg bg-amber-100 p-4 transition-all duration-300 group-hover:scale-110 group-hover:bg-amber-500">
@@ -109,8 +109,8 @@ const Home = () => {
 
               <small className="max-w-xs text-gray-500">Studi air bawah tanah pada zona jenuh, dinamika akuifer, serta keterkaitannya dengan air permukaan untuk pemenuhan kebutuhan air bersih.</small>
               <hr />
-              <small className='inline-flex items-center gap-x-2 group-hover:text-amber-500 transition-colors '>
-                Lihat Data Hidrogeologi <ArrowRight  size={12}/>
+              <small className="inline-flex items-center gap-x-2 transition-colors group-hover:text-amber-500">
+                Lihat Portal Hidrogeologi <ArrowRight size={12} />
               </small>
             </div>
             <div className="absolute -right-16 -top-16 h-40 w-40 scale-0 rounded-full bg-amber-100/40 transition-transform duration-500 group-hover:scale-100" />

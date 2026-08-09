@@ -1,5 +1,4 @@
 import { InputType } from '@/constants';
-import Modul from '@/constants/Modul';
 
 export const formFields = ({ categories = [] } = {}) => [
   {

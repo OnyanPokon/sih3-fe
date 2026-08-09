@@ -61,7 +61,6 @@ const Articles = () => {
       searchable: true
     },
 
-
     {
       title: 'Dengan Kuisioner',
       dataIndex: 'additional_quiz',
@@ -125,14 +124,10 @@ const Articles = () => {
               navigate('/article/' + record.category_id.category_name.toLowerCase() + '/' + record.slug);
             }}
           />
-
         </Space>
       )
     });
   }
-
-
-
 
   const onNavigate = (data) => {
     navigate(window.location.pathname + '/create', { state: { withQuiz: data } });
@@ -178,13 +173,8 @@ const Articles = () => {
   };
 
   return (
-    <Card
-      title={
-        <DataTableHeader model={ArticleModel} modul={'Informasi Teknis'} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
-      }
-    >
+    <Card title={<DataTableHeader model={ArticleModel} modul={'Informasi Teknis'} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />}>
       <Skeleton loading={getAllArticles.isLoading}>
-
         <div className="w-full max-w-full overflow-x-auto">
           <DataTable data={articles} columns={column} loading={getAllArticles.isLoading} map={(category) => ({ key: category.id, ...category })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} pagination={pagination} />
         </div>

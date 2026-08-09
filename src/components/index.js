@@ -9,6 +9,7 @@ export { default as DashboardProfileCard } from './dashboard/DashboardProfileCar
 export { default as AdminStatisticCard } from './dashboard/AdminStatisticCard';
 export { default as AdminStatisticChart } from './dashboard/AdminStatisticChart';
 export { default as HidrologiWsStatisticCard } from './dashboard/HidrologiWsStatisticCard';
+export { default as ScrollToTop } from './ScrollToTop';
 
 export { default as Navbar } from './landing/Navbar';
 export { default as Footer } from './landing/Footer';

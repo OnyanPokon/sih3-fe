@@ -92,18 +92,20 @@ export default class Personils extends Model {
         username: apiData.user_id.username,
         role: apiData.user_id.role
       },
-      apiData.unor_id ? {
-        id: apiData.unor_id.id,
-        name: apiData.unor_id.nama,
-        region: apiData.unor_id.wilayah,
-        address: apiData.unor_id.alamat,
-        email: apiData.unor_id.email,
-        logo: asset(apiData.unor_id.logo),
-        website: apiData.unor_id.website,
-        phone_number: apiData.unor_id.no_hp,
-        created_at: apiData.unor_id.created_at,
-        updated_at: apiData.unor_id.updated_at
-      } : null,
+      apiData.unor_id
+        ? {
+            id: apiData.unor_id.id,
+            name: apiData.unor_id.nama,
+            region: apiData.unor_id.wilayah,
+            address: apiData.unor_id.alamat,
+            email: apiData.unor_id.email,
+            logo: asset(apiData.unor_id.logo),
+            website: apiData.unor_id.website,
+            phone_number: apiData.unor_id.no_hp,
+            created_at: apiData.unor_id.created_at,
+            updated_at: apiData.unor_id.updated_at
+          }
+        : null,
       apiData.nama,
       apiData.nip,
       apiData.jabatan,

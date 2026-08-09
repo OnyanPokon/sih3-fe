@@ -3,15 +3,25 @@ import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import useAbortableService from '@/hooks/useAbortableService';
 import { Card, Skeleton, Space, Tag as AntTag } from 'antd';
+import { LinkOutlined, TagOutlined } from '@ant-design/icons';
 import { Tags as TagModel } from '@/models';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Action } from '@/constants';
 import { DataTable, DataTableHeader } from '@/components';
-import { formFields, REFERENCE_TYPES } from './FormFields.js';
+import { formFields, REFERENCE_TYPES, TAG_FORM_MODE } from './FormFields.js';
 import TagsService from '@/services/TagsService.js';
 import { debounce } from 'lodash';
 
 const { DELETE, UPDATE, READ } = Action;
+const DEFAULT_REFERENCE_TYPE = REFERENCE_TYPES[0]?.value || 'wilayah_sungai';
+
+const buildTagPayload = (values, mode) => ({
+  ...values,
+  category_id: values.category_id ?? null,
+  reference_type: mode === TAG_FORM_MODE.WITH_REFERENCE ? values.reference_type : null,
+  reference_id: mode === TAG_FORM_MODE.WITH_REFERENCE ? values.reference_id : null,
+  color: values.color?.toHexString ? values.color.toHexString() : values.color
+});
 
 const Tags = () => {
   const modal = useCrudModal();
@@ -22,13 +32,15 @@ const Tags = () => {
 
   const pagination = usePagination({ totalData: getAllTags.totalData });
   const [filterValues, setFilterValues] = useState({ search: '' });
+  const categoryOptions = useMemo(() => user?.unor?.kategoris ?? [], [user?.unor?.kategoris]);
+  const [activeFormMode, setActiveFormMode] = useState(TAG_FORM_MODE.WITHOUT_REFERENCE);
 
   const [referenceOptions, setReferenceOptions] = useState([]);
   const [isReferenceLoading, setIsReferenceLoading] = useState(false);
-  const [activeRefType, setActiveRefType] = useState('wilayah_sungai');
+  const [activeRefType, setActiveRefType] = useState('');
 
   const fetchReferenceOptions = useCallback(
-    async (searchQuery = '', refType = 'wilayah_sungai', initialItem = null) => {
+    async (searchQuery = '', refType = DEFAULT_REFERENCE_TYPE, initialItem = null) => {
       if (!refType) {
         setReferenceOptions([]);
         return;
@@ -80,11 +92,13 @@ const Tags = () => {
 
   const currentFormFields = useMemo(() => {
     return formFields({
+      mode: activeFormMode,
+      categoryOptions,
       referenceOptions,
       onSearchReference: debouncedSearchReference,
       isReferenceLoading
     });
-  }, [referenceOptions, debouncedSearchReference, isReferenceLoading]);
+  }, [activeFormMode, categoryOptions, referenceOptions, debouncedSearchReference, isReferenceLoading]);
 
   // Update modal form fields when reference options change dynamically
   useEffect(() => {
@@ -95,12 +109,21 @@ const Tags = () => {
 
   const handleModalChange = useCallback(
     (realtimeData) => {
-      if (realtimeData?.reference_type && realtimeData.reference_type !== activeRefType) {
-        setActiveRefType(realtimeData.reference_type);
-        fetchReferenceOptions('', realtimeData.reference_type);
+      if (activeFormMode !== TAG_FORM_MODE.WITH_REFERENCE) return;
+
+      const nextRefType = realtimeData?.reference_type;
+      if (!nextRefType) {
+        setActiveRefType('');
+        setReferenceOptions([]);
+        return;
+      }
+
+      if (nextRefType !== activeRefType) {
+        setActiveRefType(nextRefType);
+        fetchReferenceOptions('', nextRefType);
       }
     },
-    [activeRefType, fetchReferenceOptions]
+    [activeFormMode, activeRefType, fetchReferenceOptions]
   );
 
   const fetchTags = useCallback(() => {
@@ -166,9 +189,16 @@ const Tags = () => {
             title={`Edit ${Modul.TAG}`}
             model={TagModel}
             onClick={() => {
-              const refType = record.reference_type || 'wilayah_sungai';
-              setActiveRefType(refType);
-              fetchReferenceOptions('', refType, record.reference);
+              const mode = record.reference_id ? TAG_FORM_MODE.WITH_REFERENCE : TAG_FORM_MODE.WITHOUT_REFERENCE;
+              setActiveFormMode(mode);
+              if (mode === TAG_FORM_MODE.WITH_REFERENCE) {
+                const refType = record.reference_type || DEFAULT_REFERENCE_TYPE;
+                setActiveRefType(refType);
+                fetchReferenceOptions('', refType, record.reference);
+              } else {
+                setActiveRefType('');
+                setReferenceOptions([]);
+              }
 
               modal.edit({
                 title: `Edit ${Modul.TAG}`,
@@ -176,16 +206,20 @@ const Tags = () => {
                   ...record,
                   name: record.name,
                   description: record.description,
+                  category_id: record.category_id,
                   reference_type: record.reference_type,
                   reference_id: record.reference_id
                 },
-                formFields: currentFormFields,
+                formFields: formFields({
+                  mode,
+                  categoryOptions,
+                  referenceOptions,
+                  onSearchReference: debouncedSearchReference,
+                  isReferenceLoading
+                }),
                 onChange: handleModalChange,
                 onSubmit: async (values) => {
-                  const payload = {
-                    ...values,
-                    reference_id: values.reference_type ? values.reference_id : null
-                  };
+                  const payload = buildTagPayload(values, mode);
                   const { message, isSuccess } = await updateTag.execute(record.id, payload, token);
                   if (isSuccess) {
                     success('Berhasil', message);
@@ -223,18 +257,28 @@ const Tags = () => {
     });
   }
 
-  const onCreate = () => {
-    setActiveRefType('wilayah_sungai');
-    fetchReferenceOptions('', 'wilayah_sungai');
+  const openCreateModal = (mode) => {
+    setActiveFormMode(mode);
+    if (mode === TAG_FORM_MODE.WITH_REFERENCE) {
+      setActiveRefType('');
+      setReferenceOptions([]);
+    } else {
+      setActiveRefType('');
+      setReferenceOptions([]);
+    }
+
     modal.create({
       title: `Tambah ${Modul.TAG}`,
-      formFields: currentFormFields,
+      formFields: formFields({
+        mode,
+        categoryOptions,
+        referenceOptions,
+        onSearchReference: debouncedSearchReference,
+        isReferenceLoading
+      }),
       onChange: handleModalChange,
       onSubmit: async (values) => {
-        const payload = {
-          ...values,
-          reference_id: values.reference_type ? values.reference_id : null
-        };
+        const payload = buildTagPayload(values, mode);
         const { message, isSuccess } = await storeTag.execute(payload, token);
         if (isSuccess) {
           success('Berhasil', message);
@@ -247,28 +291,48 @@ const Tags = () => {
     });
   };
 
-  return (
-    <Card
-      title={
-        <DataTableHeader
-          model={TagModel}
-          modul={Modul.TAG}
-          onStore={onCreate}
-          selectedData={selectedData}
-          onSearch={(values) => setFilterValues({ ...filterValues, search: values })}
-        />
+  const onCreate = () => {
+    modal.show.paragraph({
+      data: {
+        content: (
+          <div className="mt-4 flex items-center justify-center gap-x-4">
+            <Card
+              className="h-full w-full"
+              hoverable
+              onClick={() => {
+                openCreateModal(TAG_FORM_MODE.WITH_REFERENCE);
+              }}
+            >
+              <div className="flex h-full flex-col items-center justify-center gap-y-2">
+                <LinkOutlined className="mb-2 text-3xl" />
+                <span className="text-sm font-semibold">Tag Dengan Referensi</span>
+                <small className="text-center text-gray-500">Nama, deskripsi, kategori, dan referensi object.</small>
+              </div>
+            </Card>
+            <Card
+              className="h-full w-full"
+              hoverable
+              onClick={() => {
+                openCreateModal(TAG_FORM_MODE.WITHOUT_REFERENCE);
+              }}
+            >
+              <div className="flex h-full flex-col items-center justify-center gap-y-2">
+                <TagOutlined className="mb-2 text-3xl" />
+                <span className="text-sm font-semibold">Tag Tanpa Referensi</span>
+                <small className="text-center text-gray-500">Nama, deskripsi, warna, icon, dan kategori.</small>
+              </div>
+            </Card>
+          </div>
+        )
       }
-    >
+    });
+  };
+
+  return (
+    <Card title={<DataTableHeader model={TagModel} modul={Modul.TAG} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />}>
       <Skeleton loading={getAllTags.isLoading}>
         <div className="w-full max-w-full overflow-x-auto">
-          <DataTable
-            data={tags}
-            columns={column}
-            loading={getAllTags.isLoading}
-            map={(tag) => ({ key: tag.id, ...tag })}
-            handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
-            pagination={pagination}
-          />
+          <DataTable data={tags} columns={column} loading={getAllTags.isLoading} map={(tag) => ({ key: tag.id, ...tag })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} pagination={pagination} />
         </div>
       </Skeleton>
     </Card>

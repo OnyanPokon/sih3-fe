@@ -19,6 +19,5 @@ export { default as TelemetryCoordinates } from './TelemetryCoordinates/Telemetr
 export { default as LegalProducts } from './LegalProducts/LegalProducts';
 export { default as WilayahSungai } from './WilayahSungai/WilayahSungai';
 export { default as Tags } from './Tags/Tags';
-export { default as Settings } from './Settings/Settings';
-
-
+export { default as AdminDashboard } from './AdminDashboard';
+export { default as SuperadminDashboard } from './SuperadminDashboard';

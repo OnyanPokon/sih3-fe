@@ -58,7 +58,7 @@ const PosTypes = () => {
       </section>
       <section className="bg-gray-100">
         <div className="mx-auto flex w-full max-w-screen-xl items-center justify-between gap-x-2 p-6">
-          <Input.Search allowClear  onSearch={(values) => setFilterValues((prev) => ({ ...prev, search: values }))} size="large" placeholder="Cari nama jenis pos" className="max-w-md" />
+          <Input.Search allowClear onSearch={(values) => setFilterValues((prev) => ({ ...prev, search: values }))} size="large" placeholder="Cari nama jenis pos" className="max-w-md" />
           <Radio.Group
             value={filterValues.kategori_id}
             onChange={(e) => {
@@ -126,13 +126,7 @@ const PosTypes = () => {
               })
             ) : (
               <div className="flex w-full justify-center py-20">
-                <Empty
-                  description={
-                    filterValues.search || filterValues.kategori_id
-                      ? 'Tidak ada jenis pos yang sesuai dengan filter.'
-                      : 'Belum ada data jenis pos.'
-                  }
-                />
+                <Empty description={filterValues.search || filterValues.kategori_id ? 'Tidak ada jenis pos yang sesuai dengan filter.' : 'Belum ada data jenis pos.'} />
               </div>
             )}
           </div>

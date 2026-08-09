@@ -77,11 +77,7 @@ const Personils = () => {
       dataIndex: 'status',
       render: (status) => {
         const color = status === 'aktif' ? 'green' : 'volcano';
-        return (
-          <Tag color={color}>
-            {status ? status.toUpperCase() : '-'}
-          </Tag>
-        );
+        return <Tag color={color}>{status ? status.toUpperCase() : '-'}</Tag>;
       }
     }
   ];
@@ -226,13 +222,8 @@ const Personils = () => {
   };
 
   return (
-    <Card
-      title={
-        <DataTableHeader model={PersonilModel} modul={Modul.PERSONIL} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
-      }
-    >
+    <Card title={<DataTableHeader model={PersonilModel} modul={Modul.PERSONIL} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />}>
       <Skeleton loading={getAllPersonils.isLoading}>
-
         <div className="w-full max-w-full overflow-x-auto">
           <DataTable data={personils} columns={column} loading={getAllPersonils.isLoading} map={(personil) => ({ key: personil.id, ...personil })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} pagination={pagination} />
         </div>

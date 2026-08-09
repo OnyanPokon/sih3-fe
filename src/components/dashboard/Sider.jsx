@@ -13,77 +13,50 @@ const DashboardSider = ({ collapsed, onCloseMenu }) => {
 
   const isDesktop = breakpoints.lg || breakpoints.xl || breakpoints.xxl;
 
-  const canAccess = (
-    roles = [],
-    permissions = [],
-    categories = []
-  ) => {
-    const hasRole =
-      roles.length === 0 || user?.eitherIs(...roles);
+  const canAccess = (roles = [], permissions = [], categories = []) => {
+    const hasRole = roles.length === 0 || user?.eitherIs(...roles);
 
-    const hasPermission =
-      permissions.length === 0 || user?.eitherCan(...permissions);
+    const hasPermission = permissions.length === 0 || user?.eitherCan(...permissions);
 
-    const hasCategory =
-      !categories ||
-      categories.length === 0 ||
-      user?.categoryIs(categories);
+    const hasCategory = !categories || categories.length === 0 || user?.categoryIs(categories);
 
     return hasRole && hasPermission && hasCategory;
   };
 
   const menuItems = dashboardLink
-    .map(
-      ({
-        label,
-        children,
-        icon: Icon,
-        roles = [],
-        permissions = [],
-        categories,
-        path
-      }) => {
-        const visibleChildren = children
-          ?.filter((child) =>
-            canAccess(
-              child.roles,
-              child.permissions,
-              child.categories
-            )
-          )
-          .map((child) => ({
-            key: child.path,
-            label: (
-              <Tooltip title={child.label} placement="right" color="blue">
-                <span>{child.label}</span>
-              </Tooltip>
-            ),
-            onClick: () => navigate(child.path)
-          }));
-
-        const isVisible =
-          canAccess(roles, permissions, categories) ||
-          (visibleChildren && visibleChildren.length > 0);
-
-        if (!isVisible) return null;
-
-        return {
-          key: label,
+    .map(({ label, children, icon: Icon, roles = [], permissions = [], categories, path }) => {
+      const visibleChildren = children
+        ?.filter((child) => canAccess(child.roles, child.permissions, child.categories))
+        .map((child) => ({
+          key: child.path,
           label: (
-            <Tooltip title={label} placement="right" color="blue">
-              <span>{label}</span>
+            <Tooltip title={child.label} placement="right" color="blue">
+              <span>{child.label}</span>
             </Tooltip>
           ),
-          icon: (
-            <Tooltip title={label} placement="right" color="blue">
-              <Icon />
-            </Tooltip>
-          ),
-          onClick: path ? () => navigate(path) : undefined,
-          children: visibleChildren
-        };
-      }
-    )
+          onClick: () => navigate(child.path)
+        }));
+
+      const isVisible = canAccess(roles, permissions, categories) || (visibleChildren && visibleChildren.length > 0);
+
+      if (!isVisible) return null;
+
+      return {
+        key: label,
+        label: (
+          <Tooltip title={label} placement="right" color="blue">
+            <span>{label}</span>
+          </Tooltip>
+        ),
+        icon: (
+          <Tooltip title={label} placement="right" color="blue">
+            <Icon />
+          </Tooltip>
+        ),
+        onClick: path ? () => navigate(path) : undefined,
+        children: visibleChildren
+      };
+    })
     .filter(Boolean);
 
   return isDesktop ? (

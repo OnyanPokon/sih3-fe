@@ -39,9 +39,10 @@ export interface IncomingApiData {
   dokumen: {
     id: number;
     artikel_id: number;
+    nama_dokumen?: string;
     dokumen: string;
   }[];
-  tags?: TagsIncomingApiData[];
+  tags?: TagsIncomingApiData[] | null;
   total_kunjungan: number;
   total_unduh: number;
   kuesioner_tambahan: boolean;
@@ -103,17 +104,24 @@ export default class Articles extends Model {
       username: string;
       email: string;
     },
+    public thumbnail: string | null,
     public thumbnails: {
       id: number;
       article_id: number;
       thumbnail: string;
+    }[],
+    public dokumen: {
+      id: number;
+      article_id: number;
+      nama_dokumen?: string;
+      dokumen: string;
     }[],
     public doc: {
       id: number;
       article_id: number;
       doc: string;
     }[],
-    public tags: Tags[],
+    public tags: Tags[] | null,
     public total_visits: number,
     public total_downloads: number,
     public additional_quiz: boolean,
@@ -125,6 +133,23 @@ export default class Articles extends Model {
 
   public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): ReturnType<T, IncomingApiData, Articles> {
     if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, Articles>;
+    const thumbnails = Array.isArray(apiData.thumbnails)
+      ? apiData.thumbnails.map((item) => ({
+          id: item.id,
+          article_id: item.artikel_id,
+          thumbnail: asset(item.thumbnail)
+        }))
+      : [];
+
+    const dokumen = Array.isArray(apiData.dokumen)
+      ? apiData.dokumen.map((item) => ({
+          id: item.id,
+          article_id: item.artikel_id,
+          nama_dokumen: item.nama_dokumen,
+          dokumen: asset(item.dokumen)
+        }))
+      : [];
+
     return new Articles(
       apiData.id,
       {
@@ -154,15 +179,13 @@ export default class Articles extends Model {
         username: apiData.user_id.username,
         email: apiData.user_id.email
       },
-      apiData.thumbnails.map((item) => ({
+      thumbnails[0]?.thumbnail ?? null,
+      thumbnails,
+      dokumen,
+      dokumen.map((item) => ({
         id: item.id,
-        article_id: item.artikel_id,
-        thumbnail: asset(item.thumbnail)
-      })),
-      apiData.dokumen.map((item) => ({
-        id: item.id,
-        article_id: item.artikel_id,
-        doc: asset(item.dokumen)
+        article_id: item.article_id,
+        doc: item.dokumen
       })),
       apiData.tags ? Tags.fromApiData(apiData.tags) : [],
       apiData.total_kunjungan,

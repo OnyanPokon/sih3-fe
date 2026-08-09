@@ -165,11 +165,7 @@ const Edit = () => {
                   }))}
                 />
               </Form.Item>
-              <Form.Item
-                className="mb-4"
-                name="tag_ids"
-                label="Tag"
-              >
+              <Form.Item className="mb-4" name="tag_ids">
                 <Select
                   mode="multiple"
                   placeholder="Pilih Tag"

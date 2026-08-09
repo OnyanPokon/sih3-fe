@@ -233,13 +233,8 @@ const Maps = () => {
   };
 
   return (
-    <Card
-      title={
-        <DataTableHeader model={MapModel} modul={Modul.MAPS} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
-      }
-    >
+    <Card title={<DataTableHeader model={MapModel} modul={Modul.MAPS} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />}>
       <Skeleton loading={getAllMaps.isLoading}>
-
         <div className="w-full max-w-full overflow-x-auto">
           <DataTable data={maps} columns={column} loading={getAllMaps.isLoading} map={(map) => ({ key: map.id, ...map })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} pagination={pagination} />
         </div>

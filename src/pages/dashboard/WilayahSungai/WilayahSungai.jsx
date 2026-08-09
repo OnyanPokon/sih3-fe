@@ -162,13 +162,8 @@ const WilayahSungai = () => {
   };
 
   return (
-    <Card
-      title={
-        <DataTableHeader model={WilayahSungaiModel} modul={Modul.WILAYAH_SUNGAI} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
-      }
-    >
+    <Card title={<DataTableHeader model={WilayahSungaiModel} modul={Modul.WILAYAH_SUNGAI} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />}>
       <Skeleton loading={getAllWilayahSungai.isLoading}>
-
         <div className="w-full max-w-full overflow-x-auto">
           <DataTable data={wilayahSungaiList} columns={column} loading={getAllWilayahSungai.isLoading} map={(item) => ({ key: item.id, ...item })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} pagination={pagination} />
         </div>

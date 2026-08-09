@@ -214,7 +214,6 @@ const TelemetryCoordinates = () => {
       }
     >
       <Skeleton loading={getAllTelemetryCoordinates.isLoading}>
-
         <div className="w-full max-w-full overflow-x-auto">
           <DataTable
             data={telemetryCoordinates}

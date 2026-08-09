@@ -71,7 +71,9 @@ const ObservationPos = () => {
         <div className="flex flex-wrap gap-1">
           {record.tags && record.tags.length > 0 ? (
             record.tags.map((t) => (
-              <AntTag key={t.id} color="blue">{t.name}</AntTag>
+              <AntTag key={t.id} color="blue">
+                {t.name}
+              </AntTag>
             ))
           ) : (
             <span className="text-gray-400">-</span>
@@ -214,7 +216,6 @@ const ObservationPos = () => {
       }
     >
       <Skeleton loading={getAllObservationPos.isLoading}>
-
         <div className="w-full max-w-full overflow-x-auto">
           <DataTable
             data={observationPos}

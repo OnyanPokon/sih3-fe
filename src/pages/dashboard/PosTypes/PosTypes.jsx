@@ -6,7 +6,7 @@ import { PosTypes as PosTypeModel } from '@/models';
 import React from 'react';
 import { DataTable, DataTableHeader } from '@/components';
 import { PosTypesService, CategoriesService, TagsService } from '@/services';
-import { formFields } from './FormFields.js';
+import { formFields, posTypesFilterFields } from './FormFields.js';
 import Action from '@/constants/Action.js';
 import Edit from '@/components/dashboard/button/Edit.jsx';
 import Delete from '@/components/dashboard/button/Delete.jsx';
@@ -22,16 +22,19 @@ const PosTypes = () => {
   const { execute: fetchTags, ...getAllTags } = useAbortableService(TagsService.getAll, { onUnauthorized });
 
   const pagination = usePagination({ totalData: getAllPosTypes.totalData });
-  const [filterValues, setFilterValues] = React.useState({ search: '' });
+  const [filterValues, setFilterValues] = React.useState({ search: '', kategori_id: null, status: null });
 
   const fetchPosTypes = React.useCallback(() => {
     execute({
       token: token,
       page: pagination.page,
       per_page: pagination.perPage,
-      search: filterValues.search
+      search: filterValues.search,
+      kategori_id: filterValues.kategori_id,
+      status: filterValues.status,
+      unor_id: user?.unor.id
     });
-  }, [execute, filterValues.search, pagination.page, pagination.perPage, token]);
+  }, [execute, filterValues.kategori_id, filterValues.search, filterValues.status, pagination.page, pagination.perPage, token, user?.unor.id]);
 
   React.useEffect(() => {
     fetchPosTypes();
@@ -68,7 +71,9 @@ const PosTypes = () => {
         <div className="flex flex-wrap gap-1">
           {record.tags && record.tags.length > 0 ? (
             record.tags.map((t) => (
-              <AntTag key={t.id} color="blue">{t.name}</AntTag>
+              <AntTag key={t.id} color="blue">
+                {t.name}
+              </AntTag>
             ))
           ) : (
             <span className="text-gray-400">-</span>
@@ -150,14 +155,24 @@ const PosTypes = () => {
     });
   };
 
-  return (
-  <Card
-      title={
-        <DataTableHeader model={PosTypeModel} modul={Modul.POSTYPES} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
-      }
-    >
-      <Skeleton loading={getAllPosTypes.isLoading}>
+  const filter = {
+    formFields: posTypesFilterFields({ options: { categories: categories } }),
+    initialData: {
+      status: filterValues.status,
+      id_kategori: filterValues.kategori_id
+    },
+    isLoading: getAllPosTypes.isLoading,
+    onSubmit: (values) => {
+      setFilterValues({
+        status: values.status,
+        kategori_id: values.id_kategori
+      });
+    }
+  };
 
+  return (
+    <Card title={<DataTableHeader model={PosTypeModel} modul={Modul.POSTYPES} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} filter={filter} />}>
+      <Skeleton loading={getAllPosTypes.isLoading}>
         <div className="w-full max-w-full overflow-x-auto">
           <DataTable data={posTypes} columns={column} loading={getAllPosTypes.isLoading} map={(posTypes) => ({ key: posTypes.id, ...posTypes })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} pagination={pagination} />
         </div>

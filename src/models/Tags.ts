@@ -1,5 +1,6 @@
 import Model from './Model';
 import WilayahSungai, { IncomingApiData as WilayahSungaiIncomingApiData } from './WilayahSungai';
+import Categories, { IncomingApiData as CategoriesIncomingApiData } from './Categories';
 
 export interface IncomingApiData {
   id: number;
@@ -11,8 +12,12 @@ export interface IncomingApiData {
   };
   nama: string;
   deskripsi: string | null;
-  referensi_type: string | null;
-  referensi_id: number | null;
+  warna?: string | null;
+  icon?: string | null;
+  kategori_id: number;
+  kategori: CategoriesIncomingApiData;
+  referensi_type?: string | null;
+  referensi_id?: number | null;
   referensi?: WilayahSungaiIncomingApiData | null;
   created_at: string;
   updated_at: string;
@@ -22,6 +27,9 @@ export interface OutgoingApiData {
   _method?: 'PUT';
   nama: string;
   deskripsi?: string | null;
+  warna: string | null;
+  icon: string | null;
+  kategori_id: number;
   referensi_type?: string | null;
   referensi_id?: number | null;
 }
@@ -30,8 +38,11 @@ interface FormValue {
   _method?: 'PUT';
   name: string;
   description?: string;
-  reference_type?: string;
-  reference_id?: number;
+  color: string | null;
+  icon: string | null;
+  category_id: number;
+  reference_type?: string | null;
+  reference_id?: number | null;
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -43,6 +54,10 @@ export default class Tags extends Model {
     public user: { id: number; username: string; email: string } | null,
     public name: string,
     public description: string | null,
+    public color: string | null,
+    public icon: string | null,
+    public category_id: number,
+    public category: Categories,
     public reference_type: string | null,
     public reference_id: number | null,
     public reference: WilayahSungai | null,
@@ -60,8 +75,12 @@ export default class Tags extends Model {
       apiData.user ?? null,
       apiData.nama,
       apiData.deskripsi,
-      apiData.referensi_type,
-      apiData.referensi_id,
+      apiData.warna ?? null,
+      apiData.icon ?? null,
+      apiData.kategori_id,
+      Categories.fromApiData(apiData.kategori),
+      apiData.referensi_type ?? null,
+      apiData.referensi_id ?? null,
       apiData.referensi ? WilayahSungai.fromApiData(apiData.referensi) : null,
       apiData.created_at,
       apiData.updated_at
@@ -74,6 +93,9 @@ export default class Tags extends Model {
       ...(formValues._method ? { _method: formValues._method } : {}),
       nama: formValues.name,
       deskripsi: formValues.description || null,
+      warna: formValues.color,
+      icon: formValues.icon,
+      kategori_id: formValues.category_id,
       referensi_type: formValues.reference_type || null,
       referensi_id: formValues.reference_id || null
     };
@@ -84,4 +106,3 @@ export default class Tags extends Model {
 
 Model.children.tags = Tags;
 Model.children.tag = Tags;
-

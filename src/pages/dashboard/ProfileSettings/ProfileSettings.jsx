@@ -142,13 +142,13 @@ const ProfileSettings = () => {
               <Card className="w-full" title="Ganti Kata Sandi">
                 <Form key="profil-password" layout="vertical" onFinish={onSubmitChangePassword}>
                   <Form.Item label="Kata Sandi Lama" name="old_password" rules={[{ required: true, message: 'Password lama harus diisi' }]}>
-                    <Input.Password size="large" />
+                    <Input.Password placeholder="Masukan Password Lama" size="large" />
                   </Form.Item>
                   <Form.Item label="Kata Sandi Baru" name="new_password" rules={[{ required: true, message: 'Password baru harus diisi' }]}>
-                    <Input.Password size="large" />
+                    <Input.Password placeholder="Masukan Password Baru" size="large" />
                   </Form.Item>
                   <Form.Item label="Ulangi Kata Sandi Baru" name="confirm_password" rules={[{ required: true, message: 'Konfirmasi Password harus diisi' }]}>
-                    <Input.Password size="large" />
+                    <Input.Password placeholder="Ulangi Password Baru" size="large" />
                   </Form.Item>
                   <Form.Item>
                     <Button disabled={!user?.eitherCan([Action.UPDATE, ProfileModel])} type="primary" htmlType="submit" loading={udpatePersonilPassword.isLoading}>

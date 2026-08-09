@@ -73,7 +73,7 @@ const Create = () => {
           return isSuccess;
         }}
       >
-        <Card className="col-span-6 lg:col-span-4">
+        <Card className="col-span-6 h-fit lg:col-span-4">
           <Form.Item
             className="mb-4"
             name="title"
@@ -116,7 +116,7 @@ const Create = () => {
             />
           </Form.Item>
         </Card>
-        <Card className="col-span-6 lg:col-span-2">
+        <Card className="col-span-6 h-fit lg:col-span-2">
           <Form.Item
             className="mb-4"
             name="category_id"
@@ -136,11 +136,7 @@ const Create = () => {
               }))}
             />
           </Form.Item>
-          <Form.Item
-            className="mb-4"
-            name="tag_ids"
-            label="Tag"
-          >
+          <Form.Item className="mb-4" name="tag_ids">
             <Select
               mode="multiple"
               placeholder="Pilih Tag"

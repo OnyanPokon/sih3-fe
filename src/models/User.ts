@@ -16,7 +16,7 @@ export interface IncomingApiData {
     kategoris: {
       id: number;
       nama: string;
-    }[]
+    }[];
   };
 }
 
@@ -40,17 +40,12 @@ export default class User extends Model {
   categoryIs(categories: DefaultCategories[]): boolean {
     if (!categories.length) return true;
 
-    return (
-      this.unor?.kategoris?.some((kategori) =>
-        categories.includes(kategori.nama as DefaultCategories)
-      ) ?? false
-    );
+    return this.unor?.kategoris?.some((kategori) => categories.includes(kategori.nama as DefaultCategories)) ?? false;
   }
 
   is(role: Role) {
     return this.role === role;
   }
-
 
   can(action: Action, model: ModelChildren) {
     return this.permissions.some((permission) => permission.can(action, model));

@@ -197,13 +197,8 @@ const Unors = () => {
   };
 
   return (
-    <Card
-      title={
-        <DataTableHeader model={UnorModel} modul={Modul.UNOR} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
-      }
-    >
+    <Card title={<DataTableHeader model={UnorModel} modul={Modul.UNOR} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />}>
       <Skeleton loading={getAllUnors.isLoading}>
-
         <div className="w-full max-w-full overflow-x-auto">
           <DataTable data={unors} columns={column} loading={getAllUnors.isLoading} map={(unors) => ({ key: unors.id, ...unors })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} pagination={pagination} />
         </div>

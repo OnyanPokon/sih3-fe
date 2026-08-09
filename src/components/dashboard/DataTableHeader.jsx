@@ -17,17 +17,17 @@ export default function DataHeader({ modul, selectedData, onStore, onDeleteBatch
 
   const importMenuItems = hasImportCapability
     ? [
-      {
-        key: 'template',
-        label: 'Download Template',
-        onClick: () => templateDownloader(onImport.templateFile)
-      },
-      {
-        key: 'import',
-        label: 'Import Data',
-        onClick: () => onImport.importHandler?.()
-      }
-    ]
+        {
+          key: 'template',
+          label: 'Download Template',
+          onClick: () => templateDownloader(onImport.templateFile)
+        },
+        {
+          key: 'import',
+          label: 'Import Data',
+          onClick: () => onImport.importHandler?.()
+        }
+      ]
     : [];
 
   const menuItems = [];
@@ -81,7 +81,7 @@ export default function DataHeader({ modul, selectedData, onStore, onDeleteBatch
         break;
       case 'template':
         templateDownloader?.(onImport.templateFile);
-      break;
+        break;
       case 'export':
         onExport?.();
         break;

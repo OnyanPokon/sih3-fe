@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Tags } from '@/models';
 import api from '@/utils/api';
 
@@ -16,6 +17,24 @@ export default class TagsService {
     const abortController = new AbortController();
     const response = api.get('/tag', {
       token,
+      signal: abortController.signal,
+      params
+    });
+
+    return {
+      abortController,
+      response,
+      parser: (apiData) => {
+        const data = apiData?.data ?? apiData ?? [];
+        return Tags.fromApiData(data);
+      }
+    };
+  }
+
+  static getAllInLanding({ ...filters } = {}) {
+    const params = Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== null && v !== undefined && v !== ''));
+    const abortController = new AbortController();
+    const response = api.get('/landing/tag', {
       signal: abortController.signal,
       params
     });

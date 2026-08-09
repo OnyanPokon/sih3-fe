@@ -27,7 +27,7 @@ const LegalProducts = () => {
       per_page: pagination.perPage,
       search: filterValues.search,
       tahun: filterValues.tahun ?? undefined,
-      unor_id: filterValues.unor_id ?? undefined,
+      unor_id: filterValues.unor_id ?? undefined
     });
   }, [fetchLegalProducts, filterValues.search, filterValues.tahun, filterValues.unor_id, pagination.page, pagination.perPage]);
 
@@ -61,12 +61,7 @@ const LegalProducts = () => {
       </section>
       <section className="bg-gray-100">
         <div className="mx-auto flex w-full max-w-screen-xl items-center gap-x-2 p-6">
-          <Input.Search
-            allowClear
-            onSearch={(values) => setFilterValues((prev) => ({ ...prev, search: values }))}
-            size="large"
-            placeholder="Cari judul peraturan, deskripsi, atau nomor produk hukum..."
-          />
+          <Input.Search allowClear onSearch={(values) => setFilterValues((prev) => ({ ...prev, search: values }))} size="large" placeholder="Cari judul peraturan, deskripsi, atau nomor produk hukum..." />
           <Select onChange={(value) => setFilterValues((prev) => ({ ...prev, unor_id: value }))} size="large" placeholder="Tahun" className="w-72" defaultValue="">
             <Select.Option value="">Semua Unor</Select.Option>
             {unors.map((unor) => (
@@ -95,33 +90,33 @@ const LegalProducts = () => {
           <div className="flex flex-wrap items-start justify-center gap-4">
             {getAllLegalProducts.isLoading
               ? Array.from({ length: 3 }, (_, i) => i).map((index) => (
-                <Card className="w-full max-w-[382px]" key={index}>
-                  <Skeleton active />
-                </Card>
-              ))
-              : legalProducts?.map((item) => {
-                return (
-                  <Card key={item.id} className="w-full max-w-[382px]">
-                    <div className="text-gray-500">
-                      <p className="mb-2 text-xs">{item.year}</p>
-                      <Typography.Title level={5}>
-                        <span className="news-text">{item.title}</span>
-                      </Typography.Title>
-                      <p className="news-text">{item.desc}</p>
-                      <hr className="my-4" />
-                      <div className="inline-flex w-full items-center justify-between">
-                        <div className="inline-flex items-center gap-x-2">
-                          <PaperClipOutlined />
-                          <span className="text-xs">PDF</span>
-                        </div>
-                        <Button variant="text" color="primary" size="small">
-                          Download
-                        </Button>
-                      </div>
-                    </div>
+                  <Card className="w-full max-w-[382px]" key={index}>
+                    <Skeleton active />
                   </Card>
-                );
-              })}
+                ))
+              : legalProducts?.map((item) => {
+                  return (
+                    <Card key={item.id} className="w-full max-w-[382px]">
+                      <div className="text-gray-500">
+                        <p className="mb-2 text-xs">{item.year}</p>
+                        <Typography.Title level={5}>
+                          <span className="news-text">{item.title}</span>
+                        </Typography.Title>
+                        <p className="news-text">{item.desc}</p>
+                        <hr className="my-4" />
+                        <div className="inline-flex w-full items-center justify-between">
+                          <div className="inline-flex items-center gap-x-2">
+                            <PaperClipOutlined />
+                            <span className="text-xs">PDF</span>
+                          </div>
+                          <Button variant="text" color="primary" size="small">
+                            Download
+                          </Button>
+                        </div>
+                      </div>
+                    </Card>
+                  );
+                })}
           </div>
           <div className="flex gap-x-4">
             <div className="flex w-full flex-[2] gap-x-4 rounded-xl border-l-4 border-blue-500 bg-white p-6 shadow-sm">

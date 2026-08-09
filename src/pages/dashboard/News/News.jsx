@@ -117,25 +117,18 @@ const News = () => {
               navigate('/news/' + record.category_id.category_name.toLowerCase() + '/' + record.slug);
             }}
           />
-
         </Space>
       )
     });
   }
-
 
   const onCreate = () => {
     navigate(window.location.pathname + '/create');
   };
 
   return (
-    <Card
-      title={
-        <DataTableHeader model={NewsModel} modul={Modul.NEWS} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
-      }
-    >
+    <Card title={<DataTableHeader model={NewsModel} modul={Modul.NEWS} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />}>
       <Skeleton loading={getAllNews.isLoading}>
-
         <div className="w-full max-w-full overflow-x-auto">
           <DataTable data={news} columns={column} loading={getAllNews.isLoading} map={(news) => ({ key: news.id, ...news })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} pagination={pagination} />
         </div>

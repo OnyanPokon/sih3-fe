@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { WilayahSungai } from '@/models';
 import api from '@/utils/api';
 

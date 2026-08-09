@@ -28,6 +28,7 @@ export const formFields = ({ options }) => [
     label: `Kategori ${Modul.POSTYPES}`,
     name: 'id_kategori',
     type: InputType.SELECT,
+    placeholder: 'Masukan Kategori',
     rules: [
       {
         required: true,
@@ -43,6 +44,7 @@ export const formFields = ({ options }) => [
     label: `Status ${Modul.POSTYPES}`,
     name: 'status',
     type: InputType.SELECT,
+    placeholder: 'Pilih status publikasi',
     rules: [
       {
         required: true,
@@ -68,6 +70,35 @@ export const formFields = ({ options }) => [
     placeholder: 'Pilih Tag (Opsional)',
     options: (options.tags || []).map((item) => ({
       label: item.name,
+      value: item.id
+    }))
+  }
+];
+
+export const posTypesFilterFields = ({ options }) => [
+  {
+    label: `Status publikasi`,
+    name: 'status',
+    type: InputType.SELECT,
+    placeholder: 'Pilih status publikasi',
+    options: [
+      {
+        label: 'Publikasi',
+        value: 'publikasi'
+      },
+      {
+        label: 'Draft',
+        value: 'draft'
+      }
+    ]
+  },
+  {
+    label: `Kategori ${Modul.POSTYPES}`,
+    name: 'id_kategori',
+    type: InputType.SELECT,
+    placeholder: 'Pilih kategori',
+    options: options.categories.map((item) => ({
+      label: item.category_name,
       value: item.id
     }))
   }

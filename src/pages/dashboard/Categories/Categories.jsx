@@ -80,7 +80,7 @@ const Categories = () => {
         <div className="flex flex-wrap gap-1">
           {unors && unors.length > 0 ? (
             unors.map((u) => (
-              <span key={u.id} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+              <span key={u.id} className="inline-flex items-center rounded bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
                 {u.name}
               </span>
             ))
@@ -161,13 +161,8 @@ const Categories = () => {
   };
 
   return (
-    <Card
-    title={
-       <DataTableHeader model={CategoryModel} modul={Modul.CATEGORY} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
-    }
-    >
+    <Card title={<DataTableHeader model={CategoryModel} modul={Modul.CATEGORY} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />}>
       <Skeleton loading={getAllCategories.isLoading}>
-       
         <div className="w-full max-w-full overflow-x-auto">
           <DataTable data={categories} columns={column} loading={getAllCategories.isLoading} map={(category) => ({ key: category.id, ...category })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} pagination={pagination} />
         </div>
