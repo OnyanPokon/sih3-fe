@@ -1,10 +1,10 @@
 import { Typography } from 'antd';
 import PropTypes from 'prop-types';
 
-const HidrologiWsStatisticCard = ({ label, data }) => {
+const HidrologiWsStatisticCard = ({ label, thumbnail, data }) => {
   return (
     <div className="flex w-72 flex-shrink-0 flex-col gap-y-2">
-      <img className="h-32 w-full rounded-lg object-cover" src="/image_asset/background/das_limboto_reference.jpg" alt="Description" />
+      <img className="h-32 w-full rounded-lg object-cover" src={thumbnail || '/image_asset/background/das_limboto_reference.jpg'} alt={label} />
       <Typography.Title level={5} style={{ margin: 0 }}>
         {label}
       </Typography.Title>
@@ -21,6 +21,7 @@ const HidrologiWsStatisticCard = ({ label, data }) => {
 
 HidrologiWsStatisticCard.propTypes = {
   label: PropTypes.string.isRequired,
+  thumbnail: PropTypes.string,
   data: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,

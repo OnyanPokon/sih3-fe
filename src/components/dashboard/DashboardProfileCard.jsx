@@ -1,9 +1,27 @@
 import { useAuth } from '@/hooks';
+import useAbortableService from '@/hooks/useAbortableService';
+import { DashboardService } from '@/services';
+import relativeDate from '@/utils/relativeDate';
 import { FolderFilled } from '@ant-design/icons';
-import { Card, Skeleton, Typography } from 'antd';
+import { Card, Empty, Skeleton, Typography } from 'antd';
+import React from 'react';
+
+const JENIS_LABEL = {
+  artikel: 'Informasi Teknis',
+  berita: 'Berita',
+  pemetaan: 'Pemetaan GIS',
+  produk_hukum: 'Produk Hukum'
+};
 
 const DashboardProfileCard = () => {
-  const { user } = useAuth();
+  const { user, token, onUnauthorized } = useAuth();
+  const { execute: fetchAktivitasTerbaru, ...getAktivitasTerbaru } = useAbortableService(DashboardService.getAktivitasTerbaru, { onUnauthorized });
+
+  React.useEffect(() => {
+    fetchAktivitasTerbaru({ token, per_page: 5 });
+  }, [fetchAktivitasTerbaru, token]);
+
+  const aktivitasTerbaru = getAktivitasTerbaru.data ?? [];
 
   return (
     <Card title="Profil">
@@ -42,7 +60,7 @@ const DashboardProfileCard = () => {
         <span className="w-full text-xs font-semibold">Publikasi Terakhir :</span>
 
         <div className="w-full divide-y rounded-md bg-blue-50/60 px-3">
-          {!user ? (
+          {getAktivitasTerbaru.isLoading ? (
             <div className="flex items-center gap-3 py-3">
               <Skeleton.Avatar active shape="square" size={40} />
               <div className="flex-1">
@@ -50,14 +68,23 @@ const DashboardProfileCard = () => {
                 <Skeleton.Input active size="small" style={{ width: '45%' }} />
               </div>
             </div>
-          ) : (
-            <div className="flex items-center gap-x-2 py-3">
-              <FolderFilled className="text-2xl text-blue-700" />
-              <div className="flex flex-col">
-                <p className="text-xs font-semibold">Pos Pengamatan</p>
-                <span className="text-xs text-gray-500">Berita - 2 Hari yang lalu</span>
-              </div>
+          ) : aktivitasTerbaru.length === 0 ? (
+            <div className="py-6">
+              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Belum ada publikasi" />
             </div>
+          ) : (
+            aktivitasTerbaru.map((item, index) => (
+              <div key={index} className="flex items-center gap-x-2 py-3">
+                <FolderFilled className="text-2xl text-blue-700" />
+                <div className="flex min-w-0 flex-col">
+                  <p className="text-xs font-semibold">{item.judul}</p>
+                  <span className="text-xs text-gray-500">
+                    {JENIS_LABEL[item.jenis] ?? item.jenis} - {item.unor_nama ? `${item.unor_nama} - ` : ''}
+                    {item.tanggal ? relativeDate(item.tanggal) : ''}
+                  </span>
+                </div>
+              </div>
+            ))
           )}
         </div>
       </div>

@@ -14,3 +14,4 @@ export { default as TelemetryCoordinatesService } from './TelemetryCoordinatesSe
 export { default as LegalProductsService } from './LegalProductsService';
 export { default as WilayahSungaiService } from './WilayahSungaiService';
 export { default as TagsService } from './TagsService';
+export { default as DashboardService } from './DashboardService';

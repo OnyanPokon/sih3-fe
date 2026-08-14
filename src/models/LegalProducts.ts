@@ -25,6 +25,8 @@ export interface IncomingApiData {
     email: string;
     email_verified_at: string;
   };
+  created_at: string;
+  updated_at: string;
 }
 
 export interface OutgoingApiData {
@@ -71,7 +73,9 @@ export default class LegalProducts extends Model {
       username: string;
       email: string;
       email_verified_at: string;
-    }
+    },
+    public created_at: string,
+    public updated_at: string
   ) {
     super();
   }
@@ -101,7 +105,9 @@ export default class LegalProducts extends Model {
         username: apiData.user_id.username,
         email: apiData.user_id.email,
         email_verified_at: apiData.user_id.email_verified_at
-      }
+      },
+      apiData.created_at,
+      apiData.updated_at
     ) as ReturnType<T, IncomingApiData, LegalProducts>;
   }
 

@@ -1,9 +1,84 @@
+import { KuesionerRingkasanCard, ObservationPosMap, PosPerJenisCard, TopArtikelCard } from '@/components';
+import { useAuth } from '@/hooks';
+import useAbortableService from '@/hooks/useAbortableService';
+import { DashboardService, LegalProductsService } from '@/services';
+import relativeDate from '@/utils/relativeDate';
 import { BranchesOutlined, FilePdfOutlined, PlusOutlined, UserAddOutlined } from '@ant-design/icons';
-import { Button, Card, Typography } from 'antd';
+import { Button, Empty, Skeleton, Typography } from 'antd';
 import { CloudHail, Droplet, FileText, Gavel, Layers2, Map, Newspaper, Rss } from 'lucide-react';
-import { MapContainer, TileLayer } from 'react-leaflet';
+import PropTypes from 'prop-types';
+import React from 'react';
+
+const KPI_KEYS = [
+  { key: 'artikel', label: 'Informasi Teknis', icon: Newspaper },
+  { key: 'berita', label: 'Berita', icon: FileText },
+  { key: 'pemetaan', label: 'Pemetaan', icon: Map },
+  { key: 'pos', label: 'Pos Pengamatan', icon: Rss }
+];
+
+const GREEN_KPI_CONFIG = [
+  { key: 'artikel', label: 'Informasi Teknis', icon: Newspaper, iconClassName: 'bg-green-100 text-green-500' },
+  { key: 'berita', label: 'Berita', icon: FileText, iconClassName: 'bg-green-100 text-green-500' },
+  { key: 'pemetaan', label: 'Pemetaan', icon: Map, iconClassName: 'bg-green-100 text-green-500' },
+  { key: 'pos', label: 'Pos Pengamatan', icon: Rss, iconClassName: 'bg-green-100 text-green-500' }
+];
+
+const AMBER_KPI_CONFIG = [
+  { key: 'artikel', label: 'Informasi Teknis', icon: Newspaper, iconClassName: 'bg-amber-100 text-amber-500' },
+  { key: 'berita', label: 'Berita', icon: FileText, iconClassName: 'bg-amber-100 text-amber-500' },
+  { key: 'pemetaan', label: 'Pemetaan', icon: Map, iconClassName: 'bg-amber-100 text-amber-500' },
+  { key: 'pos', label: 'Pos Pengamatan', icon: Rss, iconClassName: 'bg-amber-100 text-amber-500' }
+];
+
+const KpiItem = ({ item, value, loading, dark, spanClass = 'col-span-3' }) => {
+  const Icon = item.icon;
+
+  return (
+    <div className={`${spanClass} inline-flex items-center gap-x-3 rounded-lg p-4 ${dark ? 'bg-white/20' : 'bg-gray-50'}`}>
+      <div className={`flex h-12 w-12 items-center justify-center rounded-lg ${dark ? 'bg-white/20 text-white' : item.iconClassName}`}>
+        <Icon size={28} />
+      </div>
+      <div className="flex flex-col">
+        <small className={dark ? 'text-white/80' : ''}>{item.label}</small>
+        {loading ? <Skeleton.Input active size="small" style={{ width: 40 }} /> : <span className="text-xl">{value}</span>}
+      </div>
+    </div>
+  );
+};
+
+KpiItem.propTypes = {
+  item: PropTypes.shape({
+    key: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    icon: PropTypes.elementType.isRequired,
+    iconClassName: PropTypes.string
+  }).isRequired,
+  value: PropTypes.number,
+  loading: PropTypes.bool,
+  dark: PropTypes.bool,
+  spanClass: PropTypes.string
+};
 
 const SuperadminDashboard = () => {
+  const { token, onUnauthorized } = useAuth();
+  const { execute: fetchStatistik, ...statistik } = useAbortableService(DashboardService.getStatistik, { onUnauthorized });
+  const { execute: fetchStatistikTambahan, ...statistikTambahan } = useAbortableService(DashboardService.getStatistikTambahan, { onUnauthorized });
+  const { execute: fetchProdukHukum, ...produkHukum } = useAbortableService(LegalProductsService.getAll, { onUnauthorized });
+
+  React.useEffect(() => {
+    fetchStatistik({ token });
+    fetchStatistikTambahan({ token });
+    fetchProdukHukum({ token, per_page: 5 });
+  }, [fetchStatistik, fetchStatistikTambahan, fetchProdukHukum, token]);
+
+  const kategoriBySlug = (slug) => statistik.data?.kategoris?.find((kategori) => kategori.slug === slug) ?? { artikel: 0, berita: 0, pemetaan: 0, pos: 0 };
+
+  const hidrologi = kategoriBySlug('hidrologi');
+  const hidrometeorologi = kategoriBySlug('hidrometeorologi');
+  const hidrogeologi = kategoriBySlug('hidrogeologi');
+
+  const isStatistikLoading = statistik.isLoading;
+
   return (
     <div className="grid w-full grid-cols-12 gap-4">
       <div className="col-span-12 inline-flex w-full items-center justify-between">
@@ -36,42 +111,9 @@ const SuperadminDashboard = () => {
           </div>
         </div>
         <div className="grid w-full grid-cols-12 gap-4">
-          <div className="col-span-3 inline-flex items-center gap-x-3 rounded-lg bg-white/20 p-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/20">
-              <Newspaper size={28} />
-            </div>
-            <div className="flex flex-col">
-              <small className="text-white/80">Informasi Teknis</small>
-              <span className="text-xl">124</span>
-            </div>
-          </div>
-          <div className="col-span-3 inline-flex items-center gap-x-3 rounded-lg bg-white/20 p-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/20">
-              <FileText size={28} />
-            </div>
-            <div className="flex flex-col">
-              <small className="text-white/80">Berita</small>
-              <span className="text-xl">124</span>
-            </div>
-          </div>
-          <div className="col-span-3 inline-flex items-center gap-x-3 rounded-lg bg-white/20 p-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/20">
-              <Map size={28} />
-            </div>
-            <div className="flex flex-col">
-              <small className="text-white/80">Pemetaan</small>
-              <span className="text-xl">124</span>
-            </div>
-          </div>
-          <div className="col-span-3 inline-flex items-center gap-x-3 rounded-lg bg-white/20 p-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/20">
-              <Rss size={28} />
-            </div>
-            <div className="flex flex-col">
-              <small className="text-white/80">Pos Pengamatan</small>
-              <span className="text-xl">124</span>
-            </div>
-          </div>
+          {KPI_KEYS.map((item) => (
+            <KpiItem key={item.key} item={item} value={hidrologi[item.key]} loading={isStatistikLoading} dark />
+          ))}
         </div>
       </div>
       <div className="col-span-4 flex flex-col gap-y-6 rounded-xl bg-white p-6">
@@ -80,50 +122,13 @@ const SuperadminDashboard = () => {
           <span className="">Hidrometeorologi</span>
         </div>
         <div className="grid grid-cols-12 gap-2">
-          <div className="col-span-6 inline-flex items-center gap-x-3 rounded-lg bg-gray-50 p-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-100 text-green-500">
-              <Newspaper size={28} />
-            </div>
-            <div className="flex flex-col">
-              <small className="">Informasi Teknis</small>
-              <span className="text-xl">124</span>
-            </div>
-          </div>
-          <div className="col-span-6 inline-flex items-center gap-x-3 rounded-lg bg-gray-50 p-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-100 text-green-500">
-              <FileText size={28} />
-            </div>
-            <div className="flex flex-col">
-              <small className="">Berita</small>
-              <span className="text-xl">124</span>
-            </div>
-          </div>
-          <div className="col-span-6 inline-flex items-center gap-x-3 rounded-lg bg-gray-50 p-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-100 text-green-500">
-              <Map size={28} />
-            </div>
-            <div className="flex flex-col">
-              <small className="">Pemetaan</small>
-              <span className="text-xl">124</span>
-            </div>
-          </div>
-          <div className="col-span-6 inline-flex items-center gap-x-3 rounded-lg bg-gray-50 p-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-100 text-green-500">
-              <Rss size={28} />
-            </div>
-            <div className="flex flex-col">
-              <small className="">Pos Pengamatan</small>
-              <span className="text-xl">124</span>
-            </div>
-          </div>
+          {GREEN_KPI_CONFIG.map((item) => (
+            <KpiItem key={item.key} item={item} value={hidrometeorologi[item.key]} loading={isStatistikLoading} spanClass="col-span-6" />
+          ))}
         </div>
       </div>
       <div className="col-span-8 w-full">
-        <Card className="w-full" title="Peta Sebaran Pos Pengamatan">
-          <MapContainer center={[0.5435, 123.056]} zoom={9} scrollWheelZoom className="h-[480px] rounded-xl">
-            <TileLayer attribution="&copy; OpenStreetMap" url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          </MapContainer>
-        </Card>
+        <ObservationPosMap />
       </div>
       <div className="col-span-4 flex w-full flex-col gap-y-4">
         <div className="flex h-fit flex-col gap-y-6 rounded-xl bg-white p-6">
@@ -132,42 +137,9 @@ const SuperadminDashboard = () => {
             <span className="">Hidrogeologi</span>
           </div>
           <div className="grid grid-cols-12 gap-2">
-            <div className="col-span-6 inline-flex items-center gap-x-3 rounded-lg bg-gray-50 p-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-amber-100 text-amber-500">
-                <Newspaper size={28} />
-              </div>
-              <div className="flex flex-col">
-                <small className="">Informasi Teknis</small>
-                <span className="text-xl">124</span>
-              </div>
-            </div>
-            <div className="col-span-6 inline-flex items-center gap-x-3 rounded-lg bg-gray-50 p-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-amber-100 text-amber-500">
-                <FileText size={28} />
-              </div>
-              <div className="flex flex-col">
-                <small className="">Berita</small>
-                <span className="text-xl">124</span>
-              </div>
-            </div>
-            <div className="col-span-6 inline-flex items-center gap-x-3 rounded-lg bg-gray-50 p-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-amber-100 text-amber-500">
-                <Map size={28} />
-              </div>
-              <div className="flex flex-col">
-                <small className="">Pemetaan</small>
-                <span className="text-xl">124</span>
-              </div>
-            </div>
-            <div className="col-span-6 inline-flex items-center gap-x-3 rounded-lg bg-gray-50 p-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-amber-100 text-amber-500">
-                <Rss size={28} />
-              </div>
-              <div className="flex flex-col">
-                <small className="">Pos Pengamatan</small>
-                <span className="text-xl">124</span>
-              </div>
-            </div>
+            {AMBER_KPI_CONFIG.map((item) => (
+              <KpiItem key={item.key} item={item} value={hidrogeologi[item.key]} loading={isStatistikLoading} spanClass="col-span-6" />
+            ))}
           </div>
         </div>
         <div className="flex h-fit flex-col gap-y-3 rounded-xl bg-white p-6">
@@ -177,18 +149,39 @@ const SuperadminDashboard = () => {
             </div>
             <div className="flex flex-col">
               <small className="">Total Produk Hukum</small>
-              <span className="text-xl">124</span>
+              {isStatistikLoading ? <Skeleton.Input active size="small" style={{ width: 40 }} /> : <span className="text-xl">{statistik.data?.total_produk_hukum ?? 0}</span>}
             </div>
           </div>
           <hr />
           <p className="font-semibold">Baru ini diunggah :</p>
-          <div className="inline-flex w-full items-center justify-between rounded-lg bg-gray-100 p-4">
-            <div className="flex flex-col gap-y-1">
-              <span className="font-semibold">UU Rampasan Hak Aset</span>
-              <small>BMKG - 2 Hari yang lalu</small>
-            </div>
-            <Button icon={<FilePdfOutlined />} />
-          </div>
+          {produkHukum.isLoading ? (
+            <Skeleton active paragraph={{ rows: 2 }} />
+          ) : produkHukum.data && produkHukum.data.length > 0 ? (
+            produkHukum.data.map((item) => (
+              <div key={item.id} className="inline-flex w-full items-center justify-between rounded-lg bg-gray-100 p-4">
+                <div className="flex min-w-0 flex-col gap-y-1">
+                  <span className="font-semibold">{item.title}</span>
+                  <small>
+                    {item.unor_id?.name} - {item.created_at ? relativeDate(item.created_at) : ''}
+                  </small>
+                </div>
+                <Button icon={<FilePdfOutlined />} href={item.file} target="_blank" rel="noreferrer" />
+              </div>
+            ))
+          ) : (
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Belum ada produk hukum" />
+          )}
+        </div>
+      </div>
+      <div className="col-span-12 grid w-full grid-cols-12 gap-4">
+        <div className="col-span-4">
+          <TopArtikelCard data={statistikTambahan.data?.top_artikel} />
+        </div>
+        <div className="col-span-4">
+          <PosPerJenisCard data={statistikTambahan.data?.pos_per_jenis} />
+        </div>
+        <div className="col-span-4">
+          <KuesionerRingkasanCard data={statistikTambahan.data?.kuesioner} />
         </div>
       </div>
     </div>

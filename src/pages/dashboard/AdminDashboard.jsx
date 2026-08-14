@@ -1,10 +1,31 @@
-import { AdminStatisticCard, AdminStatisticChart, DashboardProfileCard, HidrologiWsStatisticCard } from '@/components';
+import { AdminStatisticCard, AdminStatisticChart, DashboardProfileCard, HidrologiWsStatisticCard, KuesionerRingkasanCard, ObservationPosMap, PosPerJenisCard, TopArtikelCard } from '@/components';
+import { useAuth } from '@/hooks';
+import useAbortableService from '@/hooks/useAbortableService';
+import { DashboardService } from '@/services';
+import asset from '@/utils/asset';
 import { LeftOutlined, PlusOutlined, RightOutlined } from '@ant-design/icons';
-import { Button, Card } from 'antd';
+import { Button, Card, Skeleton } from 'antd';
 import React from 'react';
-import { MapContainer, TileLayer } from 'react-leaflet';
+
+const QUICK_ACCESS_CONFIG = [
+  { key: 'artikel', label: 'Informasi Teknis', color: '#059669', navigationPath: '/dashboard/articles' },
+  { key: 'berita', label: 'Berita', color: '#2563EB', navigationPath: '/dashboard/news' },
+  { key: 'pemetaan', label: 'Pemetaan GIS', color: '#7C3AED', navigationPath: '/dashboard/maps' },
+  { key: 'pos', label: 'Pos Pengamatan', color: '#D97706', navigationPath: '/dashboard/observation_pos' }
+];
 
 const AdminDashboard = () => {
+  const { token, onUnauthorized } = useAuth();
+  const { execute: fetchStatistik, ...statistik } = useAbortableService(DashboardService.getStatistik, { onUnauthorized });
+  const { execute: fetchWilayahSungai, ...wilayahSungai } = useAbortableService(DashboardService.getWilayahSungai, { onUnauthorized });
+  const { execute: fetchStatistikTambahan, ...statistikTambahan } = useAbortableService(DashboardService.getStatistikTambahan, { onUnauthorized });
+
+  React.useEffect(() => {
+    fetchStatistik({ token });
+    fetchWilayahSungai({ token });
+    fetchStatistikTambahan({ token });
+  }, [fetchStatistik, fetchWilayahSungai, fetchStatistikTambahan, token]);
+
   const scrollRef = React.useRef(null);
 
   const scrollLeft = () => {
@@ -21,105 +42,41 @@ const AdminDashboard = () => {
     });
   };
 
-  const data = [
-    {
-      type: 'Informasi Teknis',
-      value: 120,
-      color: '#059669'
-    },
-    {
-      type: 'Berita',
-      value: 90,
-      color: '#2563EB'
-    },
-    {
-      type: 'Pos Pengamatan',
-      value: 60,
-      color: '#D97706'
-    },
-    {
-      type: 'Pemetaan GIS',
-      value: 80,
-      color: '#7C3AED'
-    }
-  ];
+  const quickAccess = statistik.data?.quick_access ?? {};
 
-  const dataInWs = [
-    {
-      title: 'Wilayah Sungai Bone Bolango',
-      data: [
-        {
-          label: 'Informasi Teknis',
-          value: 120
-        },
-        {
-          label: 'Berita',
-          value: 80
-        },
-        {
-          label: 'Pos Pengamatan',
-          value: 90
-        },
-        {
-          label: 'Pemetaan GIS',
-          value: 20
-        }
-      ]
-    },
-    {
-      title: 'Wilayah Sungai Limboto',
-      data: [
-        {
-          label: 'Informasi Teknis',
-          value: 120
-        },
-        {
-          label: 'Berita',
-          value: 80
-        },
-        {
-          label: 'Pos Pengamatan',
-          value: 90
-        },
-        {
-          label: 'Pemetaan GIS',
-          value: 20
-        }
-      ]
-    },
-    {
-      title: 'Wilayah Sungai Paguyaman',
-      data: [
-        {
-          label: 'Informasi Teknis',
-          value: 120
-        },
-        {
-          label: 'Berita',
-          value: 80
-        },
-        {
-          label: 'Pos Pengamatan',
-          value: 90
-        },
-        {
-          label: 'Pemetaan GIS',
-          value: 20
-        }
-      ]
-    }
-  ];
+  const chartData = QUICK_ACCESS_CONFIG.map(({ key, label, color }) => ({
+    type: label,
+    value: quickAccess[key] ?? 0,
+    color
+  }));
+
+  const wsData = wilayahSungai.data ?? [];
 
   return (
     <div className="grid w-full grid-cols-12 gap-4">
       <div className="col-span-9 flex flex-col gap-y-4">
         <Card title="Quick Access" className="col-span-9 h-fit">
-          <div className="grid grid-cols-12 gap-4">
-            <AdminStatisticCard label="Informasi Teknis" navigationPath="/dashboard/articles" value={120} />
-            <AdminStatisticCard label="Berita" navigationPath="/dashboard/news" value={90} />
-            <AdminStatisticCard label="Pemetaan GIS" navigationPath="/dashboard/maps" value={80} />
-            <AdminStatisticCard label="Pos Pengamatan" navigationPath="/dashboard/observation_pos" value={60} />
-          </div>
+          {statistik.isLoading ? (
+            <div className="grid grid-cols-12 gap-4">
+              {QUICK_ACCESS_CONFIG.map((item) => (
+                <div key={item.key} className="col-span-3">
+                  <Skeleton.Node
+                    active
+                    style={{
+                      width: '100%',
+                      height: 120
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-12 gap-4">
+              {QUICK_ACCESS_CONFIG.map((item) => (
+                <AdminStatisticCard key={item.key} label={item.label} navigationPath={item.navigationPath} value={quickAccess[item.key] ?? 0} />
+              ))}
+            </div>
+          )}
         </Card>
         <Card
           title=" Berdasarkan Data Wilayah Sungai"
@@ -132,29 +89,53 @@ const AdminDashboard = () => {
           }
           className="w-full"
         >
-          <div ref={scrollRef} className="inline-flex w-full items-center gap-x-6 overflow-x-auto pb-8">
-            {dataInWs.map((item, index) => (
-              <HidrologiWsStatisticCard key={index} label={item.title} data={item.data} />
-            ))}
-          </div>
+          {wilayahSungai.isLoading ? (
+            <Skeleton.Node
+              active
+              style={{
+                width: '100%',
+                height: 240
+              }}
+            />
+          ) : (
+            <div ref={scrollRef} className="inline-flex w-full items-center gap-x-6 overflow-x-auto pb-8">
+              {wsData.map((item) => (
+                <HidrologiWsStatisticCard
+                  key={item.id}
+                  label={item.nama}
+                  thumbnail={item.thumbnail ? asset(item.thumbnail) : undefined}
+                  data={[
+                    { label: 'Informasi Teknis', value: item.artikel },
+                    { label: 'Berita', value: item.berita },
+                    { label: 'Pos Pengamatan', value: item.pos }
+                  ]}
+                />
+              ))}
+            </div>
+          )}
         </Card>
-        <Card
-          className="w-full"
-          title="Peta Sebaran Pos Pengamatan"
+        <ObservationPosMap
           extra={
             <Button className="" variant="outlined" shape="round" color="primary" icon={<PlusOutlined />}>
               Kelola Pos
             </Button>
           }
-        >
-          <MapContainer center={[0.5435, 123.056]} zoom={9} scrollWheelZoom className="h-[480px] rounded-xl">
-            <TileLayer attribution="&copy; OpenStreetMap" url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          </MapContainer>
-        </Card>
+        />
+        <div className="grid w-full grid-cols-12 gap-4">
+          <div className="col-span-4">
+            <TopArtikelCard data={statistikTambahan.data?.top_artikel} />
+          </div>
+          <div className="col-span-4">
+            <PosPerJenisCard data={statistikTambahan.data?.pos_per_jenis} />
+          </div>
+          <div className="col-span-4">
+            <KuesionerRingkasanCard data={statistikTambahan.data?.kuesioner} />
+          </div>
+        </div>
       </div>
       <div className="col-span-3 flex flex-col gap-y-4">
         <DashboardProfileCard />
-        <AdminStatisticChart data={data} />
+        <AdminStatisticChart data={chartData} />
       </div>
     </div>
   );

@@ -9,6 +9,10 @@ export { default as DashboardProfileCard } from './dashboard/DashboardProfileCar
 export { default as AdminStatisticCard } from './dashboard/AdminStatisticCard';
 export { default as AdminStatisticChart } from './dashboard/AdminStatisticChart';
 export { default as HidrologiWsStatisticCard } from './dashboard/HidrologiWsStatisticCard';
+export { default as ObservationPosMap } from './dashboard/ObservationPosMap';
+export { default as TopArtikelCard } from './dashboard/TopArtikelCard';
+export { default as PosPerJenisCard } from './dashboard/PosPerJenisCard';
+export { default as KuesionerRingkasanCard } from './dashboard/KuesionerRingkasanCard';
 export { default as ScrollToTop } from './ScrollToTop';
 
 export { default as Navbar } from './landing/Navbar';
