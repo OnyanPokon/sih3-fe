@@ -12,30 +12,16 @@ import React from 'react';
 const KPI_KEYS = [
   { key: 'artikel', label: 'Informasi Teknis', icon: Newspaper },
   { key: 'berita', label: 'Berita', icon: FileText },
-  { key: 'pemetaan', label: 'Pemetaan', icon: Map },
+  { key: 'pemetaan', label: 'Pemetaan GIS', icon: Map },
   { key: 'pos', label: 'Pos Pengamatan', icon: Rss }
 ];
 
-const GREEN_KPI_CONFIG = [
-  { key: 'artikel', label: 'Informasi Teknis', icon: Newspaper, iconClassName: 'bg-green-100 text-green-500' },
-  { key: 'berita', label: 'Berita', icon: FileText, iconClassName: 'bg-green-100 text-green-500' },
-  { key: 'pemetaan', label: 'Pemetaan', icon: Map, iconClassName: 'bg-green-100 text-green-500' },
-  { key: 'pos', label: 'Pos Pengamatan', icon: Rss, iconClassName: 'bg-green-100 text-green-500' }
-];
-
-const AMBER_KPI_CONFIG = [
-  { key: 'artikel', label: 'Informasi Teknis', icon: Newspaper, iconClassName: 'bg-amber-100 text-amber-500' },
-  { key: 'berita', label: 'Berita', icon: FileText, iconClassName: 'bg-amber-100 text-amber-500' },
-  { key: 'pemetaan', label: 'Pemetaan', icon: Map, iconClassName: 'bg-amber-100 text-amber-500' },
-  { key: 'pos', label: 'Pos Pengamatan', icon: Rss, iconClassName: 'bg-amber-100 text-amber-500' }
-];
-
-const KpiItem = ({ item, value, loading, dark, spanClass = 'col-span-3' }) => {
+const KpiItem = ({ item, value, loading, dark, spanClass = 'col-span-3', iconClassName = '' }) => {
   const Icon = item.icon;
 
   return (
     <div className={`${spanClass} inline-flex items-center gap-x-3 rounded-lg p-4 ${dark ? 'bg-white/20' : 'bg-gray-50'}`}>
-      <div className={`flex h-12 w-12 items-center justify-center rounded-lg ${dark ? 'bg-white/20 text-white' : item.iconClassName}`}>
+      <div className={`flex h-12 w-12 items-center justify-center rounded-lg ${dark ? 'bg-white/20 text-white' : iconClassName}`}>
         <Icon size={28} />
       </div>
       <div className="flex flex-col">
@@ -50,13 +36,13 @@ KpiItem.propTypes = {
   item: PropTypes.shape({
     key: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
-    icon: PropTypes.elementType.isRequired,
-    iconClassName: PropTypes.string
+    icon: PropTypes.elementType.isRequired
   }).isRequired,
   value: PropTypes.number,
   loading: PropTypes.bool,
   dark: PropTypes.bool,
-  spanClass: PropTypes.string
+  spanClass: PropTypes.string,
+  iconClassName: PropTypes.string
 };
 
 const SuperadminDashboard = () => {
@@ -122,8 +108,8 @@ const SuperadminDashboard = () => {
           <span className="">Hidrometeorologi</span>
         </div>
         <div className="grid grid-cols-12 gap-2">
-          {GREEN_KPI_CONFIG.map((item) => (
-            <KpiItem key={item.key} item={item} value={hidrometeorologi[item.key]} loading={isStatistikLoading} spanClass="col-span-6" />
+          {KPI_KEYS.map((item) => (
+            <KpiItem key={item.key} item={item} value={hidrometeorologi[item.key]} loading={isStatistikLoading} spanClass="col-span-6" iconClassName="bg-green-100 text-green-500" />
           ))}
         </div>
       </div>
@@ -137,8 +123,8 @@ const SuperadminDashboard = () => {
             <span className="">Hidrogeologi</span>
           </div>
           <div className="grid grid-cols-12 gap-2">
-            {AMBER_KPI_CONFIG.map((item) => (
-              <KpiItem key={item.key} item={item} value={hidrogeologi[item.key]} loading={isStatistikLoading} spanClass="col-span-6" />
+            {KPI_KEYS.map((item) => (
+              <KpiItem key={item.key} item={item} value={hidrogeologi[item.key]} loading={isStatistikLoading} spanClass="col-span-6" iconClassName="bg-amber-100 text-amber-500" />
             ))}
           </div>
         </div>
@@ -175,13 +161,13 @@ const SuperadminDashboard = () => {
       </div>
       <div className="col-span-12 grid w-full grid-cols-12 gap-4">
         <div className="col-span-4">
-          <TopArtikelCard data={statistikTambahan.data?.top_artikel} />
+          <TopArtikelCard data={statistikTambahan.data?.top_artikel} loading={statistikTambahan.isLoading} />
         </div>
         <div className="col-span-4">
-          <PosPerJenisCard data={statistikTambahan.data?.pos_per_jenis} />
+          <PosPerJenisCard data={statistikTambahan.data?.pos_per_jenis} loading={statistikTambahan.isLoading} />
         </div>
         <div className="col-span-4">
-          <KuesionerRingkasanCard data={statistikTambahan.data?.kuesioner} />
+          <KuesionerRingkasanCard data={statistikTambahan.data?.kuesioner} loading={statistikTambahan.isLoading} />
         </div>
       </div>
     </div>

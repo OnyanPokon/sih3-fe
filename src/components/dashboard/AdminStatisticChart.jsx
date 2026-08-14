@@ -2,7 +2,7 @@ import { Column } from '@ant-design/charts';
 import { Card, Skeleton } from 'antd';
 import PropTypes from 'prop-types';
 
-const AdminStatisticChart = ({ data }) => {
+const AdminStatisticChart = ({ data, loading }) => {
   // const data = [
   //     {
   //         type: "Informasi Teknis",
@@ -91,7 +91,7 @@ const AdminStatisticChart = ({ data }) => {
         </div>
       </div>
 
-      {!data || data.length === 0 ? (
+      {loading || !data || data.length === 0 ? (
         <Skeleton.Node
           active
           style={{
@@ -107,7 +107,8 @@ const AdminStatisticChart = ({ data }) => {
 };
 
 AdminStatisticChart.propTypes = {
-  data: PropTypes.array.isRequired
+  data: PropTypes.array.isRequired,
+  loading: PropTypes.bool
 };
 
 export default AdminStatisticChart;

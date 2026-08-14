@@ -1,8 +1,8 @@
 import { Pie } from '@ant-design/charts';
-import { Card, Skeleton } from 'antd';
+import { Card, Empty, Skeleton } from 'antd';
 import PropTypes from 'prop-types';
 
-const PosPerJenisCard = ({ data }) => {
+const PosPerJenisCard = ({ data, loading }) => {
   const config = {
     data: data ?? [],
     angleField: 'total',
@@ -18,7 +18,7 @@ const PosPerJenisCard = ({ data }) => {
 
   return (
     <Card size="small" title="Pos Pengamatan per Jenis">
-      {!data || data.length === 0 ? (
+      {loading ? (
         <Skeleton.Node
           active
           style={{
@@ -26,6 +26,10 @@ const PosPerJenisCard = ({ data }) => {
             height: 220
           }}
         />
+      ) : !data || data.length === 0 ? (
+        <div className="flex h-[220px] items-center justify-center">
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Belum ada jenis pos" />
+        </div>
       ) : (
         <Pie {...config} />
       )}
@@ -39,7 +43,8 @@ PosPerJenisCard.propTypes = {
       nama: PropTypes.string.isRequired,
       total: PropTypes.number
     })
-  )
+  ),
+  loading: PropTypes.bool
 };
 
 export default PosPerJenisCard;

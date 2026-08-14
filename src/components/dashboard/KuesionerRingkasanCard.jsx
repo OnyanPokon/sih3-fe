@@ -1,10 +1,10 @@
 import { Card, Skeleton, Statistic } from 'antd';
 import PropTypes from 'prop-types';
 
-const KuesionerRingkasanCard = ({ data }) => {
+const KuesionerRingkasanCard = ({ data, loading }) => {
   return (
     <Card size="small" title="Ringkasan Kuesioner">
-      {!data ? (
+      {loading ? (
         <Skeleton.Node
           active
           style={{
@@ -14,8 +14,8 @@ const KuesionerRingkasanCard = ({ data }) => {
         />
       ) : (
         <div className="grid grid-cols-2 gap-4">
-          <Statistic title="Rata-rata Nilai" value={data.rata_rata_nilai ?? 0} precision={2} />
-          <Statistic title="Jumlah Responden" value={data.jumlah_responden ?? 0} />
+          <Statistic title="Rata-rata Nilai" value={data?.rata_rata_nilai ?? 0} precision={2} />
+          <Statistic title="Jumlah Responden" value={data?.jumlah_responden ?? 0} />
         </div>
       )}
     </Card>
@@ -26,7 +26,8 @@ KuesionerRingkasanCard.propTypes = {
   data: PropTypes.shape({
     rata_rata_nilai: PropTypes.number,
     jumlah_responden: PropTypes.number
-  })
+  }),
+  loading: PropTypes.bool
 };
 
 export default KuesionerRingkasanCard;

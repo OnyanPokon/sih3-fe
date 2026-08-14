@@ -1,11 +1,11 @@
 import { DownloadOutlined, EyeOutlined } from '@ant-design/icons';
-import { Card, Skeleton, Typography } from 'antd';
+import { Card, Empty, Skeleton, Typography } from 'antd';
 import PropTypes from 'prop-types';
 
-const TopArtikelCard = ({ data }) => {
+const TopArtikelCard = ({ data, loading }) => {
   return (
     <Card size="small" title="Top Artikel">
-      {!data || data.length === 0 ? (
+      {loading ? (
         <Skeleton.Node
           active
           style={{
@@ -13,6 +13,10 @@ const TopArtikelCard = ({ data }) => {
             height: 220
           }}
         />
+      ) : !data || data.length === 0 ? (
+        <div className="py-10">
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Belum ada artikel" />
+        </div>
       ) : (
         <div className="flex flex-col divide-y">
           {data.map((item, index) => (
@@ -48,7 +52,8 @@ TopArtikelCard.propTypes = {
       total_kunjungan: PropTypes.number,
       total_unduh: PropTypes.number
     })
-  )
+  ),
+  loading: PropTypes.bool
 };
 
 export default TopArtikelCard;

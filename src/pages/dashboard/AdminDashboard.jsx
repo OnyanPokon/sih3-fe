@@ -123,19 +123,19 @@ const AdminDashboard = () => {
         />
         <div className="grid w-full grid-cols-12 gap-4">
           <div className="col-span-4">
-            <TopArtikelCard data={statistikTambahan.data?.top_artikel} />
+            <TopArtikelCard data={statistikTambahan.data?.top_artikel} loading={statistikTambahan.isLoading} />
           </div>
           <div className="col-span-4">
-            <PosPerJenisCard data={statistikTambahan.data?.pos_per_jenis} />
+            <PosPerJenisCard data={statistikTambahan.data?.pos_per_jenis} loading={statistikTambahan.isLoading} />
           </div>
           <div className="col-span-4">
-            <KuesionerRingkasanCard data={statistikTambahan.data?.kuesioner} />
+            <KuesionerRingkasanCard data={statistikTambahan.data?.kuesioner} loading={statistikTambahan.isLoading} />
           </div>
         </div>
       </div>
       <div className="col-span-3 flex flex-col gap-y-4">
         <DashboardProfileCard />
-        <AdminStatisticChart data={chartData} />
+        <AdminStatisticChart data={chartData} loading={statistik.isLoading} />
       </div>
     </div>
   );
