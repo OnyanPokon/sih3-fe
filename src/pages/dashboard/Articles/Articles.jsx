@@ -45,26 +45,26 @@ const Articles = () => {
     {
       title: 'Judul Artikel',
       dataIndex: 'title',
-      sorter: (a, b) => a.title.length - b.title.length,
+      sorter: (a, b) => (a.title || '').localeCompare(b.title || ''),
       searchable: true
     },
     {
       title: 'Sumber',
       dataIndex: ['unor_id', 'name'],
-      sorter: (a, b) => a.unor_id.name.length - b.unor_id.name.length,
+      sorter: (a, b) => (a.unor_id?.name || '').localeCompare(b.unor_id?.name || ''),
       searchable: true
     },
     {
       title: 'Kategori',
       dataIndex: ['category_id', 'category_name'],
-      sorter: (a, b) => a.category_id.category_name.length - b.category_id.category_name.length,
+      sorter: (a, b) => (a.category_id?.category_name || '').localeCompare(b.category_id?.category_name || ''),
       searchable: true
     },
 
     {
       title: 'Dengan Kuisioner',
       dataIndex: 'additional_quiz',
-      sorter: (a, b) => a.additional_quiz.length - b.additional_quiz.length,
+      sorter: (a, b) => Number(a.additional_quiz) - Number(b.additional_quiz),
       searchable: true,
       render: (record) => (record ? 'Dengan Kuis' : 'Tanpa Kuis')
     }
@@ -93,7 +93,7 @@ const Articles = () => {
                   const { isSuccess, message } = await deleteCategory.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchArticles({ token: token, page: pagination.page, per_page: pagination.per_page });
+                    fetchArticles();
                   } else {
                     error('Gagal', message);
                   }
@@ -102,7 +102,7 @@ const Articles = () => {
               });
             }}
           />
-          {record.additional_quiz === 1 && (
+          {Boolean(record.additional_quiz) && (
             <Tooltip title="Kuesioner Artikel">
               <Button icon={<CheckSquareOutlined />} variant="outlined" color="primary" onClick={() => navigate(window.location.pathname + '/kuesioners/' + record.id)} />
             </Tooltip>
@@ -121,7 +121,8 @@ const Articles = () => {
             title={`Detail Informasi Teknis`}
             model={ArticleModel}
             onClick={() => {
-              navigate('/article/' + record.category_id.category_name.toLowerCase() + '/' + record.slug);
+              const categorySlug = record.category_id?.slug || record.category_id?.category_name?.toLowerCase() || 'default';
+              navigate('/article/' + categorySlug + '/' + record.slug);
             }}
           />
         </Space>

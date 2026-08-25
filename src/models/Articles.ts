@@ -4,19 +4,19 @@ import Tags, { IncomingApiData as TagsIncomingApiData } from './Tags';
 
 export interface IncomingApiData {
   id: number;
-  kategori_id: {
+  kategori_id?: {
     id: number;
     nama_kategori: string;
     slug: string;
     logo: string;
     deskripsi: string;
-  };
+  } | null;
   judul: string;
   slug: string;
   konten: string;
   status: string;
   tanggal_publikasi: string;
-  unor_id: {
+  unor_id?: {
     id: number;
     nama: string;
     wilayah: string;
@@ -25,18 +25,18 @@ export interface IncomingApiData {
     logo: string;
     website: string;
     no_hp: string;
-  };
-  user_id: {
+  } | null;
+  user_id?: {
     id: number;
     username: string;
     email: string;
-  };
-  thumbnails: {
+  } | null;
+  thumbnails?: {
     id: number;
     artikel_id: number;
     thumbnail: string;
   }[];
-  dokumen: {
+  dokumen?: {
     id: number;
     artikel_id: number;
     nama_dokumen?: string;
@@ -45,7 +45,7 @@ export interface IncomingApiData {
   tags?: TagsIncomingApiData[] | null;
   total_kunjungan: number;
   total_unduh: number;
-  kuesioner_tambahan: boolean;
+  kuesioner_tambahan: boolean | number;
   created_at: string;
   updated_at: string;
 }
@@ -132,7 +132,8 @@ export default class Articles extends Model {
   }
 
   public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): ReturnType<T, IncomingApiData, Articles> {
-    if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, Articles>;
+    if (!apiData) return null as unknown as ReturnType<T, IncomingApiData, Articles>;
+    if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)).filter(Boolean) as ReturnType<T, IncomingApiData, Articles>;
     const thumbnails = Array.isArray(apiData.thumbnails)
       ? apiData.thumbnails.map((item) => ({
           id: item.id,
@@ -153,31 +154,31 @@ export default class Articles extends Model {
     return new Articles(
       apiData.id,
       {
-        id: apiData.kategori_id.id,
-        category_name: apiData.kategori_id.nama_kategori,
-        slug: apiData.kategori_id.slug,
-        logo: asset(apiData.kategori_id.logo),
-        desc: apiData.kategori_id.deskripsi
+        id: apiData.kategori_id?.id ?? 0,
+        category_name: apiData.kategori_id?.nama_kategori ?? '-',
+        slug: apiData.kategori_id?.slug ?? '',
+        logo: asset(apiData.kategori_id?.logo ?? ''),
+        desc: apiData.kategori_id?.deskripsi ?? ''
       },
-      apiData.judul,
-      apiData.slug,
-      apiData.konten,
-      apiData.status,
-      apiData.tanggal_publikasi,
+      apiData.judul ?? '',
+      apiData.slug ?? '',
+      apiData.konten ?? '',
+      apiData.status ?? '',
+      apiData.tanggal_publikasi ?? '',
       {
-        id: apiData.unor_id.id,
-        name: apiData.unor_id.nama,
-        region: apiData.unor_id.wilayah,
-        address: apiData.unor_id.alamat,
-        email: apiData.unor_id.email,
-        logo: apiData.unor_id.logo,
-        website: apiData.unor_id.website,
-        phone_number: apiData.unor_id.no_hp
+        id: apiData.unor_id?.id ?? 0,
+        name: apiData.unor_id?.nama ?? '-',
+        region: apiData.unor_id?.wilayah ?? '',
+        address: apiData.unor_id?.alamat ?? '',
+        email: apiData.unor_id?.email ?? '',
+        logo: apiData.unor_id?.logo ?? '',
+        website: apiData.unor_id?.website ?? '',
+        phone_number: apiData.unor_id?.no_hp ?? ''
       },
       {
-        id: apiData.user_id.id,
-        username: apiData.user_id.username,
-        email: apiData.user_id.email
+        id: apiData.user_id?.id ?? 0,
+        username: apiData.user_id?.username ?? '',
+        email: apiData.user_id?.email ?? ''
       },
       thumbnails[0]?.thumbnail ?? null,
       thumbnails,
@@ -187,12 +188,12 @@ export default class Articles extends Model {
         article_id: item.article_id,
         doc: item.dokumen
       })),
-      apiData.tags ? Tags.fromApiData(apiData.tags) : [],
-      apiData.total_kunjungan,
-      apiData.total_unduh,
-      apiData.kuesioner_tambahan,
-      apiData.created_at,
-      apiData.updated_at
+      Array.isArray(apiData.tags) ? Tags.fromApiData(apiData.tags) : [],
+      apiData.total_kunjungan ?? 0,
+      apiData.total_unduh ?? 0,
+      Boolean(apiData.kuesioner_tambahan),
+      apiData.created_at ?? '',
+      apiData.updated_at ?? ''
     ) as ReturnType<T, IncomingApiData, Articles>;
   }
 

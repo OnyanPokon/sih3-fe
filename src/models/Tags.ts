@@ -68,22 +68,23 @@ export default class Tags extends Model {
   }
 
   public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): ReturnType<T, IncomingApiData, Tags> {
-    if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, Tags>;
+    if (!apiData) return null as unknown as ReturnType<T, IncomingApiData, Tags>;
+    if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)).filter(Boolean) as ReturnType<T, IncomingApiData, Tags>;
     return new Tags(
-      apiData.id,
-      apiData.user_id,
+      apiData.id ?? 0,
+      apiData.user_id ?? 0,
       apiData.user ?? null,
-      apiData.nama,
-      apiData.deskripsi,
+      apiData.nama ?? '',
+      apiData.deskripsi ?? null,
       apiData.warna ?? null,
       apiData.icon ?? null,
-      apiData.kategori_id,
-      Categories.fromApiData(apiData.kategori),
+      apiData.kategori_id ?? 0,
+      apiData.kategori ? Categories.fromApiData(apiData.kategori) : (null as any),
       apiData.referensi_type ?? null,
       apiData.referensi_id ?? null,
       apiData.referensi ? WilayahSungai.fromApiData(apiData.referensi) : null,
-      apiData.created_at,
-      apiData.updated_at
+      apiData.created_at ?? '',
+      apiData.updated_at ?? ''
     ) as ReturnType<T, IncomingApiData, Tags>;
   }
 

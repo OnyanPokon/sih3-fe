@@ -7,17 +7,19 @@ export interface IncomingApiData {
   tipe: 'upload' | 'manual';
   jenis: 'point' | 'polygon' | 'polyline';
   file: string;
+  file_original?: string | null;
+  is_customized?: boolean;
   koordinat: string[] | null;
   status: 'publikasi' | 'privasi';
   marker: string | null;
-  kategori_id: {
+  kategori_id?: {
     id: number;
     nama_kategori: string;
     slug: string;
     logo: string;
     deskripsi: string;
-  };
-  unor_id: {
+  } | null;
+  unor_id?: {
     id: number;
     nama: string;
     wilayah: string;
@@ -26,13 +28,13 @@ export interface IncomingApiData {
     logo: string;
     website: string;
     no_hp: string;
-  };
-  user_id: {
+  } | null;
+  user_id?: {
     id: number;
     username: string;
     email: string;
     email_verified_at: string;
-  };
+  } | null;
 }
 
 export interface OutgoingApiData {
@@ -80,7 +82,7 @@ export default class Maps extends Model {
       slug: string;
       logo: string;
       desc: string;
-    },
+    } | null,
     public unor_id: {
       id: number;
       name: string;
@@ -90,18 +92,21 @@ export default class Maps extends Model {
       logo: string;
       website: string;
       phone_number: string;
-    },
+    } | null,
     public user_id: {
       id: number;
       username: string;
       email: string;
       email_verified_at: string;
-    }
+    } | null,
+    public file_original?: string | null,
+    public is_customized?: boolean
   ) {
     super();
   }
 
   public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): ReturnType<T, IncomingApiData, Maps> {
+    if (!apiData) return null as any;
     if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, Maps>;
     return new Maps(
       apiData.id,
@@ -113,29 +118,37 @@ export default class Maps extends Model {
       apiData.koordinat,
       apiData.status,
       apiData.marker,
-      {
-        id: apiData.kategori_id.id,
-        category_name: apiData.kategori_id.nama_kategori,
-        slug: apiData.kategori_id.slug,
-        logo: apiData.kategori_id.logo,
-        desc: apiData.kategori_id.deskripsi
-      },
-      {
-        id: apiData.unor_id.id,
-        name: apiData.unor_id.nama,
-        region: apiData.unor_id.wilayah,
-        address: apiData.unor_id.alamat,
-        email: apiData.unor_id.email,
-        logo: apiData.unor_id.logo,
-        website: apiData.unor_id.website,
-        phone_number: apiData.unor_id.no_hp
-      },
-      {
-        id: apiData.user_id.id,
-        username: apiData.user_id.username,
-        email: apiData.user_id.email,
-        email_verified_at: apiData.user_id.email_verified_at
-      }
+      apiData.kategori_id
+        ? {
+            id: apiData.kategori_id.id,
+            category_name: apiData.kategori_id.nama_kategori,
+            slug: apiData.kategori_id.slug,
+            logo: apiData.kategori_id.logo,
+            desc: apiData.kategori_id.deskripsi
+          }
+        : null,
+      apiData.unor_id
+        ? {
+            id: apiData.unor_id.id,
+            name: apiData.unor_id.nama,
+            region: apiData.unor_id.wilayah,
+            address: apiData.unor_id.alamat,
+            email: apiData.unor_id.email,
+            logo: apiData.unor_id.logo,
+            website: apiData.unor_id.website,
+            phone_number: apiData.unor_id.no_hp
+          }
+        : null,
+      apiData.user_id
+        ? {
+            id: apiData.user_id.id,
+            username: apiData.user_id.username,
+            email: apiData.user_id.email,
+            email_verified_at: apiData.user_id.email_verified_at
+          }
+        : null,
+      apiData.file_original ?? null,
+      apiData.is_customized ?? Boolean(apiData.file_original)
     ) as ReturnType<T, IncomingApiData, Maps>;
   }
 

@@ -385,7 +385,7 @@ const Portal = () => {
                               <Typography.Title level={5} className="mt-2">
                                 <span className="news-text">{item.title}</span>
                               </Typography.Title>
-                              <p className="news-text mb-4">{parse(item.content)}</p>
+                              <div className="news-text mb-4">{parse(item.content)}</div>
                               <p className="text-xs">{dateFormatterID(item.created_at)}</p>
                             </div>
                           </Card>
@@ -429,7 +429,7 @@ const Portal = () => {
                               <Typography.Title level={5} className="mt-2">
                                 <span className="news-text">{item.title}</span>
                               </Typography.Title>
-                              <p className="news-text mb-4">{parse(item.content)}</p>
+                              <div className="news-text mb-4">{parse(item.content)}</div>
                               <p className="text-xs">{dateFormatterID(item.created_at)}</p>
                             </div>
                           </Card>

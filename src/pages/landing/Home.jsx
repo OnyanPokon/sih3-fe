@@ -195,36 +195,36 @@ const Home = () => {
           <div className="flex flex-wrap items-start justify-around pt-12">
             {getAllNews.isLoading
               ? Array.from({ length: 5 }, (_, i) => i).map((index) => (
-                  <Card className="w-full max-w-[230px]" key={index}>
-                    <Skeleton active />
-                  </Card>
-                ))
+                <Card className="w-full max-w-[230px]" key={index}>
+                  <Skeleton active />
+                </Card>
+              ))
               : news?.map((item) => {
-                  const theme = getThemeByCategory(item.category_id.category_name);
-                  return (
-                    <Card
-                      onClick={() => navigte(window.location.pathname + 'news/' + item.category_id.slug + '/' + item.slug)}
-                      key={item.id}
-                      hoverable
-                      className="w-full max-w-[230px]"
-                      cover={
-                        <div className="relative overflow-hidden rounded-t-lg">
-                          <img src={item.thumbnail} alt={item.title} className="h-32 w-full object-cover" />
+                const theme = getThemeByCategory(item.category_id.category_name);
+                return (
+                  <Card
+                    onClick={() => navigte(window.location.pathname + 'portal/news/' + item.category_id.slug + '/' + item.slug)}
+                    key={item.id}
+                    hoverable
+                    className="w-full max-w-[230px]"
+                    cover={
+                      <div className="relative overflow-hidden rounded-t-lg">
+                        <img src={item.thumbnail} alt={item.title} className="h-32 w-full object-cover" />
 
-                          <span className={`absolute left-3 top-3 rounded-full ${theme.bg} px-3 py-1 text-[8px] font-medium text-white shadow-md`}>{item.category_id.category_name}</span>
-                        </div>
-                      }
-                    >
-                      <div className="text-gray-500">
-                        <p className="mb-2 text-xs">{dateFormatterID(item.created_at)}</p>
-                        <Typography.Title level={5}>
-                          <span className="news-text">{item.title}</span>
-                        </Typography.Title>
-                        <p className="news-text">{parse(item.content)}</p>
+                        <span className={`absolute left-3 top-3 rounded-full ${theme.bg} px-3 py-1 text-[8px] font-medium text-white shadow-md`}>{item.category_id.category_name}</span>
                       </div>
-                    </Card>
-                  );
-                })}
+                    }
+                  >
+                    <div className="text-gray-500">
+                      <p className="mb-2 text-xs">{dateFormatterID(item.created_at)}</p>
+                      <Typography.Title level={5}>
+                        <span className="news-text">{item.title}</span>
+                      </Typography.Title>
+                      <div className="news-text">{parse(item.content)}</div>
+                    </div>
+                  </Card>
+                );
+              })}
           </div>
         </div>
       </section>

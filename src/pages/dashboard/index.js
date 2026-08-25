@@ -6,6 +6,7 @@ export { default as News } from './News/News';
 export { default as CreateNews } from './News/Create';
 export { default as EditNews } from './News/Edit';
 export { default as Map } from './Maps/Maps';
+export { default as CustomizeMap } from './Maps/Customize';
 export { default as Roles } from './Roles/Roles';
 export { default as Permissions } from './Permissions/Permissions';
 export { default as Articles } from './Articles/Articles';

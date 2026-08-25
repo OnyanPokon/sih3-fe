@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { Maps } from '@/models';
-import api from '@/utils/api';
+import api, { BASE_URL } from '@/utils/api';
 
 export default class MapsService {
   /**
@@ -35,6 +35,22 @@ export default class MapsService {
     const response = await api.get(`/landing/pemetaan/by-kategori`, { page: page, perPage: per_page });
     if (!response.data) return response;
     return { ...response, data: response.data };
+  }
+
+  /**
+   * @param {number} id
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   *  data?: Maps;
+   * }>}
+   */
+  static async getById(id, token) {
+    const response = await api.get(`/pemetaan/${id}`, { token });
+    if (!response.data) return response;
+    return { ...response, data: Maps.fromApiData(response.data) };
   }
 
   /**
@@ -98,7 +114,43 @@ export default class MapsService {
    *  message: string;
    * }>}
    */
-  static async deleteBatch(ids, token) {
-    return await api.delete(`/pemetaan/multi-delete/?id=${ids.join(',')}`, { token });
+  /**
+   * @param {number} id
+   * @returns {Promise<any>}
+   */
+  static async getGeoJson(id) {
+    const response = await fetch(`${BASE_URL}/landing/pemetaan/${id}/geojson`);
+    if (!response.ok) {
+      throw new Error('Gagal memuat GeoJSON');
+    }
+    return await response.json();
+  }
+
+  /**
+   * @param {number} id
+   * @param {any} geojson
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   * }>}
+   */
+  static async customize(id, geojson, token) {
+    return await api.post(`/pemetaan/${id}/customize`, { body: { geojson }, token });
+  }
+
+  /**
+   * @param {number} id
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   * }>}
+   */
+  static async reset(id, token) {
+    return await api.post(`/pemetaan/${id}/reset`, { token });
   }
 }
+

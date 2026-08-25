@@ -51,8 +51,18 @@ export default class Unors extends Model {
   }
 
   public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): ReturnType<T, IncomingApiData, Unors> {
-    if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, Unors>;
-    return new Unors(apiData.id, apiData.nama, apiData.wilayah, apiData.alamat, apiData.email, asset(apiData.logo), apiData.website, apiData.no_hp) as ReturnType<T, IncomingApiData, Unors>;
+    if (!apiData) return null as unknown as ReturnType<T, IncomingApiData, Unors>;
+    if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)).filter(Boolean) as ReturnType<T, IncomingApiData, Unors>;
+    return new Unors(
+      apiData.id ?? 0,
+      apiData.nama ?? '',
+      apiData.wilayah ?? '',
+      apiData.alamat ?? '',
+      apiData.email ?? '',
+      asset(apiData.logo ?? ''),
+      apiData.website ?? '',
+      apiData.no_hp ?? ''
+    ) as ReturnType<T, IncomingApiData, Unors>;
   }
 
   public static toApiData<T extends FormValue | FormValue[]>(unors: T): ReturnType<T, FormValue, OutgoingApiData> {

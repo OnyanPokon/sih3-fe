@@ -98,40 +98,41 @@ export default class News extends Model {
   }
 
   public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): ReturnType<T, IncomingApiData, News> {
-    if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, News>;
+    if (!apiData) return null as unknown as ReturnType<T, IncomingApiData, News>;
+    if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)).filter(Boolean) as ReturnType<T, IncomingApiData, News>;
     return new News(
-      apiData.id,
-      apiData.judul,
-      apiData.slug,
-      apiData.konten,
-      asset(apiData.thumbnail),
-      apiData.status,
+      apiData.id ?? 0,
+      apiData.judul ?? '',
+      apiData.slug ?? '',
+      apiData.konten ?? '',
+      asset(apiData.thumbnail ?? ''),
+      apiData.status ?? 'publikasi',
       {
-        id: apiData.unor_id.id,
-        name: apiData.unor_id.nama,
-        region: apiData.unor_id.wilayah,
-        address: apiData.unor_id.alamat,
-        email: apiData.unor_id.email,
-        logo: apiData.unor_id.logo,
-        website: apiData.unor_id.website,
-        phone_number: apiData.unor_id.no_hp
+        id: apiData.unor_id?.id ?? 0,
+        name: apiData.unor_id?.nama ?? '-',
+        region: apiData.unor_id?.wilayah ?? '',
+        address: apiData.unor_id?.alamat ?? '',
+        email: apiData.unor_id?.email ?? '',
+        logo: apiData.unor_id?.logo ?? '',
+        website: apiData.unor_id?.website ?? '',
+        phone_number: apiData.unor_id?.no_hp ?? ''
       },
       {
-        id: apiData.user_id.id,
-        username: apiData.user_id.username,
-        email: apiData.user_id.email,
-        email_verified_at: apiData.user_id.email_verified_at
+        id: apiData.user_id?.id ?? 0,
+        username: apiData.user_id?.username ?? '',
+        email: apiData.user_id?.email ?? '',
+        email_verified_at: apiData.user_id?.email_verified_at ?? ''
       },
       {
-        id: apiData.kategori_id.id,
-        category_name: apiData.kategori_id.nama_kategori,
-        slug: apiData.kategori_id.slug,
-        logo: asset(apiData.kategori_id.logo),
-        desc: apiData.kategori_id.deskripsi
+        id: apiData.kategori_id?.id ?? 0,
+        category_name: apiData.kategori_id?.nama_kategori ?? '-',
+        slug: apiData.kategori_id?.slug ?? '',
+        logo: asset(apiData.kategori_id?.logo ?? ''),
+        desc: apiData.kategori_id?.deskripsi ?? ''
       },
-      apiData.tags ? Tags.fromApiData(apiData.tags) : [],
-      apiData.created_at,
-      apiData.updated_at
+      Array.isArray(apiData.tags) ? Tags.fromApiData(apiData.tags) : [],
+      apiData.created_at ?? '',
+      apiData.updated_at ?? ''
     ) as ReturnType<T, IncomingApiData, News>;
   }
 

@@ -1,10 +1,11 @@
-import { Delete, Edit } from '@/components/dashboard/button';
+import { Customize, Delete, Edit } from '@/components/dashboard/button';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import useAbortableService from '@/hooks/useAbortableService';
 import { Card, Skeleton, Space } from 'antd';
 import { Maps as MapModel } from '@/models';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Action, InputType } from '@/constants';
 import { DataTable, DataTableHeader } from '@/components';
 import { EnvironmentOutlined, ExpandAltOutlined, ExpandOutlined } from '@ant-design/icons';
@@ -15,6 +16,7 @@ import { CategoriesService } from '@/services';
 const { DELETE, UPDATE } = Action;
 
 const Maps = () => {
+  const navigate = useNavigate();
   const modal = useCrudModal();
   const { success, error } = useNotification();
   const { token, user, onUnauthorized } = useAuth();
@@ -55,7 +57,7 @@ const Maps = () => {
       searchable: true
     },
     {
-      title: 'Nama',
+      title: 'Geometri',
       dataIndex: 'geometry',
       sorter: (a, b) => a.geometry.length - b.geometry.length,
       searchable: true
@@ -73,6 +75,13 @@ const Maps = () => {
       title: 'Aksi',
       render: (_, record) => (
         <Space size="small">
+          <Customize
+            title={`Preview & Kustomisasi ${Modul.MAPS}`}
+            model={MapModel}
+            onClick={() => {
+              navigate(`/dashboard/maps/customize/${record.id}`);
+            }}
+          />
           <Edit
             title={`Edit ${Modul.MAPS}`}
             model={MapModel}

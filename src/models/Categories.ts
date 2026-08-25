@@ -47,10 +47,21 @@ export default class Categories extends Model {
   }
 
   public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): ReturnType<T, IncomingApiData, Categories> {
-    if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, Categories>;
-    const unors = apiData.unors ? Unors.fromApiData(apiData.unors) : [];
+    if (!apiData) return null as unknown as ReturnType<T, IncomingApiData, Categories>;
+    if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)).filter(Boolean) as ReturnType<T, IncomingApiData, Categories>;
+    const unors = Array.isArray(apiData.unors) ? Unors.fromApiData(apiData.unors) : [];
     const unor_ids = unors.map((unor) => unor.id);
-    return new Categories(apiData.id, apiData.nama_kategori, apiData.slug, asset(apiData.logo), apiData.deskripsi, apiData.created_at, apiData.updated_at, unors, unor_ids) as ReturnType<T, IncomingApiData, Categories>;
+    return new Categories(
+      apiData.id ?? 0,
+      apiData.nama_kategori ?? '',
+      apiData.slug ?? '',
+      asset(apiData.logo ?? ''),
+      apiData.deskripsi ?? '',
+      apiData.created_at ?? '',
+      apiData.updated_at ?? '',
+      unors,
+      unor_ids
+    ) as ReturnType<T, IncomingApiData, Categories>;
   }
 
   public static toApiData<T extends FormValue | FormValue[]>(categories: T): ReturnType<T, FormValue, OutgoingApiData> {
